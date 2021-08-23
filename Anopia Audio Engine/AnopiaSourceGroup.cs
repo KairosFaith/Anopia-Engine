@@ -3,16 +3,17 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Audio;
 using System;
-public class SourceGroup : MonoBehaviour
+public class AnopiaSourceGroup : MonoBehaviour
 {
-    public void InvokeSources(AudioFileID tag,AudioMixerGroup[] output)
+    public List<AudioSource> Sources = new List<AudioSource>();
+    public void InvokeSources(string MusicID, AudioMixerGroup[] output)
     {//for music
-        ClipBag mag = FlexEngine.GetClips(tag);
+        ClipMag mag = (ClipMag)AnopiaAudioCore.FetchMag(MusicID);
         ClipData[] clips = mag.Data;
         for(int i = 0; i < clips.Length; i++)
         {
             int b = (i < output.Length) ? i : output.Length - 1;
-            AudioSource a = FlexEngine.NewSource(transform, OutputPan.Stereo, output[b]);
+            AudioSource a = AnopiaAudioCore.NewStereoSource(this, output[b]);
             ClipData c = clips[i];
             a.clip = c.Clip;
             a.volume = c.Gain;
@@ -20,7 +21,6 @@ public class SourceGroup : MonoBehaviour
             Sources.Add(a);
         }
     }
-    public List<AudioSource> Sources = new List<AudioSource>();
     public void Play()
     {
         foreach (AudioSource a in Sources)

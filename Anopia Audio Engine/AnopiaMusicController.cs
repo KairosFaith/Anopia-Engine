@@ -1,10 +1,9 @@
 ﻿using System;
 using UnityEngine;
 using UnityEngine.Audio;
-public class MusicController : SingletonMonobehavior<MusicController>
+public class AnopiaMusicController : SingletonMonobehavior<AnopiaMusicController>
 {
-    public AudioFileID[] MusicGroups;
-    SourceGroup CurrentMusicGroup;
+    AnopiaSourceGroup CurrentMusicGroup;
     public AudioMixer Mixer;
     public AudioMixerGroup[] Channels;
     protected override void Awake()
@@ -19,10 +18,10 @@ public class MusicController : SingletonMonobehavior<MusicController>
     {
         Mixer.TransitionToSnapshot(Snapshot, time);
     }
-    public void ChangeMusic(int key, float time = 0)
+    public void ChangeMusic(string MusicTag, float time = 0)
     {
         FadeOut(time);
-        NewFadeIn(MusicGroups[key], time);
+        NewFadeIn(MusicTag, time);
     }
     public void FadeOut(float fadeTime)
     {
@@ -32,31 +31,33 @@ public class MusicController : SingletonMonobehavior<MusicController>
             CurrentMusicGroup = null;
         }
     }
-    public void NewFadeIn(AudioFileID newMusic, float fadeTime)
+    public void NewFadeIn(string newMusicTag, float fadeTime)
     {
         GameObject g = new GameObject();
         g.transform.position = transform.position;
         g.transform.SetParent(transform);
 
-        CurrentMusicGroup = g.AddComponent<SourceGroup>();
+        CurrentMusicGroup = g.AddComponent<AnopiaSourceGroup>();
 
-        CurrentMusicGroup.InvokeSources(newMusic, Channels);//music use default
+        CurrentMusicGroup.InvokeSources(newMusicTag, Channels);//music use default
         CurrentMusicGroup.FadeIn(fadeTime);
         CurrentMusicGroup.Play();
     }
-    public void Interrupt(int clipIndex)
+    public void Interrupt(string MusicTag)
     {
         Action onDone = () =>
         {
             CurrentMusicGroup.Resume();
         };
-        Interrupt(clipIndex, onDone);
+        Interrupt(MusicTag, onDone);
     }
-    public void Interrupt(int clipIndex, Action schedule)
+    void Interrupt(string MusicTag, Action schedule)
     {
         CurrentMusicGroup.Pause();
-        ClipBag mag = FlexEngine.GetClips(MusicGroups[clipIndex]);
-        ClipData c = mag.RandomClip();//expect single file
-        FlexEngine.PlayClipAtStereo(this, c, Mixer.outputAudioMixerGroup, schedule);
+        ClipMag mag = (ClipMag)AnopiaAudioCore.FetchMag(MusicTag);
+        ClipData[] array = mag.Data;
+        int r = UnityEngine.Random.Range(0, array.Length);
+        ClipData c = array[r];//expect single file
+        AnopiaAudioCore.PlayClipAtStereo(this, c, Mixer.outputAudioMixerGroup, 0, schedule);
     }
 }
