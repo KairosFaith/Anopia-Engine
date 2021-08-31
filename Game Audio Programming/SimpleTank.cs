@@ -4,8 +4,8 @@ using UnityEngine;
 using UnityEngine.Audio;
 public class SimpleTank : MonoBehaviour
 {
-    AnopiaOneShotEffectsEvent Weapon1;
-    AnopiaADSREvent Weapon2;
+    anClipEffectsEvent Weapon1;
+    anADSREvent Weapon2;
     AnopiaSourcerer[] Engine;
 
     public AudioCurve PitchCurve;
@@ -16,9 +16,9 @@ public class SimpleTank : MonoBehaviour
     public float RotSpeed;
     void Start()
     {
-        AudioMixerGroup output = tAudioEventManager.Instance.PlayerChannel;
-        Weapon1 = (AnopiaOneShotEffectsEvent)AnopiaAudioCore.NewEvent(this, "TankWeapon1", output);
-        Weapon2 = (AnopiaADSREvent)AnopiaAudioCore.NewEvent(this, "TankWeapon2", output);
+        AudioMixerGroup output = DataCore.PlayerChannel;
+        Weapon1 = (anClipEffectsEvent)AnopiaAudioCore.NewEvent(this, "TankWeapon1", output);
+        Weapon2 = (anADSREvent)AnopiaAudioCore.NewEvent(this, "TankWeapon2", output);
         Engine = AnopiaAudioCore.SetLayers(this, "TankEngine", output);
     }
     void Update()

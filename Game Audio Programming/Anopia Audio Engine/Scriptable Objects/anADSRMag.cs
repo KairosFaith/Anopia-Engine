@@ -1,26 +1,26 @@
 using UnityEngine;
 using UnityEngine.Audio;
 [CreateAssetMenu(fileName = "ADSRMag", menuName = "AnopiaEngine/ADSR", order = 3)]
-public class ADSRMag : IAnopiaAudioMag
+public class anADSRMag : IanAudioMag
 {
     //sustain gain affects attack and release too
     public GameObject SourcePrefab;
     public ClipData Attack;
     public ClipData Sustain;
     public ClipData Release;
-    public override IAnopiaEvent LoadMag(MonoBehaviour host, AudioMixerGroup output)
+    public override IanEvent LoadMag(MonoBehaviour host, AudioMixerGroup output)
     {
-        return new AnopiaADSREvent(host, this, output);
+        return new anADSREvent(host, this, output);
     }
 }
-public class AnopiaADSREvent : IAnopiaEvent
+public class anADSREvent : IanEvent
 {
     public ClipData Attack;
     public ClipData Release;
     public AnopiaSourcerer Sourcerer;
-    public AnopiaADSREvent(MonoBehaviour host, IAnopiaAudioMag mag, AudioMixerGroup output) : base(host, mag, output)
+    public anADSREvent(MonoBehaviour host, IanAudioMag mag, AudioMixerGroup output) : base(host, mag, output)
     {
-        ADSRMag Mag = (ADSRMag)mag;
+        anADSRMag Mag = (anADSRMag)mag;
         Attack = Mag.Attack;
         Release = Mag.Release;
         Sourcerer = AnopiaAudioCore.NewPointSource(host, Mag.SourcePrefab, output);

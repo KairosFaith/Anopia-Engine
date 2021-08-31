@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.Audio;
 public class AnopiaSourcerer : MonoBehaviour
 {
-    public AudioSource Source;//TODO public?
+    public AudioSource Source;
     float MasterVolume = 1;
     public float Volume
     {
@@ -20,6 +20,7 @@ public class AnopiaSourcerer : MonoBehaviour
         }
         get => Source.pitch;
     }
+    #region Effects
     AudioDistortionFilter DistortionEffect;
     public float Distortion
     {
@@ -31,6 +32,8 @@ public class AnopiaSourcerer : MonoBehaviour
         }
         get => DistortionEffect.distortionLevel;
     }
+    //TODO add more effects
+    #endregion
     public void SetData(ClipData data)
     {
         if(Source==null)
@@ -47,5 +50,17 @@ public class AnopiaSourcerer : MonoBehaviour
     public void PanToOpposite()
     {
         StartCoroutine(AnopiaAudioCore.PanToOpposite(Source));
+    }
+    //back door player
+    public void PlayOneShot(string SoundId)//random
+    {
+        anClipMag m = (anClipMag)AnopiaAudioCore.FetchMag(SoundId);
+        AudioClip c = m.RandomClip(out float g);
+        Source.PlayOneShot(c,g);
+    }
+    public void PlayOneShot(string SoundId, int key)//specified
+    {
+        ClipData d = AnopiaAudioCore.FetchData(SoundId, key);
+        Source.PlayOneShot(d);
     }
 }

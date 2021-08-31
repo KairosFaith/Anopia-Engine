@@ -8,7 +8,7 @@ public class AnopiaSourceGroup : MonoBehaviour
     public List<AudioSource> Sources = new List<AudioSource>();
     public void InvokeSources(string MusicID, AudioMixerGroup[] output)
     {//for music
-        ClipMag mag = (ClipMag)AnopiaAudioCore.FetchMag(MusicID);
+        anClipMag mag = (anClipMag)AnopiaAudioCore.FetchMag(MusicID);
         ClipData[] clips = mag.Data;
         for(int i = 0; i < clips.Length; i++)
         {

@@ -5,23 +5,28 @@ using UnityEngine.Audio;
 using System;
 public static class AnopiaAudioCore
 {
-    static Dictionary<string, IAnopiaAudioMag> _SoundBank = new Dictionary<string, IAnopiaAudioMag>();
+    static Dictionary<string, IanAudioMag> _SoundBank = new Dictionary<string, IanAudioMag>();
     static AnopiaAudioCore()
     {
-        IAnopiaAudioMag[] m = Resources.LoadAll<IAnopiaAudioMag>("AudioMags");
-        foreach (IAnopiaAudioMag b in m)
+        IanAudioMag[] m = Resources.LoadAll<IanAudioMag>("AudioMags");
+        foreach (IanAudioMag b in m)
             _SoundBank.Add(b.name, b);
     }
-    public static IAnopiaAudioMag FetchMag(string SoundID)
+    public static IanAudioMag FetchMag(string SoundID)
     {
-        if (_SoundBank.TryGetValue(SoundID, out IAnopiaAudioMag mag))
+        if (_SoundBank.TryGetValue(SoundID, out IanAudioMag mag))
             return mag;
         else
             throw new Exception(SoundID + " not found");
     }
-    public static IAnopiaEvent NewEvent(MonoBehaviour host, string SoundID, AudioMixerGroup output)
+    public static ClipData FetchData(string SoundId, int Key)
     {
-        IAnopiaAudioMag mag = FetchMag(SoundID);
+        anClipMag mag = (anClipMag)FetchMag(SoundId);
+        return mag.Data[Key];
+    }
+    public static IanEvent NewEvent(MonoBehaviour host, string SoundID, AudioMixerGroup output)
+    {
+        IanAudioMag mag = FetchMag(SoundID);
         return mag.LoadMag(host, output);
     }
     public static AnopiaSourcerer PlayClipAtPoint(Vector3 position, ClipData data, AudioMixerGroup output, GameObject prefab, Action<AnopiaSourcerer> setup = null)
@@ -30,6 +35,16 @@ public static class AnopiaAudioCore
         AnopiaSourcerer sourceObj = newg.AddComponent<AnopiaSourcerer>();
         sourceObj.SetOutput(output);
         setup?.Invoke(sourceObj);
+        sourceObj.StartCoroutine(DeleteWhenDone(sourceObj.Source, null));
+        return sourceObj;
+    }
+    public static AnopiaSourcerer PlayClipAtPoint(Vector3 position, string SoundId, int Key, AudioMixerGroup output)
+    {
+        GameObject newg = new GameObject(SoundId + " " + Key + " AudioSource", typeof(AudioSource));
+        AnopiaSourcerer sourceObj = newg.AddComponent<AnopiaSourcerer>();
+        sourceObj.SetOutput(output);
+        ClipData d = FetchData(SoundId, Key);
+        sourceObj.SetData(d);
         sourceObj.StartCoroutine(DeleteWhenDone(sourceObj.Source, null));
         return sourceObj;
     }
@@ -58,7 +73,7 @@ public static class AnopiaAudioCore
     }
     public static AnopiaSourcerer[] SetLayers(MonoBehaviour host, string SoundID, AudioMixerGroup output)
     {
-        LayerMag mag = (LayerMag)FetchMag(SoundID);
+        anLayerMag mag = (anLayerMag)FetchMag(SoundID);
         Transform t = host.transform;
         List<AnopiaSourcerer> layers = new List<AnopiaSourcerer>();
         foreach(ClipLayer l in mag.Layers)
@@ -74,7 +89,7 @@ public static class AnopiaAudioCore
     }
     public static void PlayOneShot(this AudioSource source, string SoundID, int key)
     {
-        ClipMag mag = (ClipMag)FetchMag(SoundID);
+        anClipMag mag = (anClipMag)FetchMag(SoundID);
         source.PlayOneShot(mag.Data[key]);
     }
     public static void PlayOneShot(this AudioSource source, ClipData data)
@@ -108,9 +123,9 @@ public static class AnopiaAudioCore
         }
     }
 }
-public abstract class IAnopiaAudioMag : ScriptableObject
+public abstract class IanAudioMag : ScriptableObject
 {
-    public abstract IAnopiaEvent LoadMag(MonoBehaviour host, AudioMixerGroup output);
+    public abstract IanEvent LoadMag(MonoBehaviour host, AudioMixerGroup output);
 }
 [Serializable]
 public class ClipData
@@ -119,9 +134,9 @@ public class ClipData
     [Range(0, 1)]
     public float Gain = 1;
 }
-public abstract class IAnopiaEvent
+public abstract class IanEvent
 {
-    public IAnopiaEvent(MonoBehaviour host, IAnopiaAudioMag mag, AudioMixerGroup output){ }
+    public IanEvent(MonoBehaviour host, IanAudioMag mag, AudioMixerGroup output){ }
     public abstract void Play(params object[] args);
     public abstract void Stop();
 }

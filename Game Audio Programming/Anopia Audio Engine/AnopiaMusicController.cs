@@ -4,8 +4,8 @@ using UnityEngine.Audio;
 public class AnopiaMusicController : SingletonMonobehavior<AnopiaMusicController>
 {
     AnopiaSourceGroup CurrentMusicGroup;
-    public AudioMixer Mixer;
-    public AudioMixerGroup[] Channels;
+    public static AudioMixer Mixer;
+    public static AudioMixerGroup[] Channels;
     protected override void Awake()
     {
         base.Awake();
@@ -14,7 +14,7 @@ public class AnopiaMusicController : SingletonMonobehavior<AnopiaMusicController
     {
         base.OnDestroy();
     }
-    public void SetSnapshot(string Snapshot, float time)
+    public static void SetSnapshot(string Snapshot, float time)
     {
         Mixer.TransitionToSnapshot(Snapshot, time);
     }
@@ -54,7 +54,7 @@ public class AnopiaMusicController : SingletonMonobehavior<AnopiaMusicController
     void Interrupt(string MusicTag, Action schedule)
     {
         CurrentMusicGroup.Pause();
-        ClipMag mag = (ClipMag)AnopiaAudioCore.FetchMag(MusicTag);
+        anClipMag mag = (anClipMag)AnopiaAudioCore.FetchMag(MusicTag);
         ClipData[] array = mag.Data;
         int r = UnityEngine.Random.Range(0, array.Length);
         ClipData c = array[r];//expect single file

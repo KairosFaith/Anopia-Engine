@@ -3,17 +3,28 @@ using UnityEngine.Events;
 using UnityEngine.EventSystems;
 using UnityEngine;
 using UnityEngine.UI;
+[RequireComponent(typeof(AudioSource))]
 public class AnopiaSlider : Slider
 {
     public string SoundID;
-    [Range(-1,1)]
-    public float Pan;
     AudioSource Source;
     ClipData Enter;
     ClipData Down;
     ClipData Drag;
     ClipData Up;
     ClipData Exit;
+    protected override void Start()
+    {
+        Source = GetComponent<AudioSource>();
+        onValueChanged.AddListener((f) => Source.PlayOneShot(Drag.Clip, Drag.Gain*normalizedValue));
+        Source.ignoreListenerPause = true;
+        anSliderMag mag = (anSliderMag)AnopiaAudioCore.FetchMag(SoundID);
+        Enter = mag.Enter;
+        Down = mag.Down;
+        Drag = mag.Drag;
+        Up = mag.Up;
+        Exit = mag.Exit;
+    }
     public override void OnPointerEnter(PointerEventData eventData)
     {
         Source.PlayOneShot(Enter);
@@ -33,19 +44,5 @@ public class AnopiaSlider : Slider
     {
         Source.PlayOneShot(Exit);
         base.OnPointerExit(eventData);
-    }
-    public void AddListener(UnityAction<float> call, AudioMixerGroup output)
-    {
-        onValueChanged.AddListener(call);
-        Source = AnopiaAudioCore.NewStereoSource(this,output);
-        onValueChanged.AddListener((f) => Source.PlayOneShot(Drag));
-        Source.ignoreListenerPause = true;
-        Source.panStereo = Pan;
-        SliderMag mag = (SliderMag)AnopiaAudioCore.FetchMag(SoundID);
-        Enter = mag.Enter;
-        Down = mag.Down;
-        Drag = mag.Drag;
-        Up = mag.Up;
-        Exit = mag.Exit;
     }
 }
