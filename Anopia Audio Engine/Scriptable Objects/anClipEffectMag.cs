@@ -27,7 +27,7 @@ public class anClipEffectsEvent : IanEvent
 {
     public GameObject SourcePrefab;
     public ClipData[] Data;
-    List<ClipData> RandomBag;
+    List<ClipData> RandomBag = new List<ClipData>();
     float VolumeFlux;
     public float MinPitch = 1;
     public float MaxPitch = 1;
@@ -42,7 +42,7 @@ public class anClipEffectsEvent : IanEvent
         anClipEffectMag Mag = (anClipEffectMag)mag;
         Data = Mag.Data;
         SourcePrefab = Mag.SourcePrefab;
-        VolumeFlux = Mag.VolumeFlux;
+        VolumeFlux = Mag.VolumeRandomisation;
         MinPitch = Mag.MinPitch;
         if (Mag.Distortion)
         {
@@ -55,15 +55,20 @@ public class anClipEffectsEvent : IanEvent
         Output = output;
         Host = host;
     }
-    public override void Play(params object[] args)
+    public override void Play(params object[] args)//vector3, volume
     {
+        if (RandomBag.Count <= 0)
+            RandomBag = new List<ClipData>(Data);
         int key = UnityEngine.Random.Range(0, RandomBag.Count);
-        float vol = UnityEngine.Random.Range(-VolumeFlux, VolumeFlux);
-        float p = UnityEngine.Random.Range(MinPitch, MaxPitch);
         ClipData toPlay = Data[key];
+        float vol = toPlay.Gain;
+        if(args.Length > 0)
+            vol *= (float)args[0];//scale volume
+        vol += UnityEngine.Random.Range(-VolumeFlux, VolumeFlux);
+        float p = UnityEngine.Random.Range(MinPitch, MaxPitch);
         Action<AnopiaSourcerer> setup = (s) =>
         {
-            s.Volume += vol;
+            s.Volume = vol;
             s.Pitch = p;
         };
         if (MaxDistortion > 0)
@@ -74,15 +79,13 @@ public class anClipEffectsEvent : IanEvent
                 s.Distortion = d;
             };
         }
-        Vector3 pos = args.Length <= 0 ? Host.transform.position : (Vector3)args[0];
-        AnopiaAudioCore.PlayClipAtPoint(pos, toPlay, Output, SourcePrefab, setup);
+        Vector3 pos = args.Length < 2 ? Host.transform.position : (Vector3)args[1];
+        AnopiaAudioCore.PlayClipAtPoint(pos, toPlay.Clip, vol, Output, SourcePrefab, setup);
         RandomBag.RemoveAt(key);
-        if (RandomBag.Count <= 0)
-            RandomBag = new List<ClipData>(Data);
     }
     public override void Stop()
     {
-        throw new NotImplementedException();
+
     }
 }
 #if UNITY_EDITOR

@@ -6,9 +6,13 @@ using UnityEngine.Audio;
 public class DataCentral : ScriptableObject
 {
     public AudioMixer MainMixer;
+    public AudioMixer SfxMixer;
     public AudioMixer MusicMixer;
     public AudioMixerGroup[] MusicChannels;
     public AudioMixerGroup PlayerChannel;
     public AudioMixerGroup EnemyChannel;
+    public AudioMixerGroup EnemyCueChannel;
+    public AudioMixerGroup NonDiegetic;
     public LayerMask EnemyLayerMask;
+    public LayerMask GroundLayer;
 }

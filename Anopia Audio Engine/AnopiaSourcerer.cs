@@ -34,17 +34,27 @@ public class AnopiaSourcerer : MonoBehaviour
     }
     //TODO add more effects
     #endregion
+    void GetSourceComponent()
+    {
+        if (Source == null)
+            Source = GetComponent<AudioSource>();
+        //Source.loop = true;
+    }
     public void SetData(ClipData data)
     {
-        if(Source==null)
-           Source = GetComponent<AudioSource>();
+        GetSourceComponent();
         Source.volume = MasterVolume = data.Gain;
         Source.clip = data.Clip;
     }
+    public void SetData(AudioClip clip, float volume)
+    {
+        GetSourceComponent();
+        Source.volume = MasterVolume = volume;
+        Source.clip = clip;
+    }
     public void SetOutput(AudioMixerGroup output)
     {
-        if(Source == null)
-           Source = GetComponent<AudioSource>();
+        GetSourceComponent();
         Source.outputAudioMixerGroup = output;
     }
     public void PanToOpposite()

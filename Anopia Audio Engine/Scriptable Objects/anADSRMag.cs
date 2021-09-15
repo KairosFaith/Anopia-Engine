@@ -25,6 +25,7 @@ public class anADSREvent : IanEvent
         Release = Mag.Release;
         Sourcerer = AnopiaAudioCore.NewPointSource(host, Mag.SourcePrefab, output);
         Sourcerer.SetData(Mag.Sustain);
+        Sourcerer.Source.loop = true;
     }
     public override void Play(params object[] args)
     {

@@ -29,15 +29,17 @@ public static class AnopiaAudioCore
         IanAudioMag mag = FetchMag(SoundID);
         return mag.LoadMag(host, output);
     }
-    public static AnopiaSourcerer PlayClipAtPoint(Vector3 position, ClipData data, AudioMixerGroup output, GameObject prefab, Action<AnopiaSourcerer> setup = null)
+    public static AnopiaSourcerer PlayClipAtPoint(Vector3 position, AudioClip clip, float volume, AudioMixerGroup output, GameObject prefab, Action<AnopiaSourcerer> setup = null)
     {
         GameObject newg = UnityEngine.Object.Instantiate(prefab, position, Quaternion.identity);
         AnopiaSourcerer sourceObj = newg.AddComponent<AnopiaSourcerer>();
         sourceObj.SetOutput(output);
+        sourceObj.SetData(clip,volume);
         setup?.Invoke(sourceObj);
         sourceObj.StartCoroutine(DeleteWhenDone(sourceObj.Source, null));
         return sourceObj;
     }
+    //just in case - for specified clip
     public static AnopiaSourcerer PlayClipAtPoint(Vector3 position, string SoundId, int Key, AudioMixerGroup output)
     {
         GameObject newg = new GameObject(SoundId + " " + Key + " AudioSource", typeof(AudioSource));
@@ -69,20 +71,27 @@ public static class AnopiaAudioCore
         GameObject newg = new GameObject(host + " " + output+ " AudioSource");
         AudioSource sor = newg.AddComponent<AudioSource>();
         sor.outputAudioMixerGroup = output;
+        sor.spatialBlend = 0;
+        sor.bypassListenerEffects = true;
+        sor.bypassReverbZones = true;
+        sor.bypassEffects = true;
         return sor;
     }
     public static AnopiaSourcerer[] SetLayers(MonoBehaviour host, string SoundID, AudioMixerGroup output)
     {
-        anLayerMag mag = (anLayerMag)FetchMag(SoundID);
+        anClipMag mag = (anClipMag)FetchMag(SoundID);
         Transform t = host.transform;
+        GameObject prefab = mag.SourcePrefab;
         List<AnopiaSourcerer> layers = new List<AnopiaSourcerer>();
-        foreach(ClipLayer l in mag.Layers)
+        foreach(ClipData d in mag.Data)
         {
-            GameObject newg = UnityEngine.Object.Instantiate(l.SourcePrefab, t);
+            GameObject newg = UnityEngine.Object.Instantiate(prefab, t);
+            //newg.transform.localPosition = Vector3.zero;
             AnopiaSourcerer s = newg.AddComponent<AnopiaSourcerer>();
-            s.SetData(l.Data);
+            s.SetData(d);
             s.SetOutput(output);
             layers.Add(s);
+            s.Source.loop = true;
             s.Source.Play();
         }
         return layers.ToArray();
