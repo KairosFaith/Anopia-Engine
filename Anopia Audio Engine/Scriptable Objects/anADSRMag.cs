@@ -36,7 +36,7 @@ public class anADSREvent : IanEvent
     public override void Stop()
     {
         AudioSource s = Sourcerer.Source;
-        s.PlayOneShot(Release);
         s.Stop();
+        s.PlayOneShot(Release);
     }
 }

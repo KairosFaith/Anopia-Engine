@@ -7,12 +7,12 @@ public class anClipMag : IanAudioMag
     public GameObject SourcePrefab;
     public ClipData[] Data;
     [Range(0, 1)]
-    public float VolumeRandomisation;
+    public float VolumeFluctuation;
     public AudioClip RandomClip(out float gain)
     {
         int key = UnityEngine.Random.Range(0, Data.Length);
         ClipData d = Data[key];
-        gain = d.Gain + UnityEngine.Random.Range(-VolumeRandomisation, VolumeRandomisation);
+        gain = d.Gain + UnityEngine.Random.Range(-VolumeFluctuation, VolumeFluctuation);
         return d.Clip;
     }
     public override IanEvent LoadMag(MonoBehaviour host, AudioMixerGroup output)
@@ -32,7 +32,7 @@ public class anOneShotEvent : IanEvent
         anClipMag Mag = (anClipMag)mag;
         Data = Mag.Data;
         RandomBag = new List<ClipData>(Data);
-        VolumeFlux = Mag.VolumeRandomisation;
+        VolumeFlux = Mag.VolumeFluctuation;
         SourcePrefab = Mag.SourcePrefab;
     }
     public override void Play(params object[] args)
