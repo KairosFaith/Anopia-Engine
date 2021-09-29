@@ -27,10 +27,27 @@ public class AnopiaSourcerer : MonoBehaviour
         set
         {
             if(!DistortionEffect)
+            {
                 DistortionEffect = GetComponent<AudioDistortionFilter>();
+                //if (!DistortionEffect) DistortionEffect = gameObject.AddComponent<AudioDistortionFilter>();
+            }
             DistortionEffect.distortionLevel = value;
         }
         get => DistortionEffect.distortionLevel;
+    }
+    AudioHighPassFilter HighPassFilterEffect;
+    public float HighPass
+    {
+        set
+        {
+            if(!HighPassFilterEffect)
+            {
+                HighPassFilterEffect = GetComponent<AudioHighPassFilter>();
+                //if (!HighPassFilterEffect) HighPassFilterEffect = gameObject.AddComponent<AudioHighPassFilter>();
+            }
+            HighPassFilterEffect.cutoffFrequency = value;
+        }
+        get => HighPassFilterEffect.cutoffFrequency;
     }
     //TODO add more effects
     #endregion

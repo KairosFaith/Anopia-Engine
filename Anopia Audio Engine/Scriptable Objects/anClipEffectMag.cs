@@ -12,12 +12,17 @@ public class anClipEffectMag : anClipMag
     public float MinPitch = 1;
     [Range(1, 2)]
     public float MaxPitch = 1;
-    //TODO add more effects
-    public bool Distortion;
+    public bool UseDistortion;
     [HideInInspector]
     public float MinDistortion;
     [HideInInspector]
     public float MaxDistortion;
+    public bool UseHighPass;
+    [HideInInspector]
+    public float MinHighPass;
+    [HideInInspector]
+    public float MaxHighPass;
+    //TODO add more effects
     public override IanEvent LoadMag(MonoBehaviour host, AudioMixerGroup output)
     {
         return new anClipEffectsEvent(host, this, output);
@@ -32,9 +37,12 @@ public class anClipEffectsEvent : IanEvent
     public float MinPitch = 1;
     public float MaxPitch = 1;
     //TODO add more effects
-    public bool Distortion;
+    public bool UseDistortion;
     public float MinDistortion;
     public float MaxDistortion;
+    public bool UseHighPass;
+    public float MinHighPass;
+    public float MaxHighPass;
     AudioMixerGroup Output;
     MonoBehaviour Host;
     public anClipEffectsEvent(MonoBehaviour host, IanAudioMag mag, AudioMixerGroup output) : base(host, mag, output)
@@ -42,13 +50,19 @@ public class anClipEffectsEvent : IanEvent
         anClipEffectMag Mag = (anClipEffectMag)mag;
         Data = Mag.Data;
         SourcePrefab = Mag.SourcePrefab;
-        VolumeFlux = Mag.VolumeRandomisation;
+        VolumeFlux = Mag.VolumeFluctuation;
         MinPitch = Mag.MinPitch;
-        if (Mag.Distortion)
+        UseDistortion = Mag.UseDistortion;
+        if (UseDistortion)
         {
             MinDistortion = Mag.MinDistortion;
             MaxDistortion = Mag.MaxDistortion;
-            Distortion = Mag.Distortion;
+        }
+        UseHighPass = Mag.UseHighPass;
+        if (UseHighPass)
+        {
+            MinHighPass = Mag.MinHighPass;
+            MaxHighPass = Mag.MaxHighPass;
         }
         //TODO add more effects
         MaxPitch = Mag.MaxPitch;
@@ -71,7 +85,7 @@ public class anClipEffectsEvent : IanEvent
             s.Volume = vol;
             s.Pitch = p;
         };
-        if (MaxDistortion > 0)
+        if (UseDistortion)
         {
             float d = UnityEngine.Random.Range(MinDistortion, MaxDistortion);
             setup += (s) =>
@@ -79,6 +93,15 @@ public class anClipEffectsEvent : IanEvent
                 s.Distortion = d;
             };
         }
+        if (UseHighPass)
+        {
+            float hpass = UnityEngine.Random.Range(MinHighPass, MaxHighPass);
+            setup += (s) =>
+            {
+                s.HighPass = hpass;
+            };
+        }
+        //TODO add more effects
         Vector3 pos = args.Length < 2 ? Host.transform.position : (Vector3)args[1];
         AnopiaAudioCore.PlayClipAtPoint(pos, toPlay.Clip, vol, Output, SourcePrefab, setup);
         RandomBag.RemoveAt(key);
@@ -96,8 +119,12 @@ public class ClipEffect_Editor : Editor
     {
         DrawDefaultInspector();
         anClipEffectMag script = (anClipEffectMag)target;
-        if (script.Distortion) // if bool is true, show other fields
-            EditorGUILayout.MinMaxSlider(ref script.MinDistortion, ref script.MaxDistortion, 0,1);
+        if (script.UseDistortion) // if bool is true, show other fields
+        {
+            EditorGUILayout.MinMaxSlider(new GUIContent("Distortion Range"),ref script.MinDistortion, ref script.MaxDistortion, 0, 1);
+        }
+        if(script.UseHighPass)
+            EditorGUILayout.MinMaxSlider(new GUIContent("HighPassFilter Range"),ref script.MinDistortion, ref script.MaxDistortion, 10, 22000);
         //TODO add more effects
     }
 }
