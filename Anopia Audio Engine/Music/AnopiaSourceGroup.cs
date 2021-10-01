@@ -26,6 +26,16 @@ public class AnopiaSourceGroup : MonoBehaviour
         foreach (AudioSource a in Sources)
             a.Play();
     }
+    public void PlayScheduled(double startTime)
+    {
+        foreach (AudioSource a in Sources)
+            a.PlayScheduled(startTime);
+    }
+    public void StopScheduled(double stopTime)
+    {
+        foreach (AudioSource a in Sources)
+            a.SetScheduledEndTime(stopTime);
+    }
     public void Pause()
     {
         foreach (AudioSource a in Sources)

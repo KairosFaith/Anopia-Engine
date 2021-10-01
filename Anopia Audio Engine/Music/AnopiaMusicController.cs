@@ -23,6 +23,20 @@ public class AnopiaMusicController : SingletonMonobehavior<AnopiaMusicController
         FadeOut(time);
         NewFadeIn(MusicTag, time);
     }
+    public void ChangeMusicOnCue(string MusicTag, double transitTime)
+    {
+        CurrentMusicGroup.StopScheduled(transitTime);
+        NewGroup(MusicTag);
+        CurrentMusicGroup.PlayScheduled(transitTime);
+    }
+    public void PlayLayerOnCue(int key, double cueTime)
+    {
+        CurrentMusicGroup.Sources[key].PlayScheduled(cueTime);
+    }
+    public void StopLayerOnCue(int key, double cueTime)
+    {
+        CurrentMusicGroup.Sources[key].SetScheduledEndTime(cueTime);
+    }
     public void FadeOut(float fadeTime)
     {
         if (CurrentMusicGroup != null)
@@ -31,15 +45,18 @@ public class AnopiaMusicController : SingletonMonobehavior<AnopiaMusicController
             CurrentMusicGroup = null;
         }
     }
-    public void NewFadeIn(string newMusicTag, float fadeTime)
+    void NewGroup(string newMusicTag)
     {
         GameObject g = new GameObject();
         g.transform.position = transform.position;
         g.transform.SetParent(transform);
 
         CurrentMusicGroup = g.AddComponent<AnopiaSourceGroup>();
-
-        CurrentMusicGroup.InvokeSources(newMusicTag, Channels);//music use default
+        CurrentMusicGroup.InvokeSources(newMusicTag, Channels);
+    }
+    public void NewFadeIn(string newMusicTag, float fadeTime)
+    {
+        NewGroup(newMusicTag);
         CurrentMusicGroup.FadeIn(fadeTime);
         CurrentMusicGroup.Play();
     }
