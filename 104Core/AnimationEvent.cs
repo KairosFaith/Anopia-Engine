@@ -18,12 +18,16 @@ public class AnimationEvent : MonoBehaviour
     {
         _handler.OnAnimationEventCallback(msgtype);
     }
-    public void AnimationSpecifyClip(string ClipID)//for triggering specified clips to sync to animation
+    public void AnimationSpecifyClip(string ClipIDKey)//for triggering specified clips to sync to animation
     {
         string[] separators = new string[] {" "};
-        string[] args = ClipID.Split(separators, System.StringSplitOptions.RemoveEmptyEntries);
-        int key = int.Parse(args[1]);
-        _handler.OnAnimationEventCallback(AnimationEventType.PlayAudioClip, args[0], key);
+        string[] args = ClipIDKey.Split(separators, System.StringSplitOptions.RemoveEmptyEntries);
+        if (args.Length > 1)
+        {
+            int key = int.Parse(args[1]);
+            _handler.OnAnimationEventCallback(AnimationEventType.PlayAudioClip, args[0], key);
+        }
+
     }
 }
 public interface IAnimationEventHandler

@@ -37,7 +37,11 @@ public class anOneShotEvent : IanEvent
     }
     public override void Play(params object[] args)
     {
-        int key = UnityEngine.Random.Range(0, RandomBag.Count);
+        int key;
+        if (args.Length > 1)
+            key = (int)args[1];
+        else
+            key = UnityEngine.Random.Range(0, RandomBag.Count);
         ClipData d = Data[key];
         float vol = d.Gain;
         if (args.Length > 0)//randomise volume unless indicated in args
@@ -50,6 +54,6 @@ public class anOneShotEvent : IanEvent
     }
     public override void Stop()
     {
-
+        Sourcerer.Source.Stop();
     }
 }
