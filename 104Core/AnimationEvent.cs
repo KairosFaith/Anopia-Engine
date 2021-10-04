@@ -23,11 +23,9 @@ public class AnimationEvent : MonoBehaviour
         string[] separators = new string[] {" "};
         string[] args = ClipIDKey.Split(separators, System.StringSplitOptions.RemoveEmptyEntries);
         if (args.Length > 1)
-        {
-            int key = int.Parse(args[1]);
-            _handler.OnAnimationEventCallback(AnimationEventType.PlayAudioClip, args[0], key);
-        }
-
+            _handler.OnAnimationEventCallback(AnimationEventType.PlayAudioClip, args[0], int.Parse(args[1]));
+        else
+            _handler.OnAnimationEventCallback(AnimationEventType.PlayAudioClip, args[0]);
     }
 }
 public interface IAnimationEventHandler
