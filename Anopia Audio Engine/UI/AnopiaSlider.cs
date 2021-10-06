@@ -13,6 +13,7 @@ public class AnopiaSlider : Slider
     ClipData Drag;
     ClipData Up;
     ClipData Exit;
+    bool isPressed;
     protected override void Start()
     {
         Source = GetComponent<AudioSource>();
@@ -27,21 +28,25 @@ public class AnopiaSlider : Slider
     }
     public override void OnPointerEnter(PointerEventData eventData)
     {
-        Source.PlayOneShot(Enter);
+        if (!isPressed)
+            Source.PlayOneShot(Enter);
         base.OnPointerEnter(eventData);
     }
     public override void OnPointerDown(PointerEventData eventData)
     {
         Source.PlayOneShot(Down);
+        isPressed = true;
         base.OnPointerDown(eventData);
     }
     public override void OnPointerUp(PointerEventData eventData)
     {
         Source.PlayOneShot(Up);
+        isPressed = false;
         base.OnPointerUp(eventData);
     }
     public override void OnPointerExit(PointerEventData eventData)
     {
+        if(!isPressed)
         Source.PlayOneShot(Exit);
         base.OnPointerExit(eventData);
     }

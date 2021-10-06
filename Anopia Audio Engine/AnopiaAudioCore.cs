@@ -116,7 +116,7 @@ public static class AnopiaAudioCore
     static IEnumerator DeleteWhenDone(AudioSource source, Action onDone = null)
     {
         source.Play();
-        yield return new WaitForSecondsRealtime(source.clip.length);
+        yield return new WaitForSeconds(source.clip.length);
         while (source.isPlaying)
             yield return new WaitForEndOfFrame();
         onDone?.Invoke();
@@ -125,7 +125,7 @@ public static class AnopiaAudioCore
     public static IEnumerator PanToOpposite(AudioSource source)
     {
         float elapsedTime = 0, startVal = source.panStereo, EffectTime = source.clip.length;
-        for (; elapsedTime < EffectTime; elapsedTime += Time.unscaledDeltaTime)
+        for (; elapsedTime < EffectTime; elapsedTime += Time.deltaTime)
         {
             source.panStereo = Mathf.Lerp(startVal, -startVal, elapsedTime / EffectTime);
             yield return new WaitForEndOfFrame();
