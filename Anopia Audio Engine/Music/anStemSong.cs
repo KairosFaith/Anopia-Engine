@@ -46,12 +46,14 @@ public class anStemSong : IanSong
     public void Setup(MonoBehaviour host, IanMusicMag mag, AudioMixerGroup[] busses)
     {
         anStemMusicMag Mag = (anStemMusicMag)mag;
-        Dictionary<AudioMixerGroup, AudioClip> stems = Mag.GetStems();
-        foreach(KeyValuePair<AudioMixerGroup, AudioClip> p in stems)
+        Dictionary<AudioMixerGroup, StemData> stems = Mag.GetStems();
+        foreach(KeyValuePair<AudioMixerGroup, StemData> p in stems)
         {
             AnopiaSourcerer s = AnopiaAudioCore.NewStereoSource(this, p.Key);
             AudioSource a = s.Source;
-            a.clip = p.Value;
+            StemData data = p.Value;
+            a.clip = data.Clip;
+            a.panStereo = data.Pan;
             a.volume = 1;
             a.loop = true;
             SourceHandlers.Add(s);

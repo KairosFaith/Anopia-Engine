@@ -7,11 +7,11 @@ public class anStemMusicMag : IanMusicMag
 {
     public override SongForm Structure => SongForm.Stem;
     public StemData[] Stems;
-    public Dictionary<AudioMixerGroup,AudioClip> GetStems()
+    public Dictionary<AudioMixerGroup, StemData> GetStems()
     {
-        Dictionary<AudioMixerGroup, AudioClip> references = new Dictionary<AudioMixerGroup, AudioClip>();
+        Dictionary<AudioMixerGroup, StemData> references = new Dictionary<AudioMixerGroup, StemData>();
         foreach (StemData s in Stems)
-            references.Add(s.Channel, s.Clip);
+            references.Add(s.Channel, s);
         return references;
     }
 }
@@ -20,4 +20,6 @@ public class StemData
 {
     public AudioMixerGroup Channel;
     public AudioClip Clip;
+    [Range(-1,1)]
+    public float Pan;
 }
