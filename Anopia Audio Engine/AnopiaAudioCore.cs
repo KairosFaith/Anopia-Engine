@@ -36,7 +36,9 @@ public static class AnopiaAudioCore
         sourceObj.SetOutput(output);
         sourceObj.SetData(clip,volume);
         setup?.Invoke(sourceObj);
-        sourceObj.StartCoroutine(DeleteWhenDone(sourceObj.Source, null));
+        AudioSource a = sourceObj.Source;
+        a.Play();
+        sourceObj.StartCoroutine(DeleteWhenDone(a));
         return sourceObj;
     }
     //just in case - for specified clip
@@ -47,16 +49,27 @@ public static class AnopiaAudioCore
         sourceObj.SetOutput(output);
         ClipData d = FetchData(SoundId, Key);
         sourceObj.SetData(d);
-        sourceObj.StartCoroutine(DeleteWhenDone(sourceObj.Source, null));
+        AudioSource a = sourceObj.Source;
+        a.Play();
+        sourceObj.StartCoroutine(DeleteWhenDone(a));
         return sourceObj;
     }
     public static AnopiaSourcerer PlayClipAtStereo(MonoBehaviour host, ClipData data, AudioMixerGroup output, float panStereo = 0,Action OnDone = null)
     {
-        AudioSource a = NewStereoSource(host, output);
-        AnopiaSourcerer sourceObj = a.gameObject.AddComponent<AnopiaSourcerer>();
-        sourceObj.Source = a;
+        AnopiaSourcerer sourceObj = NewStereoSource(output);
+        AudioSource a = sourceObj.Source;
         a.panStereo = panStereo;
+        a.clip = data.Clip;
+        a.volume = data.Gain;
+        a.Play();
         sourceObj.StartCoroutine(DeleteWhenDone(a, OnDone));
+        return sourceObj;
+    }
+    public static AnopiaSourcerer PlayClipScheduled(MonoBehaviour host, AudioClip clip, double startTime, AudioMixerGroup output)
+    {
+        AnopiaSourcerer sourceObj = NewStereoSource(output);
+        sourceObj.PlayScheduled(clip, startTime);
+        sourceObj.StartCoroutine(DeleteWhenDone(sourceObj.Source, startTime+clip.length));
         return sourceObj;
     }
     public static AnopiaSourcerer NewPointSource(MonoBehaviour host, GameObject prefab, AudioMixerGroup output)
@@ -66,16 +79,25 @@ public static class AnopiaAudioCore
         s.SetOutput(output);
         return s;
     }
-    public static AudioSource NewStereoSource(MonoBehaviour host, AudioMixerGroup output)
+    public static AnopiaSourcerer NewStereoSource(MonoBehaviour host, AudioMixerGroup output)
     {
-        GameObject newg = new GameObject(host + " " + output+ " AudioSource");
+        AnopiaSourcerer sor = NewStereoSource(output);
+        sor.transform.SetParent(host.transform);
+        return sor;
+    }
+    public static AnopiaSourcerer NewStereoSource(AudioMixerGroup output)
+    {
+        GameObject newg = new GameObject(output+ " AudioSource");
         AudioSource sor = newg.AddComponent<AudioSource>();
         sor.outputAudioMixerGroup = output;
         sor.spatialBlend = 0;
         sor.bypassListenerEffects = true;
         sor.bypassReverbZones = true;
         sor.bypassEffects = true;
-        return sor;
+        sor.ignoreListenerPause = true;//TODO IgnoreListenerPause is Game Dependent
+        AnopiaSourcerer sourceObj = sor.gameObject.AddComponent<AnopiaSourcerer>();
+        sourceObj.Source = sor;
+        return sourceObj;
     }
     public static AnopiaSourcerer[] SetLayers(MonoBehaviour host, string SoundID, AudioMixerGroup output)
     {
@@ -113,17 +135,32 @@ public static class AnopiaAudioCore
         mixer.TransitionToSnapshots(ss, w, TimeToReach);
         //the weight is nonsense, dun mess with it
     }
-    static IEnumerator DeleteWhenDone(AudioSource source, Action onDone = null)
+    public static IEnumerator DeleteWhenDone(AudioSource source, Action onDone = null)
     {
-        source.Play();
         yield return new WaitForSeconds(source.clip.length);
-        while (source.isPlaying)
+        while (source.isPlaying&&!AudioListener.pause)
             yield return new WaitForEndOfFrame();
         onDone?.Invoke();
         UnityEngine.Object.Destroy(source.gameObject);
     }
-    public static IEnumerator PanToOpposite(AudioSource source)
+    public static IEnumerator DeleteWhenDone(AudioSource source, double stopTime)
     {
+        while ((AudioSettings.dspTime< stopTime) || source.isPlaying)
+            yield return new WaitForEndOfFrame();
+        UnityEngine.Object.Destroy(source.gameObject);
+    }
+    public static IEnumerator FadeValue(float fadeTime, float startingValue, float targetValue, Action<float> ChangeValue, Action ondone = null)
+    {
+        for (float lerp = 0; lerp < 1; lerp += Time.unscaledDeltaTime / fadeTime)
+        {
+            float newValue = Mathf.Lerp(startingValue, targetValue, lerp);
+            ChangeValue(newValue);
+            yield return new WaitForEndOfFrame();
+        }
+        ondone?.Invoke();
+    }
+    public static IEnumerator PanToOpposite(AudioSource source)
+    {//remove soon if not using
         float elapsedTime = 0, startVal = source.panStereo, EffectTime = source.clip.length;
         for (; elapsedTime < EffectTime; elapsedTime += Time.deltaTime)
         {

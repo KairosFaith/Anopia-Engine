@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Audio;
 [CreateAssetMenu(fileName = "SliderMag", menuName = "AnopiaEngine/Slider", order = 6)]

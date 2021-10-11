@@ -90,4 +90,16 @@ public class AnopiaSourcerer : MonoBehaviour
         ClipData d = AnopiaAudioCore.FetchData(SoundId, key);
         Source.PlayOneShot(d);
     }
+    public void PlayScheduled(AudioClip clip, double timeCode)
+    {
+        Source.clip = clip;
+        Source.PlayScheduled(timeCode);
+    }
+    public void StopScheduled(double timeCode, bool toDelete = false)
+    {
+        Source.SetScheduledEndTime(timeCode);
+        Source.loop = false;
+        if (toDelete)
+            StartCoroutine(AnopiaAudioCore.DeleteWhenDone(Source,timeCode));
+    }
 }
