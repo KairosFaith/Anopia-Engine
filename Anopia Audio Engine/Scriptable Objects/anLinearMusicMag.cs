@@ -5,11 +5,13 @@ public class anLinearMusicMag : IanMusicMag
 {
     public AudioClip Intro,MainSection;
     public SongSection[] Sections;
+    public SongSection Final;
     public override SongForm Structure =>SongForm.Linear;
 }
 [Serializable]
 public class SongSection
 {
-    public AudioClip Stinger, Loop;//stinger should be 1 bar max
+    public AudioClip Stinger, Loop;
+    //stingers should be at most 1 bar before new section
     public int BeatTostart;
 }

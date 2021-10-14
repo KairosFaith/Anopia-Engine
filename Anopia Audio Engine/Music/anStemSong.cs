@@ -9,14 +9,10 @@ public class anStemSong : IanSong
     {
         Action<float> ChangeValue = null;
         foreach (AnopiaSourcerer s in SourceHandlers)
-        {
-            void Fade(float v)
-            {
+            ChangeValue += (float v) =>
                 s.Source.volume = v;
-            };
-            ChangeValue += Fade;
-        }
-        StartCoroutine(AnopiaAudioCore.FadeValue(t, 1, 0, ChangeValue, ondone+=()=>Destroy(gameObject) ));
+        ondone += () => Destroy(gameObject);
+        StartCoroutine(AnopiaAudioCore.FadeValue(t, 1, 0, ChangeValue, ondone));
     }
     public override void Play(double startTime)
     {
@@ -34,13 +30,8 @@ public class anStemSong : IanSong
     {
         Action<float> ChangeValue = null;
         foreach (AnopiaSourcerer s in SourceHandlers)
-        {
-            void Fade(float v)
-            {
+            ChangeValue += (float v) =>
                 s.Source.volume = v;
-            };
-            ChangeValue += Fade;
-        }
         StartCoroutine(AnopiaAudioCore.FadeValue(t, 0, 1, ChangeValue));
     }
     public void Setup(MonoBehaviour host, IanMusicMag mag, AudioMixerGroup[] busses)
@@ -63,7 +54,6 @@ public class anStemSong : IanSong
     {
         Destroy(gameObject);
     }
-
     public override void Pause()
     {
         foreach (AnopiaSourcerer s in SourceHandlers)
@@ -73,5 +63,10 @@ public class anStemSong : IanSong
     {
         foreach (AnopiaSourcerer s in SourceHandlers)
             s.Source.UnPause();
+    }
+    public override void Mute(bool toMute)
+    {
+        foreach (AnopiaSourcerer s in SourceHandlers)
+            s.Source.mute = toMute;
     }
 }

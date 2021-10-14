@@ -2,20 +2,27 @@ using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.Audio;
-public delegate void ClickFunction(double time);
-public delegate void TriggerDelegate();
+public delegate void BeatFunc(int beatCount, double timeCode);
+public delegate void BarFunc(double timeCode);
 public static class AnopiaSynchro//this is your new update engine
 {
+    public const string BeatEvent = "OnBeat";
+    public const string BarEvent = "OnBar";
+    public const string OnSynchroStop = "OnSynchroStop";
+    public static BeatFunc PlayOnBeat;
+    public static BarFunc PlayOnBar;// to schedule sounds
     public static TempoData Tempo;
     static bool isPlaying;
     static double StartTime;
-    public static int BeatCount => _BeatCount;
+    public static int CurrentBeatCount => _BeatCount;
+    public static int NextBeatCount => scheduleBeat;
     public static double NextBeat => _NextBeat;
     public static double NextBar => _NextBar;
+    static int scheduleBeat;
     static int _BeatCount = 0;
     static double _NextBeat,_NextBar;
-    public static ClickFunction PlayOnBeat, PlayOnBar;// to schedule sounds
-    public static TriggerDelegate OnBeat, OnBar, Unschedule;//for anything else
+    // to schedule sounds
+    static MonoBehaviour SynchroHost;
     public static void StartSynchro(MonoBehaviour host, TempoData tempo, Action<double>OnStart = null)
     {
         isPlaying = true;
@@ -23,37 +30,46 @@ public static class AnopiaSynchro//this is your new update engine
         StartTime = AudioSettings.dspTime + Time.deltaTime;//start next frame
         host.StartCoroutine(Synchro(StartTime));
         OnStart?.Invoke(StartTime);
+        SynchroHost = host;
     }
     public static void StopSynchro(MonoBehaviour host)
     {
         host.StopAllCoroutines();
+        isPlaying = false;
+        scheduleBeat = 0;
+        _BeatCount = 0;
     }
     static IEnumerator Synchro(double startTime)
     {
-        PlayOnBeat?.Invoke(startTime);
+        _BeatCount = 1;
+        scheduleBeat =1;
+        PlayOnBeat?.Invoke(scheduleBeat, startTime);
         PlayOnBar?.Invoke(startTime);
-        OnBeat?.Invoke();
-        OnBar?.Invoke();
+        Core.BroadcastEvent(BeatEvent, SynchroHost, _BeatCount);
+        Core.BroadcastEvent(BarEvent, SynchroHost);
         _NextBeat = startTime + Tempo.BeatLength;
         _NextBar = startTime + Tempo.BarLength;
-        _BeatCount = 1;
-        PlayOnBeat?.Invoke(_NextBeat);
+        scheduleBeat++;
+        PlayOnBeat?.Invoke(scheduleBeat, _NextBeat);
         PlayOnBar?.Invoke(_NextBar);
         void Beat()
         {
-            _NextBeat += Tempo.BeatLength;
             _BeatCount++;
-            PlayOnBeat?.Invoke(_NextBeat);
-            if (_BeatCount > Tempo.BeatsPerBar)
-                Bar();
-            OnBeat?.Invoke();
-        };
-        void Bar()
-        {
-            _NextBar += Tempo.BarLength;
-            _BeatCount = 1;
-            PlayOnBar?.Invoke(_NextBar);
-            OnBar?.Invoke();
+            if(_BeatCount> Tempo.BeatsPerBar)
+            {
+                _BeatCount = 1;
+                Core.BroadcastEvent(BarEvent, SynchroHost);
+            }
+            Core.BroadcastEvent(BeatEvent, SynchroHost, _BeatCount);
+            _NextBeat += Tempo.BeatLength;
+            scheduleBeat++;
+            if (scheduleBeat > Tempo.BeatsPerBar)
+            {
+                _NextBar += Tempo.BarLength;
+                PlayOnBar?.Invoke(_NextBar);
+                scheduleBeat = 1;
+            }
+            PlayOnBeat?.Invoke(scheduleBeat, _NextBeat);
         };
         while (isPlaying)
         {
@@ -61,8 +77,9 @@ public static class AnopiaSynchro//this is your new update engine
             if (AudioSettings.dspTime > _NextBeat)
                 Beat();
         }
-        Unschedule?.Invoke();
+        Core.BroadcastEvent(OnSynchroStop, SynchroHost);
         _BeatCount = 0;
+        scheduleBeat = 0;
     }
 }
 public enum BarValue
@@ -105,4 +122,5 @@ public abstract class IanSong : MonoBehaviour
     //WARNING Pausing and unpausing will mess up the Synchro!!!!
     public abstract void Pause();
     public abstract void UnPause();
+    public abstract void Mute(bool toMute);
 }

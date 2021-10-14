@@ -10,7 +10,6 @@ public class anLinearSong : IanSong
     {
         Output = output;
         Mag = (anLinearMusicMag)mag;
-        NewSource();
     }
     void NewSource()
     {
@@ -26,6 +25,7 @@ public class anLinearSong : IanSong
             introLength = introClip.length;
             AnopiaAudioCore.PlayClipScheduled(this, introClip, startTime, Output);
         }
+        NewSource();
         CurrentMainSource.PlayScheduled(Mag.MainSection, startTime + introLength);
     }
     public void ChangeSectionImmediate(int key)
@@ -39,6 +39,10 @@ public class anLinearSong : IanSong
     public void CueSection(int key)
     {
         SongSection toPlay = Mag.Sections[key];
+        CueSection(toPlay);
+    }
+    void CueSection(SongSection toPlay)
+    {
         void NextSong(double timeCode)
         {
             CurrentMainSource.StopScheduled(timeCode, true);
@@ -47,19 +51,46 @@ public class anLinearSong : IanSong
         };
         if (toPlay.Stinger != null)
         {
-            void PlayStinger(double timeCode)
+            void PlayStinger(int beatcount, double timeCode)
             {
-                double startSongTime = AnopiaSynchro.NextBar;
-                int beatToCheck = toPlay.BeatTostart - 1;
-                if (beatToCheck == 0)
-                {
-                    beatToCheck = AnopiaSynchro.Tempo.BeatsPerBar;
-                    startSongTime += AnopiaSynchro.Tempo.BarLength;
-                }
-                if (AnopiaSynchro.BeatCount == beatToCheck)
+                if (beatcount == toPlay.BeatTostart)
                 {
                     AnopiaAudioCore.PlayClipScheduled(this, toPlay.Stinger, timeCode, Output);
-                    NextSong(startSongTime);
+                    NextSong(AnopiaSynchro.NextBar);
+                    AnopiaSynchro.PlayOnBeat -= PlayStinger;
+                }
+            };
+            AnopiaSynchro.PlayOnBeat += PlayStinger;
+        }
+        else
+            NextSong(AnopiaSynchro.NextBar);
+    }
+    public void CueFinal()
+    {
+        SongSection toPlay = Mag.Final;
+        void NextSong(double timeCode)
+        {
+            CurrentMainSource.StopScheduled(timeCode, true);
+            CurrentMainSource = AnopiaAudioCore.NewStereoSource(this, Output);
+            CurrentMainSource.PlayScheduled(toPlay.Loop, timeCode); 
+            AudioSource a = CurrentMainSource.Source;
+            a.loop = false;
+            transform.DetachChildren();
+            Destroy(gameObject);
+            void onDone()
+            {
+                AnopiaSynchro.StopSynchro(AnopiaConductor.Instance);
+            };
+            CurrentMainSource.StartCoroutine(AnopiaAudioCore.DeleteWhenDone(a, onDone));
+        };
+        if (toPlay.Stinger != null)
+        {
+            void PlayStinger(int beatcount, double timeCode)
+            {
+                if (beatcount == toPlay.BeatTostart)
+                {
+                    AnopiaAudioCore.PlayClipScheduled(this, toPlay.Stinger, timeCode, Output);
+                    NextSong(AnopiaSynchro.NextBar);
                     AnopiaSynchro.PlayOnBeat -= PlayStinger;
                 }
             };
@@ -86,7 +117,8 @@ public class anLinearSong : IanSong
         {
             s.volume = v;
         };
-        StartCoroutine(AnopiaAudioCore.FadeValue(t, 1, 0, Fade, ondone += () => Destroy(gameObject) ));
+        ondone += () => Destroy(gameObject);
+        StartCoroutine(AnopiaAudioCore.FadeValue(t, 1, 0, Fade, ondone));
     }
     public override void Pause()
     {
@@ -99,5 +131,9 @@ public class anLinearSong : IanSong
     public override void FadeIn(float t)
     {
         throw new NotImplementedException("Fade in not available for Linear Intro Song");
+    }
+    public override void Mute(bool toMute)
+    {
+        CurrentMainSource.Source.mute = toMute;
     }
 }

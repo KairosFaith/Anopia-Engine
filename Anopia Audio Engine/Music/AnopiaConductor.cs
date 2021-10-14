@@ -1,12 +1,27 @@
+using System.Reflection;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Audio;
-public class AnopiaConductor : MonoBehaviour
+public class AnopiaConductor : SingletonMonobehavior<AnopiaConductor>
 {
     IanSong CurrentSong;
+    public int CurrentBeat;
     //static set through datacore
-    public static AudioMixerGroup MainChannel;
-    public static AudioMixer MusicMixer;//for snapshots
-    public static AudioMixerGroup[] StemChannels;//for using stems
+    public AudioMixerGroup MainChannel;
+    public AudioMixer MusicMixer;//for snapshots
+    public AudioMixerGroup[] StemChannels;//for using stems
+    protected override void Awake()
+    {
+        base.Awake();
+    }
+    protected override void OnDestroy()
+    {
+        base.OnDestroy();
+    }
+    private void Update()
+    {
+        CurrentBeat = AnopiaSynchro.CurrentBeatCount;
+    }
     public IanSong PlayNewSong(string songID)//play immediate
     {
         if (CurrentSong != null)
@@ -27,15 +42,15 @@ public class AnopiaConductor : MonoBehaviour
         NewSong(mag);
         CurrentSong.Play(timeCode);
     }
-    public void ChangeSection(int key)
-    {//stinger is not played
-        if (CurrentSong is anLinearSong ls)
-            ls.ChangeSectionImmediate(key);
-    }
     public void CueSection(int key)
     {
         if (CurrentSong is anLinearSong ls)
             ls.CueSection(key);
+    }
+    public void CueFinal()
+    {
+        if (CurrentSong is anLinearSong ls)
+            ls.CueFinal();
     }
     void NewSong(IanMusicMag mag)
     {
@@ -81,25 +96,41 @@ public class AnopiaConductor : MonoBehaviour
     {
         MusicMixer.TransitionToSnapshot(snapshot, time);
     }
-    #region Pause/Interrupt Functions
-    //WARNING Pausing and unpausing will mess up the Synchro!!!!
-    //Or any playscheduled sounds
-    //Use At Own Risk
-    public void Pause()
+    public void Mute(bool toMute)
     {
-        CurrentSong.Pause();
+        CurrentSong.Mute(toMute);
     }
-    public void UnPause()
+    public void Interrupt(string IDtag, int key, float panStereo = 0)
     {
-        CurrentSong.UnPause();
-    }
-    public void Interrupt(string IDtag,int key,float panStereo = 0)
-    {
-        Pause();
+        Mute(true);
         anClipMag mag = (anClipMag)AnopiaAudioCore.FetchMag(IDtag);//Use Clip Mag
         ClipData[] array = mag.Data;
         ClipData c = array[key];
-        AnopiaAudioCore.PlayClipAtStereo(this, c, MainChannel, panStereo, ()=>UnPause());
+        AnopiaAudioCore.PlayClipAtStereo(this, c, MainChannel, panStereo, () => Mute(false));
+    }
+    #region Pause Interrupt Functions (Use At Own Risk)
+    //WARNING Pausing and unpausing does not stop DSP Time!!!!
+    //synchro will no longer align
+    public void ChangeSection(int key)
+    {//immediate stinger is not played
+        if (CurrentSong is anLinearSong ls)
+            ls.ChangeSectionImmediate(key);
+        //TODO restart synchro?
+    }
+    public void Pause(bool toPause)
+    {
+        if(toPause)
+           CurrentSong.Pause();
+        else
+            CurrentSong.UnPause();
+    }
+    public void InterruptPause(string IDtag,int key,float panStereo = 0)
+    {
+        Pause(true);
+        anClipMag mag = (anClipMag)AnopiaAudioCore.FetchMag(IDtag);//Use Clip Mag
+        ClipData[] array = mag.Data;
+        ClipData c = array[key];
+        AnopiaAudioCore.PlayClipAtStereo(this, c, MainChannel, panStereo, ()=>Pause(false));
     }
     #endregion
 }

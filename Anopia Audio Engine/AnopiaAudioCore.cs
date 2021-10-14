@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Reflection;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Audio;
@@ -8,7 +9,8 @@ public static class AnopiaAudioCore
     static Dictionary<string, IanAudioMag> _SoundBank = new Dictionary<string, IanAudioMag>();
     static AnopiaAudioCore()
     {
-        IanAudioMag[] m = Resources.LoadAll<IanAudioMag>("AudioMags");
+        string FilePath = "AudioMags";
+        IanAudioMag[] m = Resources.LoadAll<IanAudioMag>(FilePath);
         foreach (IanAudioMag b in m)
             _SoundBank.Add(b.name, b);
     }
@@ -160,7 +162,7 @@ public static class AnopiaAudioCore
         ondone?.Invoke();
     }
     public static IEnumerator PanToOpposite(AudioSource source)
-    {//remove soon if not using
+    {//TODO remove soon if not using
         float elapsedTime = 0, startVal = source.panStereo, EffectTime = source.clip.length;
         for (; elapsedTime < EffectTime; elapsedTime += Time.deltaTime)
         {
