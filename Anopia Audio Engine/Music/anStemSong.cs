@@ -11,7 +11,11 @@ public class anStemSong : IanSong
         foreach (AnopiaSourcerer s in SourceHandlers)
             ChangeValue += (float v) =>
                 s.Source.volume = v;
-        ondone += () => Destroy(gameObject);
+        ondone += () =>
+        {
+            Destroy(gameObject);
+            AnopiaSynchro.StopSynchro(AnopiaConductor.Instance);
+        };
         StartCoroutine(AnopiaAudioCore.FadeValue(t, 1, 0, ChangeValue, ondone));
     }
     public override void Play(double startTime)
@@ -53,6 +57,7 @@ public class anStemSong : IanSong
     public override void StopImmediate()
     {
         Destroy(gameObject);
+        AnopiaSynchro.StopSynchro(AnopiaConductor.Instance);
     }
     public override void Pause()
     {

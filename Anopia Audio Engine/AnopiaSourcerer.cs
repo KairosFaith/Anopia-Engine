@@ -98,7 +98,6 @@ public class AnopiaSourcerer : MonoBehaviour
     public void StopScheduled(double timeCode, bool toDelete = false)
     {
         Source.SetScheduledEndTime(timeCode);
-        Source.loop = false;
         if (toDelete)
             StartCoroutine(AnopiaAudioCore.DeleteWhenDone(Source,timeCode));
     }

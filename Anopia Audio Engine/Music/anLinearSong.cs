@@ -104,11 +104,13 @@ public class anLinearSong : IanSong
         CurrentMainSource.StopScheduled(stopTime,true);//this will destroy the source after it has finished playing
         transform.DetachChildren();
         Destroy(gameObject);
+        AnopiaSynchro.StopSynchro(AnopiaConductor.Instance);
     }
     public override void StopImmediate()
     {
         CurrentMainSource.Source.Stop();
-        Destroy(gameObject);
+        Destroy(gameObject); 
+        AnopiaSynchro.StopSynchro(AnopiaConductor.Instance);
     }
     public override void FadeOut(float t, Action ondone = null)
     {
@@ -117,7 +119,11 @@ public class anLinearSong : IanSong
         {
             s.volume = v;
         };
-        ondone += () => Destroy(gameObject);
+        ondone += () => 
+        { 
+            Destroy(gameObject);
+            AnopiaSynchro.StopSynchro(AnopiaConductor.Instance);
+        };
         StartCoroutine(AnopiaAudioCore.FadeValue(t, 1, 0, Fade, ondone));
     }
     public override void Pause()

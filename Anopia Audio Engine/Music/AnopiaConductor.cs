@@ -79,10 +79,12 @@ public class AnopiaConductor : SingletonMonobehavior<AnopiaConductor>
     }
     public void FadeOut(float t)
     {
-        CurrentSong.FadeOut(t);
+        CurrentSong.FadeOut(t); 
+        AnopiaSynchro.StopSynchro(this);
     }
     public void FadeChange(string newSongID,float t)
     {
+        AnopiaSynchro.StopSynchro(this);
         void afterFadeOut()
         {
             CurrentSong.FadeIn(t);
@@ -115,17 +117,20 @@ public class AnopiaConductor : SingletonMonobehavior<AnopiaConductor>
     {//immediate stinger is not played
         if (CurrentSong is anLinearSong ls)
             ls.ChangeSectionImmediate(key);
-        //TODO restart synchro?
+        //TODO restart synchro? 
+        AnopiaSynchro.StopSynchro(this);
     }
     public void Pause(bool toPause)
     {
-        if(toPause)
+        AnopiaSynchro.StopSynchro(this);
+        if (toPause)
            CurrentSong.Pause();
         else
             CurrentSong.UnPause();
     }
     public void InterruptPause(string IDtag,int key,float panStereo = 0)
     {
+        AnopiaSynchro.StopSynchro(this);
         Pause(true);
         anClipMag mag = (anClipMag)AnopiaAudioCore.FetchMag(IDtag);//Use Clip Mag
         ClipData[] array = mag.Data;
