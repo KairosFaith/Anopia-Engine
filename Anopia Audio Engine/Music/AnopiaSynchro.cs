@@ -119,8 +119,5 @@ public abstract class IanSong : MonoBehaviour
     public abstract void Play(double startTime);
     public abstract void FadeIn(float t);
     public abstract void FadeOut(float t, Action ondone = null);
-    //WARNING Pausing and unpausing will mess up the Synchro!!!!
-    public abstract void Pause();
-    public abstract void UnPause();
     public abstract void Mute(bool toMute);
 }

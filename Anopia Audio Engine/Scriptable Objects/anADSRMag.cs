@@ -5,9 +5,11 @@ public class anADSRMag : IanAudioMag
 {
     //sustain gain affects attack and release too
     public GameObject SourcePrefab;
-    public ClipData Attack;
-    public ClipData Sustain;
-    public ClipData Release;
+    public AudioClip Attack;
+    public AudioClip Sustain;
+    public AudioClip Release;
+    [Range(0, 1)]
+    public float Gain = 1;
     public override IanEvent LoadMag(MonoBehaviour host, AudioMixerGroup output)
     {
         return new anADSREvent(host, this, output);
@@ -15,28 +17,35 @@ public class anADSRMag : IanAudioMag
 }
 public class anADSREvent : IanEvent
 {
-    public ClipData Attack;
-    public ClipData Release;
+    public AudioClip Attack;
+    public AudioClip Release;
     public AnopiaSourcerer Sourcerer;
     public anADSREvent(MonoBehaviour host, IanAudioMag mag, AudioMixerGroup output) : base(host, mag, output)
     {
         anADSRMag Mag = (anADSRMag)mag;
         Attack = Mag.Attack;
         Release = Mag.Release;
-        Sourcerer = AnopiaAudioCore.NewPointSource(host, Mag.SourcePrefab, output);
-        Sourcerer.SetData(Mag.Sustain);
-        Sourcerer.Source.loop = true;
+        GameObject newg = UnityEngine.Object.Instantiate(Mag.SourcePrefab, host.transform);
+        Sourcerer = newg.GetComponent<AnopiaSourcerer>();
+        AudioSource a = Sourcerer.audioSource;
+        a.clip = Mag.Sustain;
+        a.volume = Mag.Gain;
+        a.loop = true;
     }
     public override void Play(params object[] args)
     {
-        AudioSource s = Sourcerer.Source;
+        AudioSource s = Sourcerer.audioSource;
         s.PlayOneShot(Attack);
         s.Play();
     }
     public override void Stop()
     {
-        AudioSource s = Sourcerer.Source;
+        AudioSource s = Sourcerer.audioSource;
         s.Stop();
         s.PlayOneShot(Release);
+    }
+    public override void PlayScheduled(double timecode, params object[] args)
+    {
+        throw new System.NotImplementedException();
     }
 }

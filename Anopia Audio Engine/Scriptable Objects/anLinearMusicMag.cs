@@ -6,6 +6,7 @@ public class anLinearMusicMag : IanMusicMag
     public AudioClip Intro,MainSection;
     public SongSection[] Sections;
     public SongSection Final;
+    public GameObject LoopPrefab, OneShotPrefab;
     public override SongForm Structure =>SongForm.Linear;
 }
 [Serializable]

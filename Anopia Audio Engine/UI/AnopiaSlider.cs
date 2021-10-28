@@ -1,5 +1,3 @@
-using UnityEngine.Audio;
-using UnityEngine.Events;
 using UnityEngine.EventSystems;
 using UnityEngine;
 using UnityEngine.UI;
@@ -29,25 +27,25 @@ public class AnopiaSlider : Slider
     public override void OnPointerEnter(PointerEventData eventData)
     {
         if (!isPressed)
-            Source.PlayOneShot(Enter);
+            Source.PlayOneShot(Enter.Clip,Enter.Gain);
         base.OnPointerEnter(eventData);
     }
     public override void OnPointerDown(PointerEventData eventData)
     {
-        Source.PlayOneShot(Down);
+        Source.PlayOneShot(Down.Clip, Down.Gain);
         isPressed = true;
         base.OnPointerDown(eventData);
     }
     public override void OnPointerUp(PointerEventData eventData)
     {
-        Source.PlayOneShot(Up);
+        Source.PlayOneShot(Up.Clip,Up.Gain);
         isPressed = false;
         base.OnPointerUp(eventData);
     }
     public override void OnPointerExit(PointerEventData eventData)
     {
         if(!isPressed)
-        Source.PlayOneShot(Exit);
+        Source.PlayOneShot(Exit.Clip,Exit.Gain);
         base.OnPointerExit(eventData);
     }
 }

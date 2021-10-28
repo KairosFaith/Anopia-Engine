@@ -5,9 +5,10 @@ using UnityEngine.Audio;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
-[CreateAssetMenu(fileName = "OneShotEffectMag", menuName = "AnopiaEngine/OneShotEffect", order = 2)]
+[CreateAssetMenu(fileName = "ClipEffectMag", menuName = "AnopiaEngine/ClipEffect", order = 2)]
 public class anClipEffectMag : anClipMag
 {
+    public GameObject SourcePrefab;
     [Range(0, 1)]
     public float MinPitch = 1;
     [Range(1, 2)]
@@ -69,28 +70,29 @@ public class anClipEffectsEvent : IanEvent
         Output = output;
         Host = host;
     }
-    public override void Play(params object[] args)//vector3, volume
+    void SetupPlay(out int key, out Vector3 pos, out AudioClip clip, out float vol, out Action<AnopiaSourcerer> setup, params object[] args)
     {
         if (RandomBag.Count <= 0)
             RandomBag = new List<ClipData>(Data);
-        int key = UnityEngine.Random.Range(0, RandomBag.Count);
+        key = UnityEngine.Random.Range(0, RandomBag.Count);
         ClipData toPlay = Data[key];
-        float vol = toPlay.Gain;
-        if(args.Length > 0)
+        clip = toPlay.Clip;
+        vol = toPlay.Gain;
+        if (args.Length > 0)
             vol *= (float)args[0];//scale volume
         vol += UnityEngine.Random.Range(-VolumeFlux, VolumeFlux);
         float p = UnityEngine.Random.Range(MinPitch, MaxPitch);
-        Action<AnopiaSourcerer> setup = (s) =>
+        setup = (s) =>
         {
-            s.Volume = vol;
-            s.Pitch = p;
+            AudioSource a = s.audioSource;
+            a.pitch = p;
         };
         if (UseDistortion)
         {
             float d = UnityEngine.Random.Range(MinDistortion, MaxDistortion);
             setup += (s) =>
             {
-                s.Distortion = d;
+                s.audioDistortionFilter.distortionLevel = d;
             };
         }
         if (UseHighPass)
@@ -98,13 +100,23 @@ public class anClipEffectsEvent : IanEvent
             float hpass = UnityEngine.Random.Range(MinHighPass, MaxHighPass);
             setup += (s) =>
             {
-                s.HighPass = hpass;
+                s.audioHighPassFilter.cutoffFrequency = hpass;
             };
         }
         //TODO add more effects
-        Vector3 pos = args.Length < 2 ? Host.transform.position : (Vector3)args[1];
-        AnopiaAudioCore.PlayClipAtPoint(pos, toPlay.Clip, vol, Output, SourcePrefab, setup);
-        RandomBag.RemoveAt(key);
+        pos = args.Length < 2 ? Host.transform.position : (Vector3)args[1];
+    }
+    public override void Play(params object[] args)//vector3, volume
+    {
+        SetupPlay(out int keytoremove, out Vector3 pos, out AudioClip clip, out float vol, out Action<AnopiaSourcerer> setup, args);
+        AnopiaAudioCore.PlayClipAtPoint(pos, clip, vol, Output, SourcePrefab, setup);
+        RandomBag.RemoveAt(keytoremove);
+    }
+    public override void PlayScheduled(double timecode, params object[] args)
+    {
+        SetupPlay(out int keytoremove, out Vector3 pos, out AudioClip clip, out float vol, out Action<AnopiaSourcerer> setup, args);
+        AnopiaAudioCore.PlayClipAtSchedule(Host.transform, clip, vol,timecode, Output, SourcePrefab, setup);
+        RandomBag.RemoveAt(keytoremove);
     }
     public override void Stop()
     {

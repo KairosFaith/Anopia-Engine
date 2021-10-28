@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Reflection;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Audio;
@@ -31,103 +30,56 @@ public static class AnopiaAudioCore
         IanAudioMag mag = FetchMag(SoundID);
         return mag.LoadMag(host, output);
     }
-    public static AnopiaSourcerer PlayClipAtPoint(Vector3 position, AudioClip clip, float volume, AudioMixerGroup output, GameObject prefab, Action<AnopiaSourcerer> setup = null)
+    static AnopiaSourcerer SetupSource(Vector3 position, GameObject prefab, AudioMixerGroup output, AudioClip clip, float volume)
     {
         GameObject newg = UnityEngine.Object.Instantiate(prefab, position, Quaternion.identity);
-        AnopiaSourcerer sourceObj = newg.AddComponent<AnopiaSourcerer>();
-        sourceObj.SetOutput(output);
-        sourceObj.SetData(clip,volume);
-        setup?.Invoke(sourceObj);
-        AudioSource a = sourceObj.Source;
-        a.Play();
-        sourceObj.StartCoroutine(DeleteWhenDone(a));
-        return sourceObj;
-    }
-    //just in case - for specified clip
-    public static AnopiaSourcerer PlayClipAtPoint(Vector3 position, string SoundId, int Key, AudioMixerGroup output)
-    {
-        GameObject newg = new GameObject(SoundId + " " + Key + " AudioSource", typeof(AudioSource));
-        AnopiaSourcerer sourceObj = newg.AddComponent<AnopiaSourcerer>();
-        sourceObj.SetOutput(output);
-        ClipData d = FetchData(SoundId, Key);
-        sourceObj.SetData(d);
-        AudioSource a = sourceObj.Source;
-        a.Play();
-        sourceObj.StartCoroutine(DeleteWhenDone(a));
-        return sourceObj;
-    }
-    public static AnopiaSourcerer PlayClipAtStereo(MonoBehaviour host, ClipData data, AudioMixerGroup output, float panStereo = 0,Action OnDone = null)
-    {
-        AnopiaSourcerer sourceObj = NewStereoSource(output);
-        AudioSource a = sourceObj.Source;
-        a.panStereo = panStereo;
-        a.clip = data.Clip;
-        a.volume = data.Gain;
-        a.Play();
-        sourceObj.StartCoroutine(DeleteWhenDone(a, OnDone));
-        return sourceObj;
-    }
-    public static AnopiaSourcerer PlayClipScheduled(MonoBehaviour host, AudioClip clip, double startTime, AudioMixerGroup output)
-    {
-        AnopiaSourcerer sourceObj = NewStereoSource(output);
-        sourceObj.PlayScheduled(clip, startTime);
-        sourceObj.StartCoroutine(DeleteWhenDone(sourceObj.Source, startTime+clip.length));
-        return sourceObj;
-    }
-    public static AnopiaSourcerer NewPointSource(MonoBehaviour host, GameObject prefab, AudioMixerGroup output)
-    {
-        GameObject newg = UnityEngine.Object.Instantiate(prefab, host.transform);
-        AnopiaSourcerer s = newg.AddComponent<AnopiaSourcerer>();
-        s.SetOutput(output);
+        AnopiaSourcerer s = newg.GetComponent<AnopiaSourcerer>();
+        AudioSource a = s.audioSource;
+        a.outputAudioMixerGroup = output;
+        a.clip = clip;
+        a.volume = volume;
         return s;
-    }
-    public static AnopiaSourcerer NewStereoSource(MonoBehaviour host, AudioMixerGroup output)
-    {
-        AnopiaSourcerer sor = NewStereoSource(output);
-        sor.transform.SetParent(host.transform);
-        return sor;
-    }
-    public static AnopiaSourcerer NewStereoSource(AudioMixerGroup output)
-    {
-        GameObject newg = new GameObject(output+ " AudioSource");
-        AudioSource sor = newg.AddComponent<AudioSource>();
-        sor.outputAudioMixerGroup = output;
-        sor.spatialBlend = 0;
-        sor.bypassListenerEffects = true;
-        sor.bypassReverbZones = true;
-        sor.bypassEffects = true;
-        sor.ignoreListenerPause = true;//TODO IgnoreListenerPause is Game Dependent
-        AnopiaSourcerer sourceObj = sor.gameObject.AddComponent<AnopiaSourcerer>();
-        sourceObj.Source = sor;
-        return sourceObj;
     }
     public static AnopiaSourcerer[] SetLayers(MonoBehaviour host, string SoundID, AudioMixerGroup output)
     {
-        anClipMag mag = (anClipMag)FetchMag(SoundID);
+        anLayerMag mag = (anLayerMag)FetchMag(SoundID);
         Transform t = host.transform;
-        GameObject prefab = mag.SourcePrefab;
         List<AnopiaSourcerer> layers = new List<AnopiaSourcerer>();
-        foreach(ClipData d in mag.Data)
+        foreach(ClipLayer L in mag.Layers)
         {
-            GameObject newg = UnityEngine.Object.Instantiate(prefab, t);
-            //newg.transform.localPosition = Vector3.zero;
-            AnopiaSourcerer s = newg.AddComponent<AnopiaSourcerer>();
-            s.SetData(d);
-            s.SetOutput(output);
+            GameObject newg = UnityEngine.Object.Instantiate(L.SourcePrefab, t);
+            AnopiaSourcerer s = newg.GetComponent<AnopiaSourcerer>();
+            AudioSource a = s.audioSource;
+            a.outputAudioMixerGroup = output;
+            a.clip = L.Data.Clip;
+            a.volume = L.Data.Gain;
             layers.Add(s);
-            s.Source.loop = true;
-            s.Source.Play();
+            a.loop = true;
+            a.Play();
         }
         return layers.ToArray();
     }
-    public static void PlayOneShot(this AudioSource source, string SoundID, int key)
+    public static AnopiaSourcerer PlayClipAtPoint(Vector3 position, AudioClip clip, float volume, AudioMixerGroup output, GameObject prefab, Action<AnopiaSourcerer> setup = null, Action OnDone = null)
     {
-        anClipMag mag = (anClipMag)FetchMag(SoundID);
-        source.PlayOneShot(mag.Data[key]);
+        AnopiaSourcerer s = SetupSource(position, prefab, output, clip, volume);
+        AudioSource a = s.audioSource;
+        setup?.Invoke(s);
+        a.Play();
+        s.StartCoroutine(DeleteWhenDone(a, OnDone));
+        return s;
     }
-    public static void PlayOneShot(this AudioSource source, ClipData data)
+    public static AnopiaSourcerer PlayClipAtSchedule(Transform parent, AudioClip clip, float volume, double startTime, AudioMixerGroup output, GameObject prefab, Action<AnopiaSourcerer> setup = null)
     {
-        source.PlayOneShot(data.Clip, data.Gain);
+        GameObject newg = UnityEngine.Object.Instantiate(prefab, parent);
+        AnopiaSourcerer s = newg.GetComponent<AnopiaSourcerer>();
+        AudioSource a = s.audioSource;
+        a.outputAudioMixerGroup = output;
+        a.clip = clip;
+        a.volume = volume;
+        setup?.Invoke(s);
+        a.PlayScheduled(startTime);
+        s.StartCoroutine(DeleteWhenDone(a, startTime+clip.length));
+        return s;
     }
     public static void TransitionToSnapshot(this AudioMixer mixer, string SnapshotName, float TimeToReach)
     {
@@ -145,10 +97,11 @@ public static class AnopiaAudioCore
         onDone?.Invoke();
         UnityEngine.Object.Destroy(source.gameObject);
     }
-    public static IEnumerator DeleteWhenDone(AudioSource source, double stopTime)
+    public static IEnumerator DeleteWhenDone(AudioSource source, double stopTime, Action onDone = null)
     {
         while ((AudioSettings.dspTime< stopTime) || source.isPlaying)
             yield return new WaitForEndOfFrame();
+        onDone?.Invoke();
         UnityEngine.Object.Destroy(source.gameObject);
     }
     public static IEnumerator FadeValue(float fadeTime, float startingValue, float targetValue, Action<float> ChangeValue, Action ondone = null)
@@ -160,15 +113,6 @@ public static class AnopiaAudioCore
             yield return new WaitForEndOfFrame();
         }
         ondone?.Invoke();
-    }
-    public static IEnumerator PanToOpposite(AudioSource source)
-    {//TODO remove soon if not using
-        float elapsedTime = 0, startVal = source.panStereo, EffectTime = source.clip.length;
-        for (; elapsedTime < EffectTime; elapsedTime += Time.deltaTime)
-        {
-            source.panStereo = Mathf.Lerp(startVal, -startVal, elapsedTime / EffectTime);
-            yield return new WaitForEndOfFrame();
-        }
     }
 }
 public abstract class IanAudioMag : ScriptableObject
@@ -186,10 +130,11 @@ public abstract class IanEvent
 {
     public IanEvent(MonoBehaviour host, IanAudioMag mag, AudioMixerGroup output){ }
     public abstract void Play(params object[] args);
+    public abstract void PlayScheduled(double timecode, params object[] args);
     public abstract void Stop();
 }
 [Serializable]
-public class AudioCurve
+public class LerpCurve
 {
     public AnimationCurve Curve;
     public float LowerLimit;

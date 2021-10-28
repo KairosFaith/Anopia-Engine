@@ -1,18 +1,16 @@
-using System.Reflection;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Audio;
 public class AnopiaConductor : SingletonMonobehavior<AnopiaConductor>
 {
     IanSong CurrentSong;
     public int CurrentBeat;
-    //static set through datacore
     public AudioMixerGroup MainChannel;
     public AudioMixer MusicMixer;//for snapshots
     public AudioMixerGroup[] StemChannels;//for using stems
     protected override void Awake()
     {
         base.Awake();
+        DontDestroyOnLoad(gameObject);
     }
     protected override void OnDestroy()
     {
@@ -82,18 +80,6 @@ public class AnopiaConductor : SingletonMonobehavior<AnopiaConductor>
         CurrentSong.FadeOut(t); 
         AnopiaSynchro.StopSynchro(this);
     }
-    public void FadeChange(string newSongID,float t)
-    {
-        AnopiaSynchro.StopSynchro(this);
-        void afterFadeOut()
-        {
-            CurrentSong.FadeIn(t);
-            CurrentSong.Play(AudioSettings.dspTime+Time.deltaTime);
-        };
-        CurrentSong.FadeOut(t, afterFadeOut);
-        IanMusicMag mag = (IanMusicMag)AnopiaAudioCore.FetchMag(newSongID);
-        NewSong(mag);
-    }
     public void TransitionSnapshot(string snapshot,float time)//static func?
     {
         MusicMixer.TransitionToSnapshot(snapshot, time);
@@ -102,40 +88,4 @@ public class AnopiaConductor : SingletonMonobehavior<AnopiaConductor>
     {
         CurrentSong.Mute(toMute);
     }
-    public void Interrupt(string IDtag, int key, float panStereo = 0)
-    {
-        Mute(true);
-        anClipMag mag = (anClipMag)AnopiaAudioCore.FetchMag(IDtag);//Use Clip Mag
-        ClipData[] array = mag.Data;
-        ClipData c = array[key];
-        AnopiaAudioCore.PlayClipAtStereo(this, c, MainChannel, panStereo, () => Mute(false));
-    }
-    #region Pause Interrupt Functions (Use At Own Risk)
-    //WARNING Pausing and unpausing does not stop DSP Time!!!!
-    //synchro will no longer align
-    public void ChangeSection(int key)
-    {//immediate stinger is not played
-        if (CurrentSong is anLinearSong ls)
-            ls.ChangeSectionImmediate(key);
-        //TODO restart synchro? 
-        AnopiaSynchro.StopSynchro(this);
-    }
-    public void Pause(bool toPause)
-    {
-        AnopiaSynchro.StopSynchro(this);
-        if (toPause)
-           CurrentSong.Pause();
-        else
-            CurrentSong.UnPause();
-    }
-    public void InterruptPause(string IDtag,int key,float panStereo = 0)
-    {
-        AnopiaSynchro.StopSynchro(this);
-        Pause(true);
-        anClipMag mag = (anClipMag)AnopiaAudioCore.FetchMag(IDtag);//Use Clip Mag
-        ClipData[] array = mag.Data;
-        ClipData c = array[key];
-        AnopiaAudioCore.PlayClipAtStereo(this, c, MainChannel, panStereo, ()=>Pause(false));
-    }
-    #endregion
 }

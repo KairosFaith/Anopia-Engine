@@ -1,6 +1,4 @@
 using UnityEngine;
-using UnityEngine.Audio;
-using UnityEngine.Events;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 [RequireComponent(typeof(AudioSource))]
@@ -15,7 +13,7 @@ public class AnopiaButton : Button
     {
         Source = GetComponent<AudioSource>();
         Source.ignoreListenerPause = true;
-        onClick.AddListener(() => Source.PlayOneShot(Down));
+        onClick.AddListener(() => Source.PlayOneShot(Down.Clip,Down.Gain));
         anButtonMag mag = (anButtonMag)AnopiaAudioCore.FetchMag(SoundID);
         Enter = mag.Enter;
         Down = mag.Down;
@@ -23,12 +21,12 @@ public class AnopiaButton : Button
     }
     public override void OnPointerEnter(PointerEventData eventData)
     {
-        Source.PlayOneShot(Enter);
+        Source.PlayOneShot(Enter.Clip,Enter.Gain);
         base.OnPointerEnter(eventData);
     }
     public override void OnPointerExit(PointerEventData eventData)
     {
-        Source.PlayOneShot(Exit);
+        Source.PlayOneShot(Exit.Clip,Exit.Gain);
         base.OnPointerExit(eventData);
     }
 }

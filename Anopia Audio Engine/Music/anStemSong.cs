@@ -4,13 +4,14 @@ using UnityEngine;
 using UnityEngine.Audio;
 public class anStemSong : IanSong
 {
+    anStemMusicMag Mag;
     public List<AnopiaSourcerer> SourceHandlers = new List<AnopiaSourcerer>();//need sourcerer??
     public override void FadeOut(float t, Action ondone = null)
     {
         Action<float> ChangeValue = null;
         foreach (AnopiaSourcerer s in SourceHandlers)
             ChangeValue += (float v) =>
-                s.Source.volume = v;
+                s.audioSource.volume = v;
         ondone += () =>
         {
             Destroy(gameObject);
@@ -21,12 +22,16 @@ public class anStemSong : IanSong
     public override void Play(double startTime)
     {
         foreach (AnopiaSourcerer s in SourceHandlers)
-            s.Source.PlayScheduled(startTime);
+            s.audioSource.PlayScheduled(startTime);
     }
     public override void StopCue(double stopTime)
     {
         foreach (AnopiaSourcerer s in SourceHandlers)
-            s.StopScheduled(stopTime, true);
+        {
+            AudioSource a = s.audioSource;
+            a.SetScheduledEndTime(stopTime);
+            s.StartCoroutine(AnopiaAudioCore.DeleteWhenDone(a, stopTime));
+        }
         transform.DetachChildren();
         Destroy(gameObject);
     }
@@ -35,17 +40,17 @@ public class anStemSong : IanSong
         Action<float> ChangeValue = null;
         foreach (AnopiaSourcerer s in SourceHandlers)
             ChangeValue += (float v) =>
-                s.Source.volume = v;
+                s.audioSource.volume = v;
         StartCoroutine(AnopiaAudioCore.FadeValue(t, 0, 1, ChangeValue));
     }
     public void Setup(MonoBehaviour host, IanMusicMag mag, AudioMixerGroup[] busses)
     {
-        anStemMusicMag Mag = (anStemMusicMag)mag;
+        Mag = (anStemMusicMag)mag;
         Dictionary<AudioMixerGroup, StemData> stems = Mag.GetStems();
         foreach(KeyValuePair<AudioMixerGroup, StemData> p in stems)
         {
-            AnopiaSourcerer s = AnopiaAudioCore.NewStereoSource(this, p.Key);
-            AudioSource a = s.Source;
+            AnopiaSourcerer s = Instantiate(Mag.LoopPrefab, transform).GetComponent<AnopiaSourcerer>();
+            AudioSource a = s.audioSource;
             StemData data = p.Value;
             a.clip = data.Clip;
             a.panStereo = data.Pan;
@@ -59,19 +64,9 @@ public class anStemSong : IanSong
         Destroy(gameObject);
         AnopiaSynchro.StopSynchro(AnopiaConductor.Instance);
     }
-    public override void Pause()
-    {
-        foreach (AnopiaSourcerer s in SourceHandlers)
-            s.Source.Pause();
-    }
-    public override void UnPause()
-    {
-        foreach (AnopiaSourcerer s in SourceHandlers)
-            s.Source.UnPause();
-    }
     public override void Mute(bool toMute)
     {
         foreach (AnopiaSourcerer s in SourceHandlers)
-            s.Source.mute = toMute;
+            s.audioSource.mute = toMute;
     }
 }

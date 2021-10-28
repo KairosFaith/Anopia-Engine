@@ -1,13 +1,11 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Audio;
-
-public class AnopiaEventDriver
+public class AnopiaEventDriver : MonoBehaviour
 {
     MonoBehaviour _Host;
     AudioMixerGroup _Output;
-    AnopiaSourcerer _TransientSourcerer;
+    public AnopiaSourcerer OneShotSource;
     public Dictionary<string, IanEvent> Events = new Dictionary<string, IanEvent>();
     public AnopiaEventDriver(MonoBehaviour host, AudioMixerGroup output, params string[] IDs)
     {
@@ -21,11 +19,7 @@ public class AnopiaEventDriver
         IanEvent e = AnopiaAudioCore.NewEvent(_Host, SoundID, _Output);
         Events[SoundID] = e;
         if (e is anOneShotEvent eve)
-        {
-            if (_TransientSourcerer == null)
-                _TransientSourcerer = AnopiaAudioCore.NewPointSource(_Host, eve.SourcePrefab, _Output);
-            eve.Sourcerer = _TransientSourcerer;
-        }
+            eve.audioSource = OneShotSource.audioSource;
     }
     public void Play(string SoundID, params object[] args)
     {
