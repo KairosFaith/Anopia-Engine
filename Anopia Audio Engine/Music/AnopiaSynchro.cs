@@ -3,25 +3,17 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.Audio;
 public delegate void BeatFunc(int beatCount, double timeCode);
-public delegate void BarFunc(double timeCode);
 public static class AnopiaSynchro//this is your new update engine
 {
-    public const string BeatEvent = "OnBeat";
-    public const string BarEvent = "OnBar";
-    public const string OnSynchroStop = "OnSynchroStop";
-    public static BeatFunc PlayOnBeat;
-    public static BarFunc PlayOnBar;// to schedule sounds
+    public static BeatFunc PlayOnBeat;// to schedule sounds
     public static TempoData Tempo;
     static bool isPlaying;
     static double StartTime;
     public static int CurrentBeatCount => _BeatCount;
-    public static int NextBeatCount => scheduleBeat;
+    static int _BeatCount = 0;
     public static double NextBeat => _NextBeat;
     public static double NextBar => _NextBar;
-    static int scheduleBeat;
-    static int _BeatCount = 0;
     static double _NextBeat,_NextBar;
-    // to schedule sounds
     static MonoBehaviour SynchroHost;
     public static void StartSynchro(MonoBehaviour host, TempoData tempo, Action<double>OnStart = null)
     {
@@ -32,54 +24,36 @@ public static class AnopiaSynchro//this is your new update engine
         OnStart?.Invoke(StartTime);
         SynchroHost = host;
     }
-    public static void StopSynchro(MonoBehaviour host)
+    public static void StopSynchro()
     {
-        host.StopAllCoroutines();
-        isPlaying = false;
-        scheduleBeat = 0;
-        _BeatCount = 0;
+        SynchroHost.StopAllCoroutines();
     }
     static IEnumerator Synchro(double startTime)
     {
-        _BeatCount = 1;
-        scheduleBeat =1;
-        PlayOnBeat?.Invoke(scheduleBeat, startTime);
-        PlayOnBar?.Invoke(startTime);
-        Core.BroadcastEvent(BeatEvent, SynchroHost, _BeatCount);
-        Core.BroadcastEvent(BarEvent, SynchroHost);
-        _NextBeat = startTime + Tempo.BeatLength;
-        _NextBar = startTime + Tempo.BarLength;
-        scheduleBeat++;
-        PlayOnBeat?.Invoke(scheduleBeat, _NextBeat);
-        PlayOnBar?.Invoke(_NextBar);
-        void Beat()
+        _BeatCount = 0;
+        _NextBeat = _NextBar = startTime;
+        void Beat(double beatTimeCode)
         {
             _BeatCount++;
-            if(_BeatCount> Tempo.BeatsPerBar)
-            {
-                _BeatCount = 1;
-                Core.BroadcastEvent(BarEvent, SynchroHost);
-            }
-            Core.BroadcastEvent(BeatEvent, SynchroHost, _BeatCount);
-            _NextBeat += Tempo.BeatLength;
-            scheduleBeat++;
-            if (scheduleBeat > Tempo.BeatsPerBar)
+            if (_BeatCount > Tempo.BeatsPerBar)
             {
                 _NextBar += Tempo.BarLength;
-                PlayOnBar?.Invoke(_NextBar);
-                scheduleBeat = 1;
+                _BeatCount = 1;
             }
-            PlayOnBeat?.Invoke(scheduleBeat, _NextBeat);
+            _NextBeat += Tempo.BeatLength;
+            PlayOnBeat?.Invoke(_BeatCount, beatTimeCode);
+            //Core.BroadcastEvent("OnBeat", SynchroHost, _BeatCount,beatTimeCode);
         };
+        Beat(startTime);
         while (isPlaying)
         {
             yield return new WaitForEndOfFrame();
-            if (AudioSettings.dspTime > _NextBeat)
-                Beat();
+            if (AudioSettings.dspTime +Time.deltaTime > _NextBeat)//check 1 frame ahead
+                Beat(_NextBeat);
         }
-        Core.BroadcastEvent(OnSynchroStop, SynchroHost);
+        //Core.BroadcastEvent("OnSynchroStop", SynchroHost);
+        isPlaying = false;
         _BeatCount = 0;
-        scheduleBeat = 0;
     }
 }
 public enum BarValue

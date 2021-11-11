@@ -15,7 +15,7 @@ public class anStemSong : IanSong
         ondone += () =>
         {
             Destroy(gameObject);
-            AnopiaSynchro.StopSynchro(AnopiaConductor.Instance);
+            AnopiaSynchro.StopSynchro();
         };
         StartCoroutine(AnopiaAudioCore.FadeValue(t, 1, 0, ChangeValue, ondone));
     }
@@ -62,7 +62,7 @@ public class anStemSong : IanSong
     public override void StopImmediate()
     {
         Destroy(gameObject);
-        AnopiaSynchro.StopSynchro(AnopiaConductor.Instance);
+        AnopiaSynchro.StopSynchro();
     }
     public override void Mute(bool toMute)
     {

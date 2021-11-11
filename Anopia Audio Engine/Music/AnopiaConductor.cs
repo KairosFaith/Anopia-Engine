@@ -25,14 +25,14 @@ public class AnopiaConductor : SingletonMonobehavior<AnopiaConductor>
         if (CurrentSong != null)
         {
             CurrentSong.StopImmediate();
-            AnopiaSynchro.StopSynchro(this);
+            AnopiaSynchro.StopSynchro();
         }
         IanMusicMag mag = (IanMusicMag)AnopiaAudioCore.FetchMag(songID);
         NewSong(mag);
         AnopiaSynchro.StartSynchro(this, mag.Tempo, CurrentSong.Play);
         return CurrentSong;
     }
-    public void CueSong(string songID, double timeCode)//user defined cue
+    public void CueSong(string songID, double timeCode)//user defined cue, assume same tempo
     {
         if (CurrentSong != null)
             CurrentSong.StopCue(timeCode);
@@ -73,12 +73,12 @@ public class AnopiaConductor : SingletonMonobehavior<AnopiaConductor>
     public void Stop(double stopTime)//user defined cue
     {
         CurrentSong.StopCue(stopTime);
-        AnopiaSynchro.StopSynchro(this);
+        AnopiaSynchro.StopSynchro();
     }
     public void FadeOut(float t)
     {
         CurrentSong.FadeOut(t); 
-        AnopiaSynchro.StopSynchro(this);
+        AnopiaSynchro.StopSynchro();
     }
     public void TransitionSnapshot(string snapshot,float time)//static func?
     {
