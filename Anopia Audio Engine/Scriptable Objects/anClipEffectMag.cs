@@ -13,16 +13,14 @@ public class anClipEffectMag : anClipMag
     public float MinPitch = 1;
     [Range(1, 2)]
     public float MaxPitch = 1;
+    [HideInInspector]
     public bool UseDistortion;
     [HideInInspector]
-    public float MinDistortion;
+    public float MinDistortion, MaxDistortion;
     [HideInInspector]
-    public float MaxDistortion;
     public bool UseHighPass;
     [HideInInspector]
-    public float MinHighPass;
-    [HideInInspector]
-    public float MaxHighPass;
+    public float MinHighPass = 10, MaxHighPass = 22000;
     //TODO add more effects
     public override IanEvent LoadMag(MonoBehaviour host, AudioMixerGroup output)
     {
@@ -131,12 +129,20 @@ public class ClipEffect_Editor : Editor
     {
         DrawDefaultInspector();
         anClipEffectMag script = (anClipEffectMag)target;
+        script.UseDistortion = EditorGUILayout.Toggle("Use Distortion", script.UseDistortion);
         if (script.UseDistortion) // if bool is true, show other fields
         {
-            EditorGUILayout.MinMaxSlider(new GUIContent("Distortion Range"),ref script.MinDistortion, ref script.MaxDistortion, 0, 1);
+            EditorGUILayout.MinMaxSlider(new GUIContent(),ref script.MinDistortion, ref script.MaxDistortion, 0, 1);
+            script.MinDistortion = EditorGUILayout.FloatField(new GUIContent("Min Distortion"), script.MinDistortion);
+            script.MaxDistortion = EditorGUILayout.FloatField(new GUIContent("Max Distortion"), script.MaxDistortion);
         }
-        if(script.UseHighPass)
-            EditorGUILayout.MinMaxSlider(new GUIContent("HighPassFilter Range"),ref script.MinDistortion, ref script.MaxDistortion, 10, 22000);
+        script.UseHighPass = EditorGUILayout.Toggle("Use HighPass", script.UseHighPass);
+        if (script.UseHighPass)
+        {
+            EditorGUILayout.MinMaxSlider(new GUIContent(),ref script.MinHighPass, ref script.MaxHighPass, 10, 22000);
+            script.MinHighPass = EditorGUILayout.FloatField(new GUIContent("Min HighPass Hz"), script.MinHighPass);
+            script.MaxHighPass = EditorGUILayout.FloatField(new GUIContent("Max HighPass Hz"), script.MaxHighPass);
+        }
         //TODO add more effects
     }
 }
