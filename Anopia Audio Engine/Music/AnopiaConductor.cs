@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.Audio;
 public class AnopiaConductor : SingletonMonobehavior<AnopiaConductor>
@@ -75,10 +76,21 @@ public class AnopiaConductor : SingletonMonobehavior<AnopiaConductor>
         CurrentSong.StopCue(stopTime);
         AnopiaSynchro.StopSynchro();
     }
-    public void FadeOut(float t)
+    public void Crossfade(float t, string songID)
     {
-        CurrentSong.FadeOut(t); 
+        FadeOut(t, ()=> FadeIn(t, songID));
+    }
+    public void FadeOut(float t, Action onDone)
+    {
+        CurrentSong.FadeOut(t, onDone); 
         AnopiaSynchro.StopSynchro();
+    }
+    public void FadeIn(float t, string songID)
+    {
+        IanMusicMag mag = (IanMusicMag)AnopiaAudioCore.FetchMag(songID);
+        NewSong(mag);
+        CurrentSong.FadeIn(t);
+        AnopiaSynchro.StartSynchro(this, mag.Tempo, CurrentSong.Play);
     }
     public void TransitionSnapshot(string snapshot,float time)//static func?
     {
