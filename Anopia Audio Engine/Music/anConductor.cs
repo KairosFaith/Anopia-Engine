@@ -1,10 +1,9 @@
 using System;
 using UnityEngine;
 using UnityEngine.Audio;
-public class AnopiaConductor : SingletonMonobehavior<AnopiaConductor>
+public class anConductor : SingletonMonobehavior<anConductor>
 {
     IanSong CurrentSong;
-    public int CurrentBeat;
     public AudioMixerGroup MainChannel;
     public AudioMixer MusicMixer;//for snapshots
     public AudioMixerGroup[] StemChannels;//for using stems
@@ -17,27 +16,23 @@ public class AnopiaConductor : SingletonMonobehavior<AnopiaConductor>
     {
         base.OnDestroy();
     }
-    private void Update()
-    {
-        CurrentBeat = AnopiaSynchro.CurrentBeatCount;
-    }
     public IanSong PlayNewSong(string songID)//play immediate
     {
         if (CurrentSong != null)
         {
             CurrentSong.StopImmediate();
-            AnopiaSynchro.StopSynchro();
+            anSynchro.StopSynchro();
         }
-        IanMusicMag mag = (IanMusicMag)AnopiaAudioCore.FetchMag(songID);
+        IanMusicMag mag = (IanMusicMag)anCore.FetchMag(songID);
         NewSong(mag);
-        AnopiaSynchro.StartSynchro(this, mag.Tempo, CurrentSong.Play);
+        anSynchro.StartSynchro(this, mag.Tempo, CurrentSong.Play);
         return CurrentSong;
     }
     public void CueSong(string songID, double timeCode)//user defined cue, assume same tempo
     {
         if (CurrentSong != null)
             CurrentSong.StopCue(timeCode);
-        IanMusicMag mag = (IanMusicMag)AnopiaAudioCore.FetchMag(songID);
+        IanMusicMag mag = (IanMusicMag)anCore.FetchMag(songID);
         NewSong(mag);
         CurrentSong.Play(timeCode);
     }
@@ -74,7 +69,7 @@ public class AnopiaConductor : SingletonMonobehavior<AnopiaConductor>
     public void Stop(double stopTime)//user defined cue
     {
         CurrentSong.StopCue(stopTime);
-        AnopiaSynchro.StopSynchro();
+        anSynchro.StopSynchro();
     }
     public void Crossfade(float t, string songID)
     {
@@ -83,14 +78,14 @@ public class AnopiaConductor : SingletonMonobehavior<AnopiaConductor>
     public void FadeOut(float t, Action onDone)
     {
         CurrentSong.FadeOut(t, onDone); 
-        AnopiaSynchro.StopSynchro();
+        anSynchro.StopSynchro();
     }
     public void FadeIn(float t, string songID)
     {
-        IanMusicMag mag = (IanMusicMag)AnopiaAudioCore.FetchMag(songID);
+        IanMusicMag mag = (IanMusicMag)anCore.FetchMag(songID);
         NewSong(mag);
         CurrentSong.FadeIn(t);
-        AnopiaSynchro.StartSynchro(this, mag.Tempo, CurrentSong.Play);
+        anSynchro.StartSynchro(this, mag.Tempo, CurrentSong.Play);
     }
     public void TransitionSnapshot(string snapshot,float time)//static func?
     {

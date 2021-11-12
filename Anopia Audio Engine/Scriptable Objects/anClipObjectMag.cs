@@ -5,8 +5,8 @@ using UnityEngine.Audio;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
-[CreateAssetMenu(fileName = "ClipEffectMag", menuName = "AnopiaEngine/ClipEffect", order = 2)]
-public class anClipEffectMag : anClipMag
+[CreateAssetMenu(fileName = "ClipObjectMag", menuName = "AnopiaEngine/ClipObjectMag", order = 2)]
+public class anClipObjectMag : anClipMag
 {
     public GameObject SourcePrefab;
     [Range(0, 1)]
@@ -24,10 +24,10 @@ public class anClipEffectMag : anClipMag
     //TODO add more effects
     public override IanEvent LoadMag(MonoBehaviour host, AudioMixerGroup output)
     {
-        return new anClipEffectsEvent(host, this, output);
+        return new anClipObjectEvent(host, this, output);
     }
 }
-public class anClipEffectsEvent : IanEvent
+public class anClipObjectEvent : IanEvent
 {
     public GameObject SourcePrefab;
     public ClipData[] Data;
@@ -44,9 +44,9 @@ public class anClipEffectsEvent : IanEvent
     public float MaxHighPass;
     AudioMixerGroup Output;
     MonoBehaviour Host;
-    public anClipEffectsEvent(MonoBehaviour host, IanAudioMag mag, AudioMixerGroup output) : base(host, mag, output)
+    public anClipObjectEvent(MonoBehaviour host, IanAudioMag mag, AudioMixerGroup output) : base(host, mag, output)
     {
-        anClipEffectMag Mag = (anClipEffectMag)mag;
+        anClipObjectMag Mag = (anClipObjectMag)mag;
         Data = Mag.Data;
         SourcePrefab = Mag.SourcePrefab;
         VolumeFlux = Mag.VolumeFluctuation;
@@ -68,7 +68,7 @@ public class anClipEffectsEvent : IanEvent
         Output = output;
         Host = host;
     }
-    void SetupPlay(out int key, out Vector3 pos, out AudioClip clip, out float vol, out Action<AnopiaSourcerer> setup, params object[] args)
+    void SetupPlay(out int key, out Vector3 pos, out AudioClip clip, out float vol, out Action<anSourcerer> setup, params object[] args)
     {
         if (RandomBag.Count <= 0)
             RandomBag = new List<ClipData>(Data);
@@ -106,14 +106,14 @@ public class anClipEffectsEvent : IanEvent
     }
     public override void Play(params object[] args)//vector3, volume
     {
-        SetupPlay(out int keytoremove, out Vector3 pos, out AudioClip clip, out float vol, out Action<AnopiaSourcerer> setup, args);
-        AnopiaAudioCore.PlayClipAtPoint(pos, clip, vol, Output, SourcePrefab, setup);
+        SetupPlay(out int keytoremove, out Vector3 pos, out AudioClip clip, out float vol, out Action<anSourcerer> setup, args);
+        anCore.PlayClipAtPoint(pos, clip, vol, Output, SourcePrefab, setup);
         RandomBag.RemoveAt(keytoremove);
     }
     public override void PlayScheduled(double timecode, params object[] args)
     {
-        SetupPlay(out int keytoremove, out Vector3 pos, out AudioClip clip, out float vol, out Action<AnopiaSourcerer> setup, args);
-        AnopiaAudioCore.PlayClipAtSchedule(Host.transform, clip, vol,timecode, Output, SourcePrefab, setup);
+        SetupPlay(out int keytoremove, out Vector3 pos, out AudioClip clip, out float vol, out Action<anSourcerer> setup, args);
+        anCore.PlayClipAtSchedule(Host.transform, clip, vol,timecode, Output, SourcePrefab, setup);
         RandomBag.RemoveAt(keytoremove);
     }
     public override void Stop()
@@ -122,13 +122,13 @@ public class anClipEffectsEvent : IanEvent
     }
 }
 #if UNITY_EDITOR
-[CustomEditor(typeof(anClipEffectMag))]
+[CustomEditor(typeof(anClipObjectMag))]
 public class ClipEffect_Editor : Editor
 {
     public override void OnInspectorGUI()
     {
         DrawDefaultInspector();
-        anClipEffectMag script = (anClipEffectMag)target;
+        anClipObjectMag script = (anClipObjectMag)target;
         script.UseDistortion = EditorGUILayout.Toggle("Use Distortion", script.UseDistortion);
         if (script.UseDistortion) // if bool is true, show other fields
         {

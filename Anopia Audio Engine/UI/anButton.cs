@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 [RequireComponent(typeof(AudioSource))]
-public class AnopiaButton : Button
+public class anButton : Button
 {
     public string SoundID;
     AudioSource Source;
@@ -14,7 +14,7 @@ public class AnopiaButton : Button
         Source = GetComponent<AudioSource>();
         Source.ignoreListenerPause = true;
         onClick.AddListener(() => Source.PlayOneShot(Down.Clip,Down.Gain));
-        anButtonMag mag = (anButtonMag)AnopiaAudioCore.FetchMag(SoundID);
+        anButtonMag mag = (anButtonMag)anCore.FetchMag(SoundID);
         Enter = mag.Enter;
         Down = mag.Down;
         Exit = mag.Exit;

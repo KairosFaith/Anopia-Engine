@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Audio;
 using System;
-public static class AnopiaAudioCore
+public static class anCore
 {
     static Dictionary<string, IanAudioMag> _SoundBank = new Dictionary<string, IanAudioMag>();
-    static AnopiaAudioCore()
+    static anCore()
     {
         string FilePath = "AudioMags";
         IanAudioMag[] m = Resources.LoadAll<IanAudioMag>(FilePath);
@@ -30,48 +30,48 @@ public static class AnopiaAudioCore
         IanAudioMag mag = FetchMag(SoundID);
         return mag.LoadMag(host, output);
     }
-    static AnopiaSourcerer SetupSource(Vector3 position, GameObject prefab, AudioMixerGroup output, AudioClip clip, float volume)
+    static anSourcerer SetupSource(Vector3 position, GameObject prefab, AudioMixerGroup output, AudioClip clip, float volume)
     {
         GameObject newg = UnityEngine.Object.Instantiate(prefab, position, Quaternion.identity);
-        AnopiaSourcerer s = newg.GetComponent<AnopiaSourcerer>();
+        anSourcerer s = newg.GetComponent<anSourcerer>();
         AudioSource a = s.audioSource;
         a.outputAudioMixerGroup = output;
         a.clip = clip;
         a.volume = volume;
         return s;
     }
-    public static AnopiaSourcerer[] SetLayers(MonoBehaviour host, string SoundID, AudioMixerGroup output)
+    public static anSourcerer[] SetLayers(MonoBehaviour host, string SoundID, AudioMixerGroup output)
     {
         anLayerMag mag = (anLayerMag)FetchMag(SoundID);
         Transform t = host.transform;
-        List<AnopiaSourcerer> layers = new List<AnopiaSourcerer>();
-        foreach(ClipLayer L in mag.Layers)
+        List<anSourcerer> layers = new List<anSourcerer>();
+        foreach(LayerData L in mag.Layers)
         {
             GameObject newg = UnityEngine.Object.Instantiate(L.SourcePrefab, t);
-            AnopiaSourcerer s = newg.GetComponent<AnopiaSourcerer>();
+            anSourcerer s = newg.GetComponent<anSourcerer>();
             AudioSource a = s.audioSource;
             a.outputAudioMixerGroup = output;
-            a.clip = L.Data.Clip;
-            a.volume = L.Data.Gain;
+            a.clip = L.Clip;
+            a.volume = L.Gain;
             layers.Add(s);
             a.loop = true;
             a.Play();
         }
         return layers.ToArray();
     }
-    public static AnopiaSourcerer PlayClipAtPoint(Vector3 position, AudioClip clip, float volume, AudioMixerGroup output, GameObject prefab, Action<AnopiaSourcerer> setup = null, Action OnDone = null)
+    public static anSourcerer PlayClipAtPoint(Vector3 position, AudioClip clip, float volume, AudioMixerGroup output, GameObject prefab, Action<anSourcerer> setup = null, Action OnDone = null)
     {
-        AnopiaSourcerer s = SetupSource(position, prefab, output, clip, volume);
+        anSourcerer s = SetupSource(position, prefab, output, clip, volume);
         AudioSource a = s.audioSource;
         setup?.Invoke(s);
         a.Play();
         s.StartCoroutine(DeleteWhenDone(a, OnDone));
         return s;
     }
-    public static AnopiaSourcerer PlayClipAtSchedule(Transform parent, AudioClip clip, float volume, double startTime, AudioMixerGroup output, GameObject prefab, Action<AnopiaSourcerer> setup = null)
+    public static anSourcerer PlayClipAtSchedule(Transform parent, AudioClip clip, float volume, double startTime, AudioMixerGroup output, GameObject prefab, Action<anSourcerer> setup = null)
     {
         GameObject newg = UnityEngine.Object.Instantiate(prefab, parent);
-        AnopiaSourcerer s = newg.GetComponent<AnopiaSourcerer>();
+        anSourcerer s = newg.GetComponent<anSourcerer>();
         AudioSource a = s.audioSource;
         a.outputAudioMixerGroup = output;
         a.clip = clip;

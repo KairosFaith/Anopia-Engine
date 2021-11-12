@@ -2,7 +2,7 @@ using UnityEngine.EventSystems;
 using UnityEngine;
 using UnityEngine.UI;
 [RequireComponent(typeof(AudioSource))]
-public class AnopiaSlider : Slider
+public class anSlider : Slider
 {
     public string SoundID;
     AudioSource Source;
@@ -17,7 +17,7 @@ public class AnopiaSlider : Slider
         Source = GetComponent<AudioSource>();
         onValueChanged.AddListener((f) => Source.PlayOneShot(Drag.Clip, Drag.Gain*normalizedValue));
         Source.ignoreListenerPause = true;
-        anSliderMag mag = (anSliderMag)AnopiaAudioCore.FetchMag(SoundID);
+        anSliderMag mag = (anSliderMag)anCore.FetchMag(SoundID);
         Enter = mag.Enter;
         Down = mag.Down;
         Drag = mag.Drag;

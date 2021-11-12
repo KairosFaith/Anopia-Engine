@@ -1,13 +1,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Audio;
-public class AnopiaEventDriver : MonoBehaviour
+public class anDriver : MonoBehaviour
 {
     MonoBehaviour _Host;
     AudioMixerGroup _Output;
-    public AnopiaSourcerer OneShotSource;
+    public anSourcerer OneShotSource;
     public Dictionary<string, IanEvent> Events = new Dictionary<string, IanEvent>();
-    public AnopiaEventDriver(MonoBehaviour host, AudioMixerGroup output, params string[] IDs)
+    public anDriver(MonoBehaviour host, AudioMixerGroup output, params string[] IDs)
     {
         _Host = host;
         _Output = output;
@@ -16,7 +16,7 @@ public class AnopiaEventDriver : MonoBehaviour
     }
     void LoadEvent(string SoundID)
     {
-        IanEvent e = AnopiaAudioCore.NewEvent(_Host, SoundID, _Output);
+        IanEvent e = anCore.NewEvent(_Host, SoundID, _Output);
         Events[SoundID] = e;
         if (e is anOneShotEvent eve)
             eve.audioSource = OneShotSource.audioSource;

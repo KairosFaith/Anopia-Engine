@@ -10,6 +10,6 @@ public class anSliderMag : IanAudioMag
     public ClipData Exit;
     public override IanEvent LoadMag(MonoBehaviour host, AudioMixerGroup output)
     {
-        throw new System.NotImplementedException();
+        throw new System.NotImplementedException("Implement to anSlider Directly");
     }
 }

@@ -3,7 +3,7 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.Audio;
 public delegate void BeatFunc(int beatCount, double timeCode);
-public static class AnopiaSynchro//this is your new update engine
+public static class anSynchro//this is your new update engine
 {
     public static BeatFunc PlayOnBeat;// to schedule sounds
     public static TempoData Tempo;

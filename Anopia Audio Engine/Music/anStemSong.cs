@@ -5,32 +5,32 @@ using UnityEngine.Audio;
 public class anStemSong : IanSong
 {
     anStemMusicMag Mag;
-    public List<AnopiaSourcerer> SourceHandlers = new List<AnopiaSourcerer>();//need sourcerer??
+    public List<anSourcerer> SourceHandlers = new List<anSourcerer>();//need sourcerer??
     public override void FadeOut(float t, Action ondone = null)
     {
         Action<float> ChangeValue = null;
-        foreach (AnopiaSourcerer s in SourceHandlers)
+        foreach (anSourcerer s in SourceHandlers)
             ChangeValue += (float v) =>
                 s.audioSource.volume = v;
         ondone += () =>
         {
             Destroy(gameObject);
-            AnopiaSynchro.StopSynchro();
+            anSynchro.StopSynchro();
         };
-        StartCoroutine(AnopiaAudioCore.FadeValue(t, 1, 0, ChangeValue, ondone));
+        StartCoroutine(anCore.FadeValue(t, 1, 0, ChangeValue, ondone));
     }
     public override void Play(double startTime)
     {
-        foreach (AnopiaSourcerer s in SourceHandlers)
+        foreach (anSourcerer s in SourceHandlers)
             s.audioSource.PlayScheduled(startTime);
     }
     public override void StopCue(double stopTime)
     {
-        foreach (AnopiaSourcerer s in SourceHandlers)
+        foreach (anSourcerer s in SourceHandlers)
         {
             AudioSource a = s.audioSource;
             a.SetScheduledEndTime(stopTime);
-            s.StartCoroutine(AnopiaAudioCore.DeleteWhenDone(a, stopTime));
+            s.StartCoroutine(anCore.DeleteWhenDone(a, stopTime));
         }
         transform.DetachChildren();
         Destroy(gameObject);
@@ -38,10 +38,10 @@ public class anStemSong : IanSong
     public override void FadeIn(float t)
     {
         Action<float> ChangeValue = null;
-        foreach (AnopiaSourcerer s in SourceHandlers)
+        foreach (anSourcerer s in SourceHandlers)
             ChangeValue += (float v) =>
                 s.audioSource.volume = v;
-        StartCoroutine(AnopiaAudioCore.FadeValue(t, 0, 1, ChangeValue));
+        StartCoroutine(anCore.FadeValue(t, 0, 1, ChangeValue));
     }
     public void Setup(MonoBehaviour host, IanMusicMag mag, AudioMixerGroup[] busses)
     {
@@ -49,7 +49,7 @@ public class anStemSong : IanSong
         Dictionary<AudioMixerGroup, StemData> stems = Mag.GetStems();
         foreach(KeyValuePair<AudioMixerGroup, StemData> p in stems)
         {
-            AnopiaSourcerer s = Instantiate(Mag.LoopPrefab, transform).GetComponent<AnopiaSourcerer>();
+            anSourcerer s = Instantiate(Mag.LoopPrefab, transform).GetComponent<anSourcerer>();
             AudioSource a = s.audioSource;
             StemData data = p.Value;
             a.clip = data.Clip;
@@ -62,11 +62,11 @@ public class anStemSong : IanSong
     public override void StopImmediate()
     {
         Destroy(gameObject);
-        AnopiaSynchro.StopSynchro();
+        anSynchro.StopSynchro();
     }
     public override void Mute(bool toMute)
     {
-        foreach (AnopiaSourcerer s in SourceHandlers)
+        foreach (anSourcerer s in SourceHandlers)
             s.audioSource.mute = toMute;
     }
 }

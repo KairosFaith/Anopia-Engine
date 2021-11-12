@@ -19,14 +19,14 @@ public class anADSREvent : IanEvent
 {
     public AudioClip Attack;
     public AudioClip Release;
-    public AnopiaSourcerer Sourcerer;
+    public anSourcerer Sourcerer;
     public anADSREvent(MonoBehaviour host, IanAudioMag mag, AudioMixerGroup output) : base(host, mag, output)
     {
         anADSRMag Mag = (anADSRMag)mag;
         Attack = Mag.Attack;
         Release = Mag.Release;
         GameObject newg = UnityEngine.Object.Instantiate(Mag.SourcePrefab, host.transform);
-        Sourcerer = newg.GetComponent<AnopiaSourcerer>();
+        Sourcerer = newg.GetComponent<anSourcerer>();
         AudioSource a = Sourcerer.audioSource;
         a.clip = Mag.Sustain;
         a.volume = Mag.Gain;

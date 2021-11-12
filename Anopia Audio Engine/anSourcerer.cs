@@ -1,6 +1,6 @@
 using UnityEngine;
 [RequireComponent(typeof(AudioSource))]
-public class AnopiaSourcerer : MonoBehaviour
+public class anSourcerer : MonoBehaviour
 {
     public AudioSource audioSource;
     public AudioDistortionFilter audioDistortionFilter;
