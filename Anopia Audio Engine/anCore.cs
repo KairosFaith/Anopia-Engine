@@ -59,7 +59,7 @@ public static class anCore
         }
         return layers.ToArray();
     }
-    public static anSourcerer PlayClipAtPoint(Vector3 position, AudioClip clip, float volume, AudioMixerGroup output, GameObject prefab, Action<anSourcerer> setup = null, Action OnDone = null)
+    public static anSourcerer PlayClipXYZ(Vector3 position, AudioClip clip, float volume, AudioMixerGroup output, GameObject prefab, Action<anSourcerer> setup = null, Action OnDone = null)
     {
         anSourcerer s = SetupSource(position, prefab, output, clip, volume);
         AudioSource a = s.audioSource;
@@ -68,7 +68,7 @@ public static class anCore
         s.StartCoroutine(DeleteWhenDone(a, OnDone));
         return s;
     }
-    public static anSourcerer PlayClipAtSchedule(Transform parent, AudioClip clip, float volume, double startTime, AudioMixerGroup output, GameObject prefab, Action<anSourcerer> setup = null)
+    public static anSourcerer PlayClipScheduled(Transform parent, AudioClip clip, float volume, double startTime, AudioMixerGroup output, GameObject prefab, Action<anSourcerer> setup = null)
     {
         GameObject newg = UnityEngine.Object.Instantiate(prefab, parent);
         anSourcerer s = newg.GetComponent<anSourcerer>();

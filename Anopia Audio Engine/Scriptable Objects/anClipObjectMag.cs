@@ -107,13 +107,13 @@ public class anClipObjectEvent : IanEvent
     public override void Play(params object[] args)//vector3, volume
     {
         SetupPlay(out int keytoremove, out Vector3 pos, out AudioClip clip, out float vol, out Action<anSourcerer> setup, args);
-        anCore.PlayClipAtPoint(pos, clip, vol, Output, SourcePrefab, setup);
+        anCore.PlayClipXYZ(pos, clip, vol, Output, SourcePrefab, setup);
         RandomBag.RemoveAt(keytoremove);
     }
     public override void PlayScheduled(double timecode, params object[] args)
     {
         SetupPlay(out int keytoremove, out Vector3 pos, out AudioClip clip, out float vol, out Action<anSourcerer> setup, args);
-        anCore.PlayClipAtSchedule(Host.transform, clip, vol,timecode, Output, SourcePrefab, setup);
+        anCore.PlayClipScheduled(Host.transform, clip, vol,timecode, Output, SourcePrefab, setup);
         RandomBag.RemoveAt(keytoremove);
     }
     public override void Stop()

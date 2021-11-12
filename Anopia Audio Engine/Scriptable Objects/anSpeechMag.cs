@@ -31,14 +31,14 @@ public class anSpeechEvent : IanEvent
         foreach(object o in args)
             if(_SpeechBank.TryGetValue((string)o, out AudioClip clip))
             {
-                anCore.PlayClipAtSchedule(Host.transform, clip, 1, timecode, Output, SourcePrefab);
+                anCore.PlayClipScheduled(Host.transform, clip, 1, timecode, Output, SourcePrefab);
                 timecode += clip.length;
             }
     }
     public override void PlayScheduled(double timecode, params object[] args)
     {
         if (_SpeechBank.TryGetValue((string)args[0], out AudioClip clip))
-            anCore.PlayClipAtSchedule(Host.transform, clip, 1, timecode, Output, SourcePrefab);
+            anCore.PlayClipScheduled(Host.transform, clip, 1, timecode, Output, SourcePrefab);
     }
     public override void Stop()
     {

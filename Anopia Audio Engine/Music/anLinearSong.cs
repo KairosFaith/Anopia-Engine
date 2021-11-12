@@ -35,7 +35,7 @@ public class anLinearSong : IanSong
         if(introClip != null)
         {
             introLength = introClip.length;
-            anCore.PlayClipAtSchedule(transform, introClip, 1, startTime, Output, Mag.OneShotPrefab);
+            anCore.PlayClipScheduled(transform, introClip, 1, startTime, Output, Mag.OneShotPrefab);
         }
         NewCurrentSource();
         PlayScheduleMain(startTime + introLength, Mag.MainSection);
@@ -63,7 +63,7 @@ public class anLinearSong : IanSong
             {
                 if (beatcount == toPlay.BeatTostart)
                 {
-                    anCore.PlayClipAtSchedule(transform, toPlay.Stinger, 1, timeCode, Output, Mag.OneShotPrefab);
+                    anCore.PlayClipScheduled(transform, toPlay.Stinger, 1, timeCode, Output, Mag.OneShotPrefab);
                     NextSong(anSynchro.NextBar);
                     anSynchro.PlayOnBeat -= PlayStinger;
                 }
@@ -96,7 +96,7 @@ public class anLinearSong : IanSong
             {
                 if (beatcount == toPlay.BeatTostart)
                 {
-                    anCore.PlayClipAtSchedule(transform, toPlay.Stinger,1, timeCode, Output,Mag.OneShotPrefab);
+                    anCore.PlayClipScheduled(transform, toPlay.Stinger,1, timeCode, Output,Mag.OneShotPrefab);
                     NextSong(anSynchro.NextBar);
                     anSynchro.PlayOnBeat -= PlayStinger;
                 }
