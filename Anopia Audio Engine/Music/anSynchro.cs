@@ -17,7 +17,6 @@ public static class anSynchro//this is your new update engine
     static MonoBehaviour SynchroHost;
     public static void StartSynchro(MonoBehaviour host, TempoData tempo, Action<double>OnStart = null)
     {
-        isPlaying = true;
         Tempo = tempo;
         StartTime = AudioSettings.dspTime + Time.deltaTime;//start next frame
         host.StartCoroutine(Synchro(StartTime));
@@ -27,9 +26,11 @@ public static class anSynchro//this is your new update engine
     public static void StopSynchro()
     {
         SynchroHost.StopAllCoroutines();
+        isPlaying = false;
     }
     static IEnumerator Synchro(double startTime)
     {
+        isPlaying = true;
         _BeatCount = 0;
         _NextBeat = _NextBar = startTime;
         void Beat(double beatTimeCode)
@@ -52,7 +53,6 @@ public static class anSynchro//this is your new update engine
                 Beat(_NextBeat);
         }
         //Core.BroadcastEvent("OnSynchroStop", SynchroHost);
-        isPlaying = false;
         _BeatCount = 0;
     }
 }
