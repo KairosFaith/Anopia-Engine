@@ -1,20 +1,28 @@
 using System;
 using UnityEngine;
 using UnityEngine.Audio;
-public class anConductor : SingletonMonobehavior<anConductor>
+public class anConductor : MonoBehaviour
 {
+    anConductor _Instance;
+    public anConductor Instance => _Instance;
     IanSong CurrentSong;
     public AudioMixerGroup MainChannel;
     public AudioMixer MusicMixer;//for snapshots
     public AudioMixerGroup[] StemChannels;//for using stems
-    protected override void Awake()
+    protected void Awake()
     {
-        base.Awake();
-        DontDestroyOnLoad(gameObject);
+        if (_Instance == null)
+        {
+            _Instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+        else
+            Destroy(gameObject);
     }
-    protected override void OnDestroy()
+    protected void OnDestroy()
     {
-        base.OnDestroy();
+        if (_Instance == this)
+            _Instance = null;
     }
     public IanSong PlayNewSong(string songID)//play immediate
     {

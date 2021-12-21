@@ -49,7 +49,7 @@ public static class anSynchro//this is your new update engine
         while (isPlaying)
         {
             yield return new WaitForEndOfFrame();
-            if (AudioSettings.dspTime +Time.deltaTime > _NextBeat)//check 1 frame ahead
+            if (AudioSettings.dspTime +Time.deltaTime >= _NextBeat)//check 1 frame ahead
                 Beat(_NextBeat);
         }
         //Core.BroadcastEvent("OnSynchroStop", SynchroHost);

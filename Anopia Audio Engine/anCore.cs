@@ -59,7 +59,7 @@ public static class anCore
         }
         return layers.ToArray();
     }
-    public static anSourcerer PlayClipXYZ(Vector3 position, AudioClip clip, float volume, AudioMixerGroup output, GameObject prefab, Action<anSourcerer> setup = null, Action OnDone = null)
+    public static anSourcerer PlayClipAtPoint(Vector3 position, AudioClip clip, float volume, AudioMixerGroup output, GameObject prefab, Action<anSourcerer> setup = null, Action OnDone = null)
     {
         anSourcerer s = SetupSource(position, prefab, output, clip, volume);
         AudioSource a = s.audioSource;
