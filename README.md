@@ -5,5 +5,7 @@ Functions such as Audio Filters or pitch and volume randomisation can be set up 
 ## Sound Effects
 ### ADSR
 ### Transient Sounds
-## Dynamic Music
+## Dynamic Music System
+### Stem Music Transitions
+### Linear Music Transitions
 ### Synchro Events
