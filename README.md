@@ -9,7 +9,7 @@ Each type of sound effect or music implementation has a corresponding scriptable
 ### ADSR
 ### Transient Sounds
 #### ClipMag/OneShotEvent
-This Event uses the 'AudioSource.PlayOneShot' function on a persistent audio source.
+This Event uses the `AudioSource.PlayOneShot` function on a persistent audio source.
 #### ClipObjectMag
 ## Dynamic Music System
 ### Stem Music Transitions
