@@ -1,3 +1,4 @@
+# Readme under construction XD
 # Setting up
 Anopia Engine uses scriptable objects (called Mags) to hold reference data for your audio clips.
 Each type of sound effect or music implementation has a corresponding scriptable object.
