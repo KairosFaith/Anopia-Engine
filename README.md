@@ -11,9 +11,11 @@ In your gameplay script, call the `SetDriver(MonoBehaviour host, AudioMixerGroup
 ### Play and Stop Sounds
 To start and stop events using the driver, simply activate `anDriver.Play(string SoundID, params object[] args)` and `anDriver.Stop(string SoundID)`. The SoundID will be the name of the scriptable object used to Load the event.
 # Events
-Events are non MonoBehaviour classes used with the `anDriver` for your convenience, but they can be used on their own as well.
+`IanEvent`s are non MonoBehaviour classes used with the `anDriver` for your convenience, but they can be used on their own as well.
+### Transient Sound Events
 #### ClipMag/OneShotEvent
-This Event uses the [AudioSource.PlayOneShot](https://docs.unity3d.com/ScriptReference/AudioSource.PlayOneShot.html) function on a persistent audio source.
+Each ClipData set has an audioClip reference with its own gain adjustment. `VolumeFluctuation` controls the range of randomisation that occurs with the volume.
+This Event randomly selects an audio clip, randomises the volume and plays it using the attached AudioSource. See [AudioSource.PlayOneShot](https://docs.unity3d.com/ScriptReference/AudioSource.PlayOneShot.html) 
 ## Sound Effects
 ### ADSR
 ### Transient Sounds
