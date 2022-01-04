@@ -2,9 +2,14 @@
 This is a system created to make it easier for you to implement sound effects and music in Unity.
 There are no external code dependencies, as it only uses the native audio functions in unity.
 Functions such as Audio Filters or pitch and volume randomisation can be set up very easily with this system.
-## Setting up
+# Setting up
 Anopia Engine uses scriptable objects (called Mags) to hold reference data for your audio clips.
 Each type of sound effect or music implementation has a corresponding scriptable object.
+## Driver
+Manually Add `anDriver` as a component to your game object.
+In your gameplay script, call the `SetDriver(MonoBehaviour host, AudioMixerGroup output, params string[] IDs)` Function to assign the driver host, mixer output, and Load audio events using the names of the corresponding scriptable objects.
+## Events
+
 ## Sound Effects
 ### ADSR
 ### Transient Sounds
