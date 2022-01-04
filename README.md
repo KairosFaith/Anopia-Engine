@@ -15,7 +15,11 @@ To start and stop events using the driver, simply activate `anDriver.Play(string
 ### Transient Sound Events
 #### ClipMag/OneShotEvent
 Each ClipData set has an audioClip reference with its own gain adjustment. `VolumeFluctuation` controls the range of randomisation that occurs with the volume.
-This Event randomly selects an audio clip, randomises the volume and plays it using the attached AudioSource. See [AudioSource.PlayOneShot](https://docs.unity3d.com/ScriptReference/AudioSource.PlayOneShot.html) 
+This Event randomly selects an audio clip, randomises the volume and plays it using the attached AudioSource. See [AudioSource.PlayOneShot](https://docs.unity3d.com/ScriptReference/AudioSource.PlayOneShot.html)
+#### ClipObjectMag/ClipObjectEvent
+Inherits from `anClipMag`/`anClipObjectEvent`. In addition to clip and volume randomisation, you also have pitch, HighPass and Distortion randomisation.
+Add the 
+If you are using HighPass and Distortion randomisation, you MUST add the [AudioHighPassFilter](https://docs.unity3d.com/ScriptReference/AudioHighPassFilter.html) and [AudioDistortionFilter](https://docs.unity3d.com/ScriptReference/AudioDistortionFilter.html) components.
 ## Sound Effects
 ### ADSR
 ### Transient Sounds
