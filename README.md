@@ -27,15 +27,19 @@ You also have pitch, HighPass and Distortion randomisation in addition to clip a
 Use `Play` to play sound and `PlayScheduled` to play sound at a specified timecode.
 `args[0]` as float is used for volume scale, gain and randomisation still applies. `args[1]` as Vector3 is the position where the sound object is instantiated, the position will be the host object position if unspecified.
 Inherits from `anClipMag`/`anClipObjectEvent`.
-#### ADSR Event
+### ADSR Event
 This event plays the full ADSR sound envelop using audioClips for `Attack`, `Sustain` and `Release`.
 Start and stop playing the sound by using `Play` and `Stop` on the event/driver
 `Play` will play the Attack clip using [AudioSource.PlayOneShot](https://docs.unity3d.com/ScriptReference/AudioSource.PlayOneShot.html) and play the Sustain sound by assigning it to the audio source with loop enabled.
 `Stop` will stop the sustain sound at the audio source and play the release sound.
-#### Speech Event
+### Speech Event
 This event plays one or more audio clips sequentially.
 Use `Play` to play a sequence. `args` as string array will be used to fetch the audio clips by name, each clip will be scheduled to exactly after the previous clip in the sequence.
-Use `PlayScheduled` to play a specified clip at a specified timecode, can be used from the driver. `args[0]` as string is the name of the clip to be played.  
+Use `PlayScheduled` to play a specified clip at a specified timecode, can be used from the driver. `args[0]` as string is the name of the clip to be played.
+### LayerMag
+For lopp sounds that are meant to be played simultaneously, You can easily instantiate an array of `anSourcerer`s in runtime (you do not use `anDriver`).
+Simply assign an audio clip and the audio source prefab that is used to play it.
+All runtime adjustments are done using your own gameplay scripts.
 ## Dynamic Music System
 ### Stem Music Transitions
 ### Linear Music Transitions
