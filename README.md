@@ -17,12 +17,12 @@ To start and stop events using the driver, simply activate `anDriver.Play(string
 `IanEvent`s are non MonoBehaviour classes used with the `anDriver` for your convenience, but they can be used on their own as well.
 ### Transient Sound Events
 #### ClipMag/OneShotEvent
-Each ClipData set has an audioClip reference with its own gain adjustment. `VolumeFluctuation` controls the range of randomisation that occurs with the volume.
 This Event randomly selects an audio clip, randomises the volume and plays it using the attached AudioSource. See [AudioSource.PlayOneShot](https://docs.unity3d.com/ScriptReference/AudioSource.PlayOneShot.html)
+Each `ClipData` set has an audioClip reference with its own gain adjustment. `VolumeFluctuation` controls the range of randomisation that occurs with the volume.
 #### ClipObjectMag/ClipObjectEvent
-Inherits from `anClipMag`/`anClipObjectEvent`. In addition to clip and volume randomisation, you also have pitch, HighPass and Distortion randomisation.
-Add the 
-If you are using HighPass and Distortion randomisation, you MUST add the [AudioHighPassFilter](https://docs.unity3d.com/ScriptReference/AudioHighPassFilter.html) and [AudioDistortionFilter](https://docs.unity3d.com/ScriptReference/AudioDistortionFilter.html) components.
+This Event instantiates a new object every time you play a sound, this allows you to play sounds at any position and at any timecode.
+You also have pitch, HighPass and Distortion randomisation in addition to clip and volume randomisation. If you are using HighPass and Distortion randomisation, you MUST add the [AudioHighPassFilter](https://docs.unity3d.com/ScriptReference/AudioHighPassFilter.html) and [AudioDistortionFilter](https://docs.unity3d.com/ScriptReference/AudioDistortionFilter.html) components to the prefab.
+Inherits from `anClipMag`/`anClipObjectEvent`.
 ## Sound Effects
 ### ADSR
 ### Transient Sounds
