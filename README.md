@@ -2,6 +2,9 @@
 # Setting up
 Anopia Engine uses scriptable objects (called Mags) to hold reference data for your audio clips.
 Each type of sound effect or music implementation has a corresponding scriptable object.
+1 Decide what implementation you need and find the corresponding Mag to use
+2 Create the scriptable object in your unity assets.
+3 Assign the audio clips, sound object prefabs and any other settings to the scriptable object.
 ## Sourcerer
 Any Audio Source Game Object that is instantiated by the system will use the `anSourcerer` MonoBehaviour Class.
 Some scriptable objects will require you to set up prefabs that hold the AudioSource Component. Settings will need to be adjusted on the prefab component as well. (see ClipObjectMag/ADSRMag/LayerMag below)
@@ -13,7 +16,7 @@ If you are using a `OneShotEvent`(see below), you will need to manually create a
 In your gameplay script, call the `SetDriver(MonoBehaviour host, AudioMixerGroup output, params string[] IDs)` Function to assign the driver host, mixer output, and Load audio events using the names of the corresponding scriptable objects.
 ### Play and Stop Sounds
 To start and stop events using the driver, simply activate `anDriver.Play(string SoundID, params object[] args)` and `anDriver.Stop(string SoundID)`. The SoundID will be the name of the scriptable object used to Load the event.
-# Events
+# Sound Effects
 `IanEvent`s are non MonoBehaviour classes used with the `anDriver` for your convenience, but they can be used on their own as well.
 ### Transient Sound Events
 #### ClipMag/OneShotEvent
@@ -38,9 +41,13 @@ Use `Play` to play a sequence. `args` as string array will be used to fetch the 
 Use `PlayScheduled` to play a specified clip at a specified timecode, can be used from the driver. `args[0]` as string is the name of the clip to be played.
 ### LayerMag
 For lopp sounds that are meant to be played simultaneously, You can easily instantiate an array of `anSourcerer`s in runtime (you do not use `anDriver`).
-Simply assign an audio clip and the audio source prefab that is used to play it.
+Simply assign an audio clip and the audio source prefab that is used to play it.<br/>
 All runtime adjustments are done using your own gameplay scripts.
 ## Dynamic Music System
 ### Stem Music Transitions
 ### Linear Music Transitions
 ### Synchro Events
+# UI
+### Button
+
+### Slider
