@@ -64,7 +64,7 @@ All runtime adjustments are done using your own gameplay scripts.
 ## Slider
 * Implements sounds for [OnPointerEnter](https://docs.unity3d.com/2018.3/Documentation/ScriptReference/EventSystems.EventTrigger.OnPointerEnter.html), [OnPointerDown](https://docs.unity3d.com/2018.3/Documentation/ScriptReference/EventSystems.EventTrigger.OnPointerDown.html), [Slider.onValueChanged](https://docs.unity3d.com/2018.3/Documentation/ScriptReference/UI.Slider-onValueChanged.html), [OnPointerUp](https://docs.unity3d.com/2018.3/Documentation/ScriptReference/EventSystems.EventTrigger.OnPointerUp.html), [OnPointerExit](https://docs.unity3d.com/2018.3/Documentation/ScriptReference/EventSystems.EventTrigger.OnPointerExit.html)
 ### Setting up
-1 Create and set up the scriptable object
-2 Create the UI Elements on the canvas
-3 replace the default button/slider component with `anButton`/`anSlider`
-4 go to inspector debug mode, you should see a SoundID variable. Enter the name of the scriptable object
+<br/>1 Create and set up the scriptable object
+<br/>2 Create the UI Elements on the canvas
+<br/>3 replace the default button/slider component with `anButton`/`anSlider`
+<br/>4 go to inspector debug mode, you should see a SoundID variable. Enter the name of the scriptable object
