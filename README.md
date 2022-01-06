@@ -57,5 +57,5 @@ All runtime adjustments are done using your own gameplay scripts.
 ### Synchro Events
 # UI
 ### Button
-
+* Implements sounds for [Button.onClick](https://docs.unity3d.com/530/Documentation/ScriptReference/UI.Button-onClick.html), [OnPointerEnter](https://docs.unity3d.com/2019.1/Documentation/ScriptReference/UI.Selectable.OnPointerEnter.html) and [OnPointerExit](https://docs.unity3d.com/2018.3/Documentation/ScriptReference/UI.Selectable.OnPointerExit.html)
 ### Slider
