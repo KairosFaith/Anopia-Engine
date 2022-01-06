@@ -20,28 +20,35 @@ To start and stop events using the driver, simply activate `anDriver.Play(string
 `IanEvent`s are non MonoBehaviour classes used with the `anDriver` for your convenience, but they can be used on their own as well.
 ### Transient Sound Events
 #### ClipMag/OneShotEvent
-This Event randomly selects an audio clip, randomises the volume and plays it using the attached AudioSource. See [AudioSource.PlayOneShot](https://docs.unity3d.com/ScriptReference/AudioSource.PlayOneShot.html)
-Each `ClipData` set has an audioClip reference with its own gain adjustment. `VolumeFluctuation` controls the range of randomisation that occurs with the volume.
+* Randomly selects an audio clip, randomises the volume and plays it using the attached AudioSource. See [AudioSource.PlayOneShot](https://docs.unity3d.com/ScriptReference/AudioSource.PlayOneShot.html)
+
+<br/>Each `ClipData` set has an audioClip reference with its own gain adjustment. `VolumeFluctuation` controls the range of randomisation that occurs with the volume.
 Use `Play` to play sound. `args[0]` as float is used for volume scale, gain and randomisation still applies. `args[1]` as int will be used as an array key to access the audio clip.
 `Stop` will activate the Stop function on the audio source.
 #### ClipObjectMag/ClipObjectEvent
-This Event instantiates a new object every time you play a sound, this allows you to play sounds at any position and at any timecode.
-You also have pitch, HighPass and Distortion randomisation in addition to clip and volume randomisation. If you are using HighPass and Distortion randomisation, you MUST add the [AudioHighPassFilter](https://docs.unity3d.com/ScriptReference/AudioHighPassFilter.html) and [AudioDistortionFilter](https://docs.unity3d.com/ScriptReference/AudioDistortionFilter.html) components to the prefab.
-Use `Play` to play sound and `PlayScheduled` to play sound at a specified timecode.
+* Randomly selects an audio clip, randomises the volume and plays it with an instantiated audioSource for each transient.
+* You can play sounds at any position and at any timecode.
+* You also have pitch, HighPass and Distortion randomisation
+
+<br/>Use `Play` to play sound and `PlayScheduled` to play sound at a specified timecode.
 `args[0]` as float is used for volume scale, gain and randomisation still applies. `args[1]` as Vector3 is the position where the sound object is instantiated, the position will be the host object position if unspecified.
+If you are using HighPass and Distortion randomisation, you MUST add the [AudioHighPassFilter](https://docs.unity3d.com/ScriptReference/AudioHighPassFilter.html) and [AudioDistortionFilter](https://docs.unity3d.com/ScriptReference/AudioDistortionFilter.html) components to the prefab.
 Inherits from `anClipMag`/`anClipObjectEvent`.
 ### ADSR Event
-This event plays the full ADSR sound envelop using audioClips for `Attack`, `Sustain` and `Release`.
-Start and stop playing the sound by using `Play` and `Stop` on the event/driver
+* This event plays the full ADSR sound envelop using audioClips for `Attack`, `Sustain` and `Release`.
+
+<br/>Start and stop playing the sound by using `Play` and `Stop` on the event/driver
 `Play` will play the Attack clip using [AudioSource.PlayOneShot](https://docs.unity3d.com/ScriptReference/AudioSource.PlayOneShot.html) and play the Sustain sound by assigning it to the audio source with loop enabled.
 `Stop` will stop the sustain sound at the audio source and play the release sound.
 ### Speech Event
-This event plays one or more audio clips sequentially.
-Use `Play` to play a sequence. `args` as string array will be used to fetch the audio clips by name, each clip will be scheduled to exactly after the previous clip in the sequence.
+* This event plays one or more audio clips sequentially.
+
+<br/>Use `Play` to play a sequence. `args` as string array will be used to fetch the audio clips by name, each clip will be scheduled to exactly after the previous clip in the sequence.
 Use `PlayScheduled` to play a specified clip at a specified timecode, can be used from the driver. `args[0]` as string is the name of the clip to be played.
 ### LayerMag
-For lopp sounds that are meant to be played simultaneously, You can easily instantiate an array of `anSourcerer`s in runtime (you do not use `anDriver`).
-Simply assign an audio clip and the audio source prefab that is used to play it.<br/>
+* For loop sounds that are meant to be played simultaneously, You can easily instantiate an array of `anSourcerer`s in runtime (you do not use `anDriver`).
+
+<br/>Simply assign an audio clip and the audio source prefab that is used to play it.<br/>
 All runtime adjustments are done using your own gameplay scripts.
 ## Dynamic Music System
 ### Stem Music Transitions
