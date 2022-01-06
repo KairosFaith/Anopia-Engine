@@ -29,7 +29,7 @@ Use `Play` to play sound. `args[0]` as float is used for volume scale, gain and 
 #### ClipObjectMag/ClipObjectEvent
 * Randomly selects an audio clip, randomises the volume and plays it with an instantiated audioSource for each transient.
 * You can play sounds at any position and at any timecode.
-* You also have pitch, HighPass and Distortion randomisation
+* You also have [pitch](https://docs.unity3d.com/2018.3/Documentation/ScriptReference/AudioSource-pitch.html), [HighPassFilter.cutoffFrequency](https://docs.unity3d.com/2018.3/Documentation/ScriptReference/AudioHighPassFilter-cutoffFrequency.html) and [distortionLevel](https://docs.unity3d.com/2018.3/Documentation/ScriptReference/AudioDistortionFilter-distortionLevel.html) randomisation
 
 <br/>Use `Play` to play sound and `PlayScheduled` to play sound at a specified timecode. See [AudioSource.PlayScheduled](https://docs.unity3d.com/2018.3/Documentation/ScriptReference/AudioSource.PlayScheduled.html).
 `args[0]` as float is used for volume scale, gain and randomisation still applies. `args[1]` as Vector3 is the position where the sound object is instantiated, the position will be the host object position if unspecified.
