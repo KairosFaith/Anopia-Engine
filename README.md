@@ -1,10 +1,10 @@
 # Readme under construction XD
 # Setting up
 Anopia Engine uses scriptable objects (called Mags) to hold reference data for your audio clips.
-Each type of sound effect or music implementation has a corresponding scriptable object.
-1 Decide what implementation you need and find the corresponding Mag to use
-2 Create the scriptable object in your unity assets.
-3 Assign the audio clips, sound object prefabs and any other settings to the scriptable object.
+Each type of sound effect or music implementation has a corresponding scriptable object.<br/>
+1. Decide what implementation you need and find the corresponding Mag to use
+2. Create the scriptable object in your unity assets.
+3. Assign the audio clips, sound object prefabs and any other settings to the scriptable object.
 ## Sourcerer
 Any Audio Source Game Object that is instantiated by the system will use the `anSourcerer` MonoBehaviour Class.
 Some scriptable objects will require you to set up prefabs that hold the AudioSource Component. Settings will need to be adjusted on the prefab component as well. (see ClipObjectMag/ADSRMag/LayerMag below)
