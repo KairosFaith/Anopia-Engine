@@ -31,7 +31,7 @@ Use `Play` to play sound. `args[0]` as float is used for volume scale, gain and 
 * You can play sounds at any position and at any timecode.
 * You also have pitch, HighPass and Distortion randomisation
 
-<br/>Use `Play` to play sound and `PlayScheduled` to play sound at a specified timecode.
+<br/>Use `Play` to play sound and `PlayScheduled` to play sound at a specified timecode. See [AudioSource.PlayScheduled](https://docs.unity3d.com/2018.3/Documentation/ScriptReference/AudioSource.PlayScheduled.html).
 `args[0]` as float is used for volume scale, gain and randomisation still applies. `args[1]` as Vector3 is the position where the sound object is instantiated, the position will be the host object position if unspecified.
 If you are using HighPass and Distortion randomisation, you MUST add the [AudioHighPassFilter](https://docs.unity3d.com/ScriptReference/AudioHighPassFilter.html) and [AudioDistortionFilter](https://docs.unity3d.com/ScriptReference/AudioDistortionFilter.html) components to the prefab.
 Inherits from `anClipMag`/`anClipObjectEvent`.
@@ -45,7 +45,7 @@ Inherits from `anClipMag`/`anClipObjectEvent`.
 * This event plays one or more audio clips sequentially.
 
 <br/>Use `Play` to play a sequence. `args` as string array will be used to fetch the audio clips by name, each clip will be scheduled to exactly after the previous clip in the sequence.
-Use `PlayScheduled` to play a specified clip at a specified timecode, can be used from the driver. `args[0]` as string is the name of the clip to be played.
+Use `PlayScheduled` to play a specified clip at a specified timecode, can be used from the driver. `args[0]` as string is the name of the clip to be played.See [AudioSource.PlayScheduled](https://docs.unity3d.com/2018.3/Documentation/ScriptReference/AudioSource.PlayScheduled.html).
 ## Loop Layers
 ### LayerMag
 * For loop sounds that are meant to be played simultaneously, You can easily instantiate an array of `anSourcerer`s in runtime (you do not use `anDriver`).
