@@ -53,6 +53,8 @@ Use `PlayScheduled` to play a specified clip at a specified timecode, can be use
 <br/>Simply assign an audio clip and the audio source prefab that is used to play it.<br/>
 All runtime adjustments are done using your own gameplay scripts.
 # Dynamic Music System
+## Conductor
+`anConductor` handles all music functions and transitions.
 ## Stem Music Transitions
 ## Linear Music Transitions
 ### Synchro Events
