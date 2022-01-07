@@ -59,10 +59,14 @@ All runtime adjustments are done using your own gameplay scripts.
 ## Linear Music Transitions
 ### Synchro Events
 # UI
-## Button
-* Implements sounds for [OnPointerEnter](https://docs.unity3d.com/2018.3/Documentation/ScriptReference/EventSystems.EventTrigger.OnPointerEnter.html), [Button.onClick](https://docs.unity3d.com/2018.3/Documentation/ScriptReference/EventSystems.EventTrigger.OnPointerEnter.html), and [OnPointerExit](https://docs.unity3d.com/2018.3/Documentation/ScriptReference/EventSystems.EventTrigger.OnPointerExit.html)
-## Slider
-* Implements sounds for [OnPointerEnter](https://docs.unity3d.com/2018.3/Documentation/ScriptReference/EventSystems.EventTrigger.OnPointerEnter.html), [OnPointerDown](https://docs.unity3d.com/2018.3/Documentation/ScriptReference/EventSystems.EventTrigger.OnPointerDown.html), [Slider.onValueChanged](https://docs.unity3d.com/2018.3/Documentation/ScriptReference/UI.Slider-onValueChanged.html), [OnPointerUp](https://docs.unity3d.com/2018.3/Documentation/ScriptReference/EventSystems.EventTrigger.OnPointerUp.html), [OnPointerExit](https://docs.unity3d.com/2018.3/Documentation/ScriptReference/EventSystems.EventTrigger.OnPointerExit.html)
+## Interactable
+* `anInteractable` Implements sounds for [OnPointerEnter](https://docs.unity3d.com/2018.3/Documentation/ScriptReference/EventSystems.EventTrigger.OnPointerEnter.html), [OnPointerDown](https://docs.unity3d.com/2018.3/Documentation/ScriptReference/EventSystems.EventTrigger.OnPointerDown.html), [OnPointerUp](https://docs.unity3d.com/2018.3/Documentation/ScriptReference/EventSystems.EventTrigger.OnPointerUp.html), [OnPointerExit](https://docs.unity3d.com/2018.3/Documentation/ScriptReference/EventSystems.EventTrigger.OnPointerExit.html)
+
+<br/> You are not required to assign AudioClips for all the events as there is a null check.
+
+## Slider Interactable
+* `anSliderInteractable` Implements sounds for [OnPointerEnter](https://docs.unity3d.com/2018.3/Documentation/ScriptReference/EventSystems.EventTrigger.OnPointerEnter.html), [OnPointerDown](https://docs.unity3d.com/2018.3/Documentation/ScriptReference/EventSystems.EventTrigger.OnPointerDown.html), [Slider.onValueChanged](https://docs.unity3d.com/2018.3/Documentation/ScriptReference/UI.Slider-onValueChanged.html), [OnPointerUp](https://docs.unity3d.com/2018.3/Documentation/ScriptReference/EventSystems.EventTrigger.OnPointerUp.html), [OnPointerExit](https://docs.unity3d.com/2018.3/Documentation/ScriptReference/EventSystems.EventTrigger.OnPointerExit.html)
+* Inherits from `anInteractable`
 ### Setting up
 <br/>1 Create and set up the scriptable object
 <br/>2 Create the UI Elements on the canvas
