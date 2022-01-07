@@ -19,6 +19,7 @@ public class anSpeechEvent : IanEvent
     GameObject SourcePrefab;
     public anSpeechEvent(MonoBehaviour host, IanAudioMag mag, AudioMixerGroup output) : base(host, mag, output)
     {
+        Output = output;
         anSpeechMag Mag = (anSpeechMag)mag;
         Host = host;
         SourcePrefab = Mag.SourcePrefab;

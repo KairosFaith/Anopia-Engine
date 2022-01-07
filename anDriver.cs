@@ -5,9 +5,9 @@ public class anDriver : MonoBehaviour
 {
     MonoBehaviour _Host;
     AudioMixerGroup _Output;
-    public anSourcerer OneShotSource;
+    public AudioSource OneShotSource;
     public Dictionary<string, IanEvent> Events = new Dictionary<string, IanEvent>();
-    public anDriver(MonoBehaviour host, AudioMixerGroup output, params string[] IDs)
+    public void SetDriver(MonoBehaviour host, AudioMixerGroup output, params string[] IDs)
     {
         _Host = host;
         _Output = output;
@@ -19,7 +19,7 @@ public class anDriver : MonoBehaviour
         IanEvent e = anCore.NewEvent(_Host, SoundID, _Output);
         Events[SoundID] = e;
         if (e is anOneShotEvent eve)
-            eve.audioSource = OneShotSource.audioSource;
+            eve.audioSource = OneShotSource;
     }
     public void Play(string SoundID, params object[] args)
     {
