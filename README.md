@@ -55,9 +55,9 @@ All runtime adjustments are done using your own gameplay scripts.
 # Dynamic Music System
 ## Conductor
 `anConductor` handles all music functions and transitions.
+## Synchro Event System
 ## Stem Music Transitions
 ## Linear Music Transitions
-### Synchro Events
 # UI
 ## Interactable
 * `anInteractable` Implements sounds for [OnPointerEnter](https://docs.unity3d.com/2018.3/Documentation/ScriptReference/EventSystems.EventTrigger.OnPointerEnter.html), [OnPointerDown](https://docs.unity3d.com/2018.3/Documentation/ScriptReference/EventSystems.EventTrigger.OnPointerDown.html), [OnPointerUp](https://docs.unity3d.com/2018.3/Documentation/ScriptReference/EventSystems.EventTrigger.OnPointerUp.html), [OnPointerExit](https://docs.unity3d.com/2018.3/Documentation/ScriptReference/EventSystems.EventTrigger.OnPointerExit.html)
