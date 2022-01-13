@@ -1,38 +1,33 @@
 ﻿using UnityEngine;
 using UnityEngine.EventSystems;
 [RequireComponent(typeof(AudioSource))]
-public class anInteractable : MonoBehaviour, IPointerEnterHandler, IPointerDownHandler, IPointerUpHandler, IPointerExitHandler
+public class anClickInteractable : MonoBehaviour, IPointerEnterHandler,IPointerClickHandler,IPointerExitHandler
 {
     public string SoundID;
     public AudioSource Source;
-    ClipData Enter, Down, Up, Exit;
-    public void Start()
+    ClipData Enter, Interact, Exit;
+    void Start()
     {
         Source = GetComponent<AudioSource>();
         Source.ignoreListenerPause = true;
         anInteractableMag mag = (anInteractableMag)anCore.FetchMag(SoundID);
         Setup(mag);
     }
-    public virtual void Setup(anInteractableMag mag)
+    public void Setup(anInteractableMag mag)
     {
         Enter = mag.Enter;
-        Down = mag.Down;
-        Up = mag.Up;
+        Interact = mag.Interact;
         Exit = mag.Exit;
     }
-    public virtual void OnPointerEnter(PointerEventData eventData)
+    public void OnPointerEnter(PointerEventData eventData)
     {
         Play(Enter);
     }
-    public virtual void OnPointerDown(PointerEventData eventData)
+    public void OnPointerClick(PointerEventData eventData)
     {
-        Play(Down);
+        Play(Interact);
     }
-    public virtual void OnPointerUp(PointerEventData eventData)
-    {
-        Play(Up);
-    }
-    public virtual void OnPointerExit(PointerEventData eventData)
+    public void OnPointerExit(PointerEventData eventData)
     {
         Play(Exit);
     }
