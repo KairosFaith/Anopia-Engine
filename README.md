@@ -59,16 +59,19 @@ All runtime adjustments are done using your own gameplay scripts.
 ## Stem Music Transitions
 ## Linear Music Transitions
 # UI
+### Interactable Mag
+This is the scriptable object that is used by the following scripts to load the AudioClip reference.
 ## Interactable
 * `anInteractable` Implements sounds for [OnPointerEnter](https://docs.unity3d.com/2018.3/Documentation/ScriptReference/EventSystems.EventTrigger.OnPointerEnter.html), [OnPointerDown](https://docs.unity3d.com/2018.3/Documentation/ScriptReference/EventSystems.EventTrigger.OnPointerDown.html), [OnPointerUp](https://docs.unity3d.com/2018.3/Documentation/ScriptReference/EventSystems.EventTrigger.OnPointerUp.html), [OnPointerExit](https://docs.unity3d.com/2018.3/Documentation/ScriptReference/EventSystems.EventTrigger.OnPointerExit.html)
 
 <br/> You are not required to assign AudioClips for all the events as there is a null check.
 
 ## Slider Interactable
-* `anSliderInteractable` Implements sounds for [OnPointerEnter](https://docs.unity3d.com/2018.3/Documentation/ScriptReference/EventSystems.EventTrigger.OnPointerEnter.html), [OnPointerDown](https://docs.unity3d.com/2018.3/Documentation/ScriptReference/EventSystems.EventTrigger.OnPointerDown.html), [Slider.onValueChanged](https://docs.unity3d.com/2018.3/Documentation/ScriptReference/UI.Slider-onValueChanged.html), [OnPointerUp](https://docs.unity3d.com/2018.3/Documentation/ScriptReference/EventSystems.EventTrigger.OnPointerUp.html), [OnPointerExit](https://docs.unity3d.com/2018.3/Documentation/ScriptReference/EventSystems.EventTrigger.OnPointerExit.html)
+* `anSliderInteractable` Implements sounds for [OnPointerEnter](https://docs.unity3d.com/2018.3/Documentation/ScriptReference/EventSystems.EventTrigger.OnPointerEnter.html), [OnPointerDown](https://docs.unity3d.com/2018.3/Documentation/ScriptReference/EventSystems.EventTrigger.OnPointerDown.html), [Slider.onValueChanged](https://docs.unity3d.com/2018.3/Documentation/ScriptReference/UI.Slider-onValueChanged.html) using `Interact` clip, [OnPointerUp](https://docs.unity3d.com/2018.3/Documentation/ScriptReference/EventSystems.EventTrigger.OnPointerUp.html), [OnPointerExit](https://docs.unity3d.com/2018.3/Documentation/ScriptReference/EventSystems.EventTrigger.OnPointerExit.html)
 * Inherits from `anInteractable`
+## Click Interactable
+* `anClickInteractable` Implements sounds for [OnPointerEnter](https://docs.unity3d.com/2018.3/Documentation/ScriptReference/EventSystems.EventTrigger.OnPointerEnter.html), [OnPointerClick](https://docs.unity3d.com/2018.3/Documentation/ScriptReference/EventSystems.EventTrigger.OnPointerClick.html) using `Interact` clip, [OnPointerExit](https://docs.unity3d.com/2018.3/Documentation/ScriptReference/EventSystems.EventTrigger.OnPointerExit.html)
 ### Setting up
-<br/>1 Create and set up the scriptable object
-<br/>2 Create the UI Elements on the canvas
-<br/>3 replace the default button/slider component with `anButton`/`anSlider`
-<br/>4 go to inspector debug mode, you should see a SoundID variable. Enter the name of the scriptable object
+<br/>1 Create an `anInteractableMag` scriptable object and assign the audio clips
+<br/>2 Add the script to the UI object
+<br/>3 Enter the name of your scriptable object into `SoundID`
