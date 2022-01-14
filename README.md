@@ -53,9 +53,14 @@ Use `PlayScheduled` to play a specified clip at a specified timecode, can be use
 <br/>Simply assign an audio clip and the audio source prefab that is used to play it.<br/>
 All runtime adjustments are done using your own gameplay scripts.
 # Dynamic Music System
+## Synchro Event System
+The Synchro synchronises all music beats and events to the (AudioSettings.dspTime)[https://docs.unity3d.com/ScriptReference/AudioSettings-dspTime.html].
+It checks for the next beat 1 frame ahead of the current (AudioSettings.dspTime)[https://docs.unity3d.com/ScriptReference/AudioSettings-dspTime.html].
+* Activating `StartSynchro` requires tempo data and can be done directly or using `anConductor` if you have music. 
+* You can synchronize game events using the `PlayOnBeat` delegate which will activate 1 frame ahead, this can be used to synchronise sounds using (AudioSource.PlayScheduled)[https://docs.unity3d.com/ScriptReference/AudioSource.PlayScheduled.html].
+* You can check the time code for the `NextBeat` and `NextBar` at any time. You do not use AudioSettings.dspTime .
 ## Conductor
 `anConductor` handles all music functions and transitions.
-## Synchro Event System
 ## Stem Music Transitions
 ## Linear Music Transitions
 # UI
