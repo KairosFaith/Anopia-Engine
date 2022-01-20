@@ -10,7 +10,7 @@ Each type of sound effect or music implementation has a corresponding scriptable
 Any Audio Source Game Object that is instantiated by the system will use the `anSourcerer` MonoBehaviour Class.
 Some scriptable objects will require you to set up prefabs that hold the AudioSource Component. Settings will need to be adjusted on the prefab component as well. (see ClipObjectMag/ADSRMag/LayerMag below)
 ## Driver
-### In Editor
+### Set up In Editor
 Manually Add `anDriver` as a component to your game object.
 If you are using a `OneShotEvent`(see below), you will need to manually create and assign an audio source too. This Audio Source will be used to play all `OneShotEvent`s assigned to the driver.
 ### In Runtime
@@ -50,8 +50,10 @@ Use `PlayScheduled` to play a specified clip at a specified timecode, can be use
 ### LayerMag
 * For loop sounds that are meant to be played simultaneously, You can easily instantiate an array of `anSourcerer`s in runtime (you do not use `anDriver`).
 
-<br/>Simply assign an audio clip and the audio source prefab that is used to play it.<br/>
-All runtime adjustments are done using your own gameplay scripts.
+<br/>Add an array of `anSourcerer` in your MonoBehaviour script
+<br/>In the `anLayerMag` Simply assign an audio clip and the audio source prefab that is used to play it.
+<br/>Use `anCore.SetLayers(MonoBehaviour host, string SoundID, AudioMixerGroup output)` to instantiate all the prefabs in runtime.
+<br/>All runtime adjustments are done using your own gameplay scripts.
 # Dynamic Music System
 ## Synchro Event System
 The Synchro synchronises all music beats and events to the (AudioSettings.dspTime)[https://docs.unity3d.com/ScriptReference/AudioSettings-dspTime.html].
