@@ -7,14 +7,7 @@ public class anStemMusicMag : IanMusicMag
 {
     public override SongForm Structure => SongForm.Stem;
     public StemData[] Stems;
-    public GameObject LoopPrefab;
-    public Dictionary<AudioMixerGroup, StemData> GetStems()
-    {
-        Dictionary<AudioMixerGroup, StemData> references = new Dictionary<AudioMixerGroup, StemData>();
-        foreach (StemData s in Stems)
-            references.Add(s.Channel, s);
-        return references;
-    }
+    public anSourcerer LoopPrefab;
 }
 [Serializable]
 public class StemData

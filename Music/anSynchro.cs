@@ -32,7 +32,8 @@ public static class anSynchro//this is your new update engine
     {
         isPlaying = true;
         _BeatCount = 0;
-        _NextBeat = _NextBar = startTime;
+        _NextBeat = startTime;
+        _NextBar = startTime + Tempo.BarLength;
         void Beat(double beatTimeCode)
         {
             _BeatCount++;
@@ -76,7 +77,7 @@ public abstract class IanMusicMag : IanAudioMag
 {
     public TempoData Tempo;
     public abstract SongForm Structure { get; }
-    public override IanEvent LoadMag(MonoBehaviour host, AudioMixerGroup output)
+    public override IanEvent LoadMag(MonoBehaviour driver, AudioMixerGroup output)
     {
         throw new System.NotImplementedException();
     }
@@ -88,7 +89,7 @@ public enum SongForm
 }
 public abstract class IanSong : MonoBehaviour
 {
-    public abstract void StopCue(double stopTime);
+    public abstract void StopOnCue(double stopTime);
     public abstract void StopImmediate();
     public abstract void Play(double startTime);
     public abstract void FadeIn(float t);

@@ -25,30 +25,28 @@ public static class anCore
         anClipMag mag = (anClipMag)FetchMag(SoundId);
         return mag.Data[Key];
     }
-    public static IanEvent NewEvent(MonoBehaviour host, string SoundID, AudioMixerGroup output)
+    public static IanEvent NewEvent(MonoBehaviour driver, string SoundID, AudioMixerGroup output)
     {
         IanAudioMag mag = FetchMag(SoundID);
-        return mag.LoadMag(host, output);
+        return mag.LoadMag(driver, output);
     }
-    static anSourcerer SetupSource(Vector3 position, GameObject prefab, AudioMixerGroup output, AudioClip clip, float volume)
+    static anSourcerer SetupSource(Vector3 position, anSourcerer prefab, AudioMixerGroup output, AudioClip clip, float volume)
     {
-        GameObject newg = UnityEngine.Object.Instantiate(prefab, position, Quaternion.identity);
-        anSourcerer s = newg.GetComponent<anSourcerer>();
+        anSourcerer s = UnityEngine.Object.Instantiate(prefab, position, Quaternion.identity);
         AudioSource a = s.audioSource;
         a.outputAudioMixerGroup = output;
         a.clip = clip;
         a.volume = volume;
         return s;
     }
-    public static anSourcerer[] SetLayers(MonoBehaviour host, string SoundID, AudioMixerGroup output)
+    public static anSourcerer[] SetLayers(MonoBehaviour driver, string SoundID, AudioMixerGroup output)
     {
         anLayerMag mag = (anLayerMag)FetchMag(SoundID);
-        Transform t = host.transform;
+        Transform t = driver.transform;
         List<anSourcerer> layers = new List<anSourcerer>();
         foreach(LayerData L in mag.Layers)
         {
-            GameObject newg = UnityEngine.Object.Instantiate(L.SourcePrefab, t);
-            anSourcerer s = newg.GetComponent<anSourcerer>();
+            anSourcerer s = UnityEngine.Object.Instantiate(L.SourcePrefab, t);
             AudioSource a = s.audioSource;
             a.outputAudioMixerGroup = output;
             a.clip = L.Clip;
@@ -59,7 +57,7 @@ public static class anCore
         }
         return layers.ToArray();
     }
-    public static anSourcerer PlayClipAtPoint(Vector3 position, AudioClip clip, float volume, AudioMixerGroup output, GameObject prefab, Action<anSourcerer> setup = null, Action OnDone = null)
+    public static anSourcerer PlayClipAtPoint(Vector3 position, AudioClip clip, float volume, AudioMixerGroup output, anSourcerer prefab, Action<anSourcerer> setup = null, Action OnDone = null)
     {
         anSourcerer s = SetupSource(position, prefab, output, clip, volume);
         AudioSource a = s.audioSource;
@@ -68,10 +66,9 @@ public static class anCore
         s.StartCoroutine(DeleteWhenDone(a, OnDone));
         return s;
     }
-    public static anSourcerer PlayClipScheduled(Transform parent, AudioClip clip, float volume, double startTime, AudioMixerGroup output, GameObject prefab, Action<anSourcerer> setup = null)
+    public static anSourcerer PlayClipScheduled(Transform parent, AudioClip clip, float volume, double startTime, AudioMixerGroup output, anSourcerer prefab, Action<anSourcerer> setup = null)
     {
-        GameObject newg = UnityEngine.Object.Instantiate(prefab, parent);
-        anSourcerer s = newg.GetComponent<anSourcerer>();
+        anSourcerer s = UnityEngine.Object.Instantiate(prefab, parent);
         AudioSource a = s.audioSource;
         a.outputAudioMixerGroup = output;
         a.clip = clip;
@@ -117,7 +114,7 @@ public static class anCore
 }
 public abstract class IanAudioMag : ScriptableObject
 {
-    public abstract IanEvent LoadMag(MonoBehaviour host, AudioMixerGroup output);
+    public abstract IanEvent LoadMag(MonoBehaviour driver, AudioMixerGroup output);
 }
 [Serializable]
 public class ClipData

@@ -6,13 +6,13 @@ public class anLinearMusicMag : IanMusicMag
     public AudioClip Intro,MainSection;
     public SongSection[] Sections;
     public SongSection Final;
-    public GameObject LoopPrefab, OneShotPrefab;
+    public anSourcerer LoopPrefab, OneShotPrefab;
     public override SongForm Structure =>SongForm.Linear;
 }
 [Serializable]
 public class SongSection
 {
-    public AudioClip Stinger, Loop;
+    public AudioClip Section,Stinger;
     //stingers should be at most 1 bar before new section
-    public int BeatTostart;
+    public int BeatToStart;
 }

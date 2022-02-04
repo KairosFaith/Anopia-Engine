@@ -12,11 +12,7 @@ public class anStemSong : IanSong
         foreach (anSourcerer s in SourceHandlers)
             ChangeValue += (float v) =>
                 s.audioSource.volume = v;
-        ondone += () =>
-        {
-            Destroy(gameObject);
-            anSynchro.StopSynchro();
-        };
+        ondone += () => Destroy(gameObject);
         StartCoroutine(anCore.FadeValue(t, 1, 0, ChangeValue, ondone));
     }
     public override void Play(double startTime)
@@ -24,7 +20,7 @@ public class anStemSong : IanSong
         foreach (anSourcerer s in SourceHandlers)
             s.audioSource.PlayScheduled(startTime);
     }
-    public override void StopCue(double stopTime)
+    public override void StopOnCue(double stopTime)
     {
         foreach (anSourcerer s in SourceHandlers)
         {
@@ -43,19 +39,18 @@ public class anStemSong : IanSong
                 s.audioSource.volume = v;
         StartCoroutine(anCore.FadeValue(t, 0, 1, ChangeValue));
     }
-    public void Setup(MonoBehaviour host, IanMusicMag mag, AudioMixerGroup[] busses)
+    public void Setup(IanMusicMag mag)
     {
         Mag = (anStemMusicMag)mag;
-        Dictionary<AudioMixerGroup, StemData> stems = Mag.GetStems();
-        foreach(KeyValuePair<AudioMixerGroup, StemData> p in stems)
+        StemData[] Stems = Mag.Stems;
+        foreach(StemData data in Stems)
         {
-            anSourcerer s = Instantiate(Mag.LoopPrefab, transform).GetComponent<anSourcerer>();
+            anSourcerer s = Instantiate(Mag.LoopPrefab, transform);
             AudioSource a = s.audioSource;
-            StemData data = p.Value;
             a.clip = data.Clip;
             a.panStereo = data.Pan;
             a.volume = 1;
-            a.loop = true;
+            a.outputAudioMixerGroup = data.Channel;
             SourceHandlers.Add(s);
         }
     }

@@ -8,7 +8,7 @@ using UnityEditor;
 [CreateAssetMenu(fileName = "ClipObjectMag", menuName = "AnopiaEngine/ClipObjectMag", order = 2)]
 public class anClipObjectMag : anClipMag
 {
-    public GameObject SourcePrefab;
+    public anSourcerer SourcePrefab;
     [Range(0, 1)]
     public float MinPitch = 1;
     [Range(1, 2)]
@@ -22,14 +22,14 @@ public class anClipObjectMag : anClipMag
     [HideInInspector]
     public float MinHighPass = 10, MaxHighPass = 22000;
     //TODO add more effects
-    public override IanEvent LoadMag(MonoBehaviour host, AudioMixerGroup output)
+    public override IanEvent LoadMag(MonoBehaviour driver, AudioMixerGroup output)
     {
-        return new anClipObjectEvent(host, this, output);
+        return new anClipObjectEvent(driver, this, output);
     }
 }
 public class anClipObjectEvent : IanEvent
 {
-    public GameObject SourcePrefab;
+    public anSourcerer SourcePrefab;
     public ClipData[] Data;
     List<ClipData> RandomBag = new List<ClipData>();
     float VolumeFlux;
@@ -43,8 +43,8 @@ public class anClipObjectEvent : IanEvent
     public float MinHighPass;
     public float MaxHighPass;
     AudioMixerGroup Output;
-    MonoBehaviour Host;
-    public anClipObjectEvent(MonoBehaviour host, IanAudioMag mag, AudioMixerGroup output) : base(host, mag, output)
+    MonoBehaviour Driver;
+    public anClipObjectEvent(MonoBehaviour driver, IanAudioMag mag, AudioMixerGroup output) : base(driver, mag, output)
     {
         anClipObjectMag Mag = (anClipObjectMag)mag;
         Data = Mag.Data;
@@ -66,7 +66,7 @@ public class anClipObjectEvent : IanEvent
         //TODO add more effects
         MaxPitch = Mag.MaxPitch;
         Output = output;
-        Host = host;
+        Driver = driver;
     }
     void SetupPlay(out int key, out Vector3 pos, out AudioClip clip, out float vol, out Action<anSourcerer> setup, params object[] args)
     {
@@ -76,8 +76,8 @@ public class anClipObjectEvent : IanEvent
         ClipData toPlay = Data[key];
         clip = toPlay.Clip;
         vol = toPlay.Gain;
-        if (args.Length > 0)
-            vol *= (float)args[0];//scale volume
+        if (args.Length > 1)
+            vol *= (float)args[1];//scale volume
         vol += UnityEngine.Random.Range(-VolumeFlux, VolumeFlux);
         float p = UnityEngine.Random.Range(MinPitch, MaxPitch);
         setup = (s) =>
@@ -102,7 +102,7 @@ public class anClipObjectEvent : IanEvent
             };
         }
         //TODO add more effects
-        pos = args.Length < 2 ? Host.transform.position : (Vector3)args[1];
+        pos = args.Length > 0 ? Driver.transform.position : (Vector3)args[0];
     }
     public override void Play(params object[] args)//vector3, volume
     {
@@ -113,7 +113,7 @@ public class anClipObjectEvent : IanEvent
     public override void PlayScheduled(double timecode, params object[] args)
     {
         SetupPlay(out int keytoremove, out Vector3 pos, out AudioClip clip, out float vol, out Action<anSourcerer> setup, args);
-        anCore.PlayClipScheduled(Host.transform, clip, vol,timecode, Output, SourcePrefab, setup);
+        anCore.PlayClipScheduled(Driver.transform, clip, vol,timecode, Output, SourcePrefab, setup);
         RandomBag.RemoveAt(keytoremove);
     }
     public override void Stop()

@@ -5,23 +5,23 @@ using UnityEngine.Audio;
 public class anSpeechMag : IanAudioMag
 {
     public AudioClip[] Clips;
-    public GameObject SourcePrefab;
-    public override IanEvent LoadMag(MonoBehaviour host, AudioMixerGroup output)
+    public anSourcerer SourcePrefab;
+    public override IanEvent LoadMag(MonoBehaviour driver, AudioMixerGroup output)
     {
-        return new anSpeechEvent(host, this, output);
+        return new anSpeechEvent(driver, this, output);
     }
 }
 public class anSpeechEvent : IanEvent
 {
     Dictionary<string, AudioClip> _SpeechBank = new Dictionary<string, AudioClip>();
-    MonoBehaviour Host;
+    MonoBehaviour Driver;
     AudioMixerGroup Output;
-    GameObject SourcePrefab;
-    public anSpeechEvent(MonoBehaviour host, IanAudioMag mag, AudioMixerGroup output) : base(host, mag, output)
+    anSourcerer SourcePrefab;
+    public anSpeechEvent(MonoBehaviour driver, IanAudioMag mag, AudioMixerGroup output) : base(driver, mag, output)
     {
         Output = output;
         anSpeechMag Mag = (anSpeechMag)mag;
-        Host = host;
+        Driver = driver;
         SourcePrefab = Mag.SourcePrefab;
         foreach (AudioClip c in Mag.Clips)
             _SpeechBank.Add(c.name, c);
@@ -32,14 +32,14 @@ public class anSpeechEvent : IanEvent
         foreach(object o in args)
             if(_SpeechBank.TryGetValue((string)o, out AudioClip clip))
             {
-                anCore.PlayClipScheduled(Host.transform, clip, 1, timecode, Output, SourcePrefab);
+                anCore.PlayClipScheduled(Driver.transform, clip, 1, timecode, Output, SourcePrefab);
                 timecode += clip.length;
             }
     }
     public override void PlayScheduled(double timecode, params object[] args)
     {
         if (_SpeechBank.TryGetValue((string)args[0], out AudioClip clip))
-            anCore.PlayClipScheduled(Host.transform, clip, 1, timecode, Output, SourcePrefab);
+            anCore.PlayClipScheduled(Driver.transform, clip, 1, timecode, Output, SourcePrefab);
     }
     public override void Stop()
     {

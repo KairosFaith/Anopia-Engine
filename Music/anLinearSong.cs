@@ -13,7 +13,7 @@ public class anLinearSong : IanSong
     }
     void NewCurrentSource()
     {
-        CurrentMainSource = Instantiate(Mag.LoopPrefab, transform).GetComponent<anSourcerer>();
+        CurrentMainSource = Instantiate(Mag.LoopPrefab, transform);
         CurrentMainSource.audioSource.outputAudioMixerGroup = Output;
     }
     void StopCurrentSource(double stopTime)
@@ -54,14 +54,14 @@ public class anLinearSong : IanSong
             CurrentMainSource.StartCoroutine(anCore.DeleteWhenDone(toDestroy, timeCode));
             NewCurrentSource();
             AudioSource a = CurrentMainSource.audioSource;
-            a.clip = toPlay.Loop;
+            a.clip = toPlay.Section;
             a.PlayScheduled(timeCode);
         };
         if (toPlay.Stinger != null)
         {
             void PlayStinger(int beatcount, double timeCode)
             {
-                if (beatcount == toPlay.BeatTostart)
+                if (beatcount == toPlay.BeatToStart)
                 {
                     anCore.PlayClipScheduled(transform, toPlay.Stinger, 1, timeCode, Output, Mag.OneShotPrefab);
                     NextSong(anSynchro.NextBar);
@@ -79,24 +79,21 @@ public class anLinearSong : IanSong
         void NextSong(double timeCode)
         {
             StopCurrentSource(timeCode);
-            NewCurrentSource();
-            PlayScheduleMain(timeCode,toPlay.Loop); 
-            AudioSource a = CurrentMainSource.audioSource;
-            transform.DetachChildren();
-            Destroy(gameObject);
             void onDone()
             {
                 anSynchro.StopSynchro();
+                Destroy(gameObject);
             };
-            CurrentMainSource.StartCoroutine(anCore.DeleteWhenDone(a, onDone));
+            anSourcerer a = anCore.PlayClipScheduled(transform, toPlay.Section, 1, timeCode, Output, Mag.OneShotPrefab);
+            a.StartCoroutine(anCore.DeleteWhenDone(a.audioSource, onDone));
         };
         if (toPlay.Stinger != null)
         {
             void PlayStinger(int beatcount, double timeCode)
             {
-                if (beatcount == toPlay.BeatTostart)
+                if (beatcount == toPlay.BeatToStart)
                 {
-                    anCore.PlayClipScheduled(transform, toPlay.Stinger,1, timeCode, Output,Mag.OneShotPrefab);
+                    anCore.PlayClipScheduled(transform, toPlay.Stinger,1f, timeCode, Output,Mag.OneShotPrefab);
                     NextSong(anSynchro.NextBar);
                     anSynchro.PlayOnBeat -= PlayStinger;
                 }
@@ -106,7 +103,7 @@ public class anLinearSong : IanSong
         else
             NextSong(anSynchro.NextBar);
     }
-    public override void StopCue(double stopTime)
+    public override void StopOnCue(double stopTime)
     {
         StopCurrentSource(stopTime);
         transform.DetachChildren();
@@ -126,11 +123,7 @@ public class anLinearSong : IanSong
         {
             s.volume = v;
         };
-        ondone += () => 
-        { 
-            Destroy(gameObject);
-            anSynchro.StopSynchro();
-        };
+        ondone += () => Destroy(gameObject);
         StartCoroutine(anCore.FadeValue(t, 1, 0, Fade, ondone));
     }
     public override void Mute(bool toMute)
@@ -139,6 +132,6 @@ public class anLinearSong : IanSong
     }
     public override void FadeIn(float t)
     {
-        throw new NotImplementedException("Fade in not available for Linear Intro Song");
+        throw new NotImplementedException("Fade in not available for Linear Song Intro");
     }
 }

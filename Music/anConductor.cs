@@ -3,12 +3,14 @@ using UnityEngine;
 using UnityEngine.Audio;
 public class anConductor : MonoBehaviour
 {
-    anConductor _Instance;
-    public anConductor Instance => _Instance;
-    IanSong CurrentSong;
-    public AudioMixerGroup MainChannel;
-    public AudioMixer MusicMixer;//for snapshots
-    public AudioMixerGroup[] StemChannels;//for using stems
+    static anConductor _Instance;
+    public static anConductor Instance => _Instance;
+    IanSong _CurrentSong;
+    //call this for snapshots and routing
+    public AudioMixer MusicMixer;
+    //for debug mode or put public
+    public int BeatCount;
+    double LastBeat,NextBeat, NextBar;
     protected void Awake()
     {
         if (_Instance == null)
@@ -19,6 +21,16 @@ public class anConductor : MonoBehaviour
         else
             Destroy(gameObject);
     }
+    private void Start()
+    {
+        anSynchro.PlayOnBeat += (int beatcount, double timecode) => 
+        { 
+            BeatCount = beatcount;
+            LastBeat = timecode;
+            NextBeat = anSynchro.NextBeat;
+            NextBar = anSynchro.NextBar;
+        };
+    }
     protected void OnDestroy()
     {
         if (_Instance == this)
@@ -26,32 +38,32 @@ public class anConductor : MonoBehaviour
     }
     public IanSong PlayNewSong(string songID)//play immediate
     {
-        if (CurrentSong != null)
+        if (_CurrentSong != null)
         {
-            CurrentSong.StopImmediate();
+            _CurrentSong.StopImmediate();
             anSynchro.StopSynchro();
         }
         IanMusicMag mag = (IanMusicMag)anCore.FetchMag(songID);
         NewSong(mag);
-        anSynchro.StartSynchro(this, mag.Tempo, CurrentSong.Play);
-        return CurrentSong;
+        anSynchro.StartSynchro(this, mag.Tempo, _CurrentSong.Play);
+        return _CurrentSong;
     }
     public void CueSong(string songID, double timeCode)//user defined cue, assume same tempo
     {
-        if (CurrentSong != null)
-            CurrentSong.StopCue(timeCode);
+        if (_CurrentSong != null)
+            _CurrentSong.StopOnCue(timeCode);
         IanMusicMag mag = (IanMusicMag)anCore.FetchMag(songID);
         NewSong(mag);
-        CurrentSong.Play(timeCode);
+        _CurrentSong.Play(timeCode);
     }
     public void CueSection(int key)
     {
-        if (CurrentSong is anLinearSong ls)
+        if (_CurrentSong is anLinearSong ls)
             ls.CueSection(key);
     }
     public void CueFinal()
     {
-        if (CurrentSong is anLinearSong ls)
+        if (_CurrentSong is anLinearSong ls)
             ls.CueFinal();
     }
     void NewSong(IanMusicMag mag)
@@ -64,43 +76,43 @@ public class anConductor : MonoBehaviour
         {
             case SongForm.Linear:
                 anLinearSong ls = g.AddComponent<anLinearSong>();
-                ls.Setup(mag, MainChannel);
-                CurrentSong = ls;
+                ls.Setup(mag, MusicMixer.outputAudioMixerGroup);
+                _CurrentSong = ls;
                 break;
             case SongForm.Stem:
                 anStemSong stem = g.AddComponent<anStemSong>();
-                stem.Setup(this, mag, StemChannels);
-                CurrentSong = stem;
+                stem.Setup(mag);
+                _CurrentSong = stem;
                 break;
         }
     }
     public void Stop(double stopTime)//user defined cue
     {
-        CurrentSong.StopCue(stopTime);
+        _CurrentSong.StopOnCue(stopTime);
         anSynchro.StopSynchro();
     }
     public void Crossfade(float t, string songID)
     {
-        FadeOut(t, ()=> FadeIn(t, songID));
+        _CurrentSong.FadeOut(t, ()=> FadeIn(t, songID));
     }
     public void FadeOut(float t, Action onDone)
     {
-        CurrentSong.FadeOut(t, onDone); 
+        _CurrentSong.FadeOut(t, onDone); 
         anSynchro.StopSynchro();
     }
     public void FadeIn(float t, string songID)
     {
         IanMusicMag mag = (IanMusicMag)anCore.FetchMag(songID);
         NewSong(mag);
-        CurrentSong.FadeIn(t);
-        anSynchro.StartSynchro(this, mag.Tempo, CurrentSong.Play);
+        _CurrentSong.FadeIn(t);
+        anSynchro.StartSynchro(this, mag.Tempo, _CurrentSong.Play);
     }
-    public void TransitionSnapshot(string snapshot,float time)//static func?
+    public void TransitionSnapshot(string snapshot,float time)//TODO static func?
     {
         MusicMixer.TransitionToSnapshot(snapshot, time);
     }
     public void Mute(bool toMute)
     {
-        CurrentSong.Mute(toMute);
+        _CurrentSong.Mute(toMute);
     }
 }

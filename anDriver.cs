@@ -3,20 +3,17 @@ using UnityEngine;
 using UnityEngine.Audio;
 public class anDriver : MonoBehaviour
 {
-    MonoBehaviour _Host;
-    AudioMixerGroup _Output;
+    public AudioMixerGroup Output;
     public AudioSource OneShotSource;
     public Dictionary<string, IanEvent> Events = new Dictionary<string, IanEvent>();
-    public void SetDriver(MonoBehaviour host, AudioMixerGroup output, params string[] IDs)
+    public void SetDriver(string[] soundID)
     {
-        _Host = host;
-        _Output = output;
-        foreach (string id in IDs)
+        foreach (string id in soundID)
             LoadEvent(id);
     }
     void LoadEvent(string SoundID)
     {
-        IanEvent e = anCore.NewEvent(_Host, SoundID, _Output);
+        IanEvent e = anCore.NewEvent(this, SoundID, Output);
         Events[SoundID] = e;
         if (e is anOneShotEvent eve)
             eve.audioSource = OneShotSource;

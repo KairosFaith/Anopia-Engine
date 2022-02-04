@@ -5,7 +5,7 @@ using UnityEngine.Audio;
 public class anLayerMag : IanAudioMag
 {
     public LayerData[] Layers;
-    public override IanEvent LoadMag(MonoBehaviour host, AudioMixerGroup output)
+    public override IanEvent LoadMag(MonoBehaviour driver, AudioMixerGroup output)
     {
         throw new NotImplementedException("LayerEvent Coming Soon....");
     }
@@ -13,5 +13,5 @@ public class anLayerMag : IanAudioMag
 [Serializable] 
 public class LayerData : ClipData
 {
-    public GameObject SourcePrefab;
+    public anSourcerer SourcePrefab;
 }

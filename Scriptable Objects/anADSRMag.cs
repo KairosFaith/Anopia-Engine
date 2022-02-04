@@ -10,9 +10,9 @@ public class anADSRMag : IanAudioMag
     public AudioClip Release;
     [Range(0, 1)]
     public float Gain = 1;
-    public override IanEvent LoadMag(MonoBehaviour host, AudioMixerGroup output)
+    public override IanEvent LoadMag(MonoBehaviour driver, AudioMixerGroup output)
     {
-        return new anADSREvent(host, this, output);
+        return new anADSREvent(driver, this, output);
     }
 }
 public class anADSREvent : IanEvent
@@ -20,12 +20,12 @@ public class anADSREvent : IanEvent
     public AudioClip Attack;
     public AudioClip Release;
     public anSourcerer Sourcerer;
-    public anADSREvent(MonoBehaviour host, IanAudioMag mag, AudioMixerGroup output) : base(host, mag, output)
+    public anADSREvent(MonoBehaviour driver, IanAudioMag mag, AudioMixerGroup output) : base(driver, mag, output)
     {
         anADSRMag Mag = (anADSRMag)mag;
         Attack = Mag.Attack;
         Release = Mag.Release;
-        GameObject newg = UnityEngine.Object.Instantiate(Mag.SourcePrefab, host.transform);
+        GameObject newg = UnityEngine.Object.Instantiate(Mag.SourcePrefab, driver.transform);
         Sourcerer = newg.GetComponent<anSourcerer>();
         AudioSource a = Sourcerer.audioSource;
         a.clip = Mag.Sustain;

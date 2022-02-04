@@ -14,22 +14,22 @@ public class anClipMag : IanAudioMag
         gain = d.Gain + UnityEngine.Random.Range(-VolumeFluctuation, VolumeFluctuation);
         return d.Clip;
     }
-    public override IanEvent LoadMag(MonoBehaviour host, AudioMixerGroup output)
+    public override IanEvent LoadMag(MonoBehaviour driver, AudioMixerGroup output)
     {
-        return new anOneShotEvent(host, this, output);
+        return new anOneShotEvent(driver, this, output);
     }
 }
 public class anOneShotEvent : IanEvent
 {
     float VolumeFlux;
-    ClipData[] Data;
+    ClipData[] AudioData;
     List<ClipData> RandomBag;
     public AudioSource audioSource;//assign using driver or directly
-    public anOneShotEvent(MonoBehaviour host, IanAudioMag mag, AudioMixerGroup output) : base(host, mag, output)
+    public anOneShotEvent(MonoBehaviour driver, IanAudioMag mag, AudioMixerGroup output) : base(driver, mag, output)
     {
         anClipMag Mag = (anClipMag)mag;
-        Data = Mag.Data;
-        RandomBag = new List<ClipData>(Data);
+        AudioData = Mag.Data;
+        RandomBag = new List<ClipData>(AudioData);
         VolumeFlux = Mag.VolumeFluctuation;
         audioSource.outputAudioMixerGroup = output;
     }
@@ -40,7 +40,7 @@ public class anOneShotEvent : IanEvent
             key = (int)args[1];
         else
             key = UnityEngine.Random.Range(0, RandomBag.Count);
-        ClipData d = Data[key];
+        ClipData d = AudioData[key];
         float vol = d.Gain;
         if (args.Length > 0)//randomise volume unless indicated in args
             vol *= (float)args[0];
@@ -48,7 +48,7 @@ public class anOneShotEvent : IanEvent
         audioSource.PlayOneShot(d.Clip,vol);
         RandomBag.RemoveAt(key);
         if (RandomBag.Count <= 0)
-            RandomBag = new List<ClipData>(Data);
+            RandomBag = new List<ClipData>(AudioData);
     }
     public override void Stop()
     {
