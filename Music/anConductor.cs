@@ -36,7 +36,7 @@ public class anConductor : MonoBehaviour
         if (_Instance == this)
             _Instance = null;
     }
-    public IanSong PlayNewSong(string songID)//play immediate
+    public void PlayNewSong(string songID)//play immediate
     {
         if (_CurrentSong != null)
         {
@@ -46,7 +46,7 @@ public class anConductor : MonoBehaviour
         IanMusicMag mag = (IanMusicMag)anCore.FetchMag(songID);
         NewSong(mag);
         anSynchro.StartSynchro(this, mag.Tempo, _CurrentSong.Play);
-        return _CurrentSong;
+        //return _CurrentSong;
     }
     public void CueSong(string songID, double timeCode)//user defined cue, assume same tempo
     {
