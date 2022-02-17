@@ -89,6 +89,7 @@ public enum SongForm
 }
 public abstract class IanSong : MonoBehaviour
 {
+    public abstract void Setup(IanMusicMag mag, AudioMixerGroup output);
     public abstract void StopOnCue(double stopTime);
     public abstract void StopImmediate();
     public abstract void Play(double startTime);

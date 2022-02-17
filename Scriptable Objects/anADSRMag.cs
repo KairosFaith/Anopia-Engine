@@ -48,4 +48,9 @@ public class anADSREvent : IanEvent
     {
         throw new System.NotImplementedException();
     }
+
+    public override void SetParameter(string name, float value, params object[] args)
+    {
+
+    }
 }

@@ -5,6 +5,7 @@ using UnityEngine.Audio;
 public class anStemSong : IanSong
 {
     anStemMusicMag Mag;
+    AudioMixerGroup Output;
     public List<anSourcerer> SourceHandlers = new List<anSourcerer>();//need sourcerer??
     public override void FadeOut(float t, Action ondone = null)
     {
@@ -19,6 +20,7 @@ public class anStemSong : IanSong
     {
         foreach (anSourcerer s in SourceHandlers)
             s.audioSource.PlayScheduled(startTime);
+        anCore.PlayClipScheduled(transform, Mag.Impact.Clip, Mag.Impact.Gain, startTime, Output, Mag.OneShotPrefab);
     }
     public override void StopOnCue(double stopTime)
     {
@@ -39,7 +41,7 @@ public class anStemSong : IanSong
                 s.audioSource.volume = v;
         StartCoroutine(anCore.FadeValue(t, 0, 1, ChangeValue));
     }
-    public void Setup(IanMusicMag mag)
+    public override void Setup(IanMusicMag mag, AudioMixerGroup output)
     {
         Mag = (anStemMusicMag)mag;
         StemData[] Stems = Mag.Stems;
@@ -53,6 +55,7 @@ public class anStemSong : IanSong
             a.outputAudioMixerGroup = data.Channel;
             SourceHandlers.Add(s);
         }
+        Output = output;
     }
     public override void StopImmediate()
     {

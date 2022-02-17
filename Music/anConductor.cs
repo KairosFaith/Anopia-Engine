@@ -48,12 +48,13 @@ public class anConductor : MonoBehaviour
         anSynchro.StartSynchro(this, mag.Tempo, _CurrentSong.Play);
         //return _CurrentSong;
     }
-    public void CueSong(string songID, double timeCode)//user defined cue, assume same tempo
+    public void CueSong(string songID, double timeCode)//TODO user defined cue, assume same tempo
     {
         if (_CurrentSong != null)
             _CurrentSong.StopOnCue(timeCode);
         IanMusicMag mag = (IanMusicMag)anCore.FetchMag(songID);
         NewSong(mag);
+        //TODO stop and restart synchro
         _CurrentSong.Play(timeCode);
     }
     public void CueSection(int key)
@@ -68,23 +69,19 @@ public class anConductor : MonoBehaviour
     }
     void NewSong(IanMusicMag mag)
     {
-        GameObject g = new GameObject();
+        GameObject g = new GameObject(mag.name);
         g.transform.position = transform.position;
         g.transform.SetParent(transform);
-        SongForm songForm = mag.Structure;
-        switch (songForm)
+        switch (mag.Structure)
         {
             case SongForm.Linear:
-                anLinearSong ls = g.AddComponent<anLinearSong>();
-                ls.Setup(mag, MusicMixer.outputAudioMixerGroup);
-                _CurrentSong = ls;
+                _CurrentSong = g.AddComponent<anLinearSong>();
                 break;
             case SongForm.Stem:
-                anStemSong stem = g.AddComponent<anStemSong>();
-                stem.Setup(mag);
-                _CurrentSong = stem;
+                _CurrentSong = g.AddComponent<anStemSong>();
                 break;
         }
+        _CurrentSong.Setup(mag, MusicMixer.outputAudioMixerGroup);
     }
     public void Stop(double stopTime)//user defined cue
     {

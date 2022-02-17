@@ -58,4 +58,9 @@ public class anOneShotEvent : IanEvent
     {
         throw new System.NotImplementedException("Use ClipEffect instead, to spawn source for each voice");
     }
+
+    public override void SetParameter(string name, float value, params object[] args)
+    {
+
+    }
 }

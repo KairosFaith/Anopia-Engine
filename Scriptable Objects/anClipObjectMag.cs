@@ -120,6 +120,11 @@ public class anClipObjectEvent : IanEvent
     {
 
     }
+
+    public override void SetParameter(string name, float value, params object[] args)
+    {
+
+    }
 }
 #if UNITY_EDITOR
 [CustomEditor(typeof(anClipObjectMag))]

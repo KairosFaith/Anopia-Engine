@@ -41,6 +41,12 @@ public class anSpeechEvent : IanEvent
         if (_SpeechBank.TryGetValue((string)args[0], out AudioClip clip))
             anCore.PlayClipScheduled(Driver.transform, clip, 1, timecode, Output, SourcePrefab);
     }
+
+    public override void SetParameter(string name, float value, params object[] args)
+    {
+
+    }
+
     public override void Stop()
     {
 

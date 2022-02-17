@@ -6,7 +6,7 @@ public class anLinearSong : IanSong
     anSourcerer CurrentMainSource;
     AudioMixerGroup Output;
     anLinearMusicMag Mag;
-    public void Setup(IanMusicMag mag, AudioMixerGroup output)
+    public override void Setup(IanMusicMag mag, AudioMixerGroup output)
     {
         Output = output;
         Mag = (anLinearMusicMag)mag;
@@ -59,18 +59,23 @@ public class anLinearSong : IanSong
         };
         if (toPlay.Stinger != null)
         {
-            void PlayStinger(int beatcount, double timeCode)
+            if (toPlay.BeatToStart != 0)
             {
-                if (beatcount == toPlay.BeatToStart)
+                void PlayStinger(int beatcount, double timeCode)
                 {
-                    anCore.PlayClipScheduled(transform, toPlay.Stinger, 1, timeCode, Output, Mag.OneShotPrefab);
-                    NextSong(anSynchro.NextBar);
-                    anSynchro.PlayOnBeat -= PlayStinger;
-                }
-            };
-            anSynchro.PlayOnBeat += PlayStinger;
+                    if (beatcount == toPlay.BeatToStart)
+                    {
+                        anCore.PlayClipScheduled(transform, toPlay.Stinger, 1, timeCode, Output, Mag.OneShotPrefab);
+                        NextSong(anSynchro.NextBar);
+                        anSynchro.PlayOnBeat -= PlayStinger;
+                    }
+                };
+                anSynchro.PlayOnBeat += PlayStinger;
+                return;
+            }
+            else
+                anCore.PlayClipScheduled(transform, toPlay.Stinger, 1f, anSynchro.NextBar, Output, Mag.OneShotPrefab);
         }
-        else
             NextSong(anSynchro.NextBar);
     }
     public void CueFinal()
@@ -108,7 +113,7 @@ public class anLinearSong : IanSong
         StopCurrentSource(stopTime);
         transform.DetachChildren();
         Destroy(gameObject);
-        anSynchro.StopSynchro();
+        //anSynchro.StopSynchro();
     }
     public override void StopImmediate()
     {

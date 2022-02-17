@@ -126,9 +126,10 @@ public class ClipData
 public abstract class IanEvent
 {
     public IanEvent(MonoBehaviour host, IanAudioMag mag, AudioMixerGroup output){ }
-    public abstract void Play(params object[] args);
-    public abstract void PlayScheduled(double timecode, params object[] args);
+    public abstract void Play(params object[] args);//TODO remove args
+    public abstract void PlayScheduled(double timecode, params object[] args);//TODO remove as not applicable in FMOD Wwise
     public abstract void Stop();
+    public abstract void SetParameter(string name, float value, params object[] args);//, bool ignoreSeekSpeed = false
 }
 [Serializable]
 public class LerpCurve
