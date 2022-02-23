@@ -32,7 +32,7 @@ Use `Play` to play sound. `args[0]` as float is used for volume scale, gain and 
 * You also have [pitch](https://docs.unity3d.com/2018.3/Documentation/ScriptReference/AudioSource-pitch.html), [HighPassFilter.cutoffFrequency](https://docs.unity3d.com/2018.3/Documentation/ScriptReference/AudioHighPassFilter-cutoffFrequency.html) and [distortionLevel](https://docs.unity3d.com/2018.3/Documentation/ScriptReference/AudioDistortionFilter-distortionLevel.html) randomisation
 
 <br/>Use `Play` to play sound and `PlayScheduled` to play sound at a specified timecode. See [AudioSource.PlayScheduled](https://docs.unity3d.com/2018.3/Documentation/ScriptReference/AudioSource.PlayScheduled.html).
-`args[0]` as float is used for volume scale, gain and randomisation still applies. `args[1]` as Vector3 is the position where the sound object is instantiated, the position will be the host object position if unspecified.
+`args[1]` as float is used for volume scale, gain and randomisation still applies. `args[0]` as Vector3 is the position where the sound object is instantiated, the position will be the host object position if unspecified.
 If you are using HighPass and Distortion randomisation, you MUST add the [AudioHighPassFilter](https://docs.unity3d.com/ScriptReference/AudioHighPassFilter.html) and [AudioDistortionFilter](https://docs.unity3d.com/ScriptReference/AudioDistortionFilter.html) components to the prefab.
 Inherits from `anClipMag`/`anClipObjectEvent`.
 ## ADSR Event
