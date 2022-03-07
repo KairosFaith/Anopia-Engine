@@ -77,7 +77,7 @@ public abstract class IanMusicMag : IanAudioMag
 {
     public TempoData Tempo;
     public abstract SongForm Structure { get; }
-    public override IanEvent LoadMag(MonoBehaviour driver, AudioMixerGroup output)
+    public override IanEvent LoadMag(anDriver driver, AudioMixerGroup output)
     {
         throw new System.NotImplementedException();
     }

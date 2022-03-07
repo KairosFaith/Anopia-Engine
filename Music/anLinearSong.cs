@@ -20,7 +20,7 @@ public class anLinearSong : IanSong
     {
         AudioSource toDestroy = CurrentMainSource.audioSource;
         toDestroy.SetScheduledEndTime(stopTime);
-        CurrentMainSource.StartCoroutine(anCore.DeleteWhenDone(toDestroy, stopTime));
+        CurrentMainSource.DeleteAfterTime(toDestroy, stopTime);
     }
     void PlayScheduleMain(double timecode,AudioClip clip)
     {
@@ -51,7 +51,7 @@ public class anLinearSong : IanSong
         {
             AudioSource toDestroy = CurrentMainSource.audioSource;
             toDestroy.SetScheduledEndTime(timeCode);
-            CurrentMainSource.StartCoroutine(anCore.DeleteWhenDone(toDestroy, timeCode));
+            CurrentMainSource.DeleteAfterTime(toDestroy, timeCode);
             NewCurrentSource();
             AudioSource a = CurrentMainSource.audioSource;
             a.clip = toPlay.Section;
@@ -90,7 +90,7 @@ public class anLinearSong : IanSong
                 Destroy(gameObject);
             };
             anSourcerer a = anCore.PlayClipScheduled(transform, toPlay.Section, 1, timeCode, Output, Mag.OneShotPrefab);
-            a.StartCoroutine(anCore.DeleteWhenDone(a.audioSource, onDone));
+            a.DeleteWhenDone(a.audioSource, onDone);
         };
         if (toPlay.Stinger != null)
         {

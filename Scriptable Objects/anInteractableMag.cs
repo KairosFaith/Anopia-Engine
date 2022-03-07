@@ -4,7 +4,7 @@ using UnityEngine.Audio;
 public class anInteractableMag : IanAudioMag
 {
     public ClipData Enter,Down,Interact,Up,Exit;
-    public override IanEvent LoadMag(MonoBehaviour driver, AudioMixerGroup output)
+    public override IanEvent LoadMag(anDriver driver, AudioMixerGroup output)
     {
         throw new System.NotImplementedException("Implement to anInteractable Directly");
     }

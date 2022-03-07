@@ -6,32 +6,31 @@ public class anClipMag : IanAudioMag
 {
     public ClipData[] Data;
     [Range(0, 1)]
-    public float VolumeFluctuation;
+    public float MinRandomVolume = 1;
     public AudioClip RandomClip(out float gain)
     {
         int key = UnityEngine.Random.Range(0, Data.Length);
         ClipData d = Data[key];
-        gain = d.Gain + UnityEngine.Random.Range(-VolumeFluctuation, VolumeFluctuation);
+        gain = d.Gain + UnityEngine.Random.Range(-MinRandomVolume, MinRandomVolume);
         return d.Clip;
     }
-    public override IanEvent LoadMag(MonoBehaviour driver, AudioMixerGroup output)
+    public override IanEvent LoadMag(anDriver driver, AudioMixerGroup output)
     {
         return new anOneShotEvent(driver, this, output);
     }
 }
 public class anOneShotEvent : IanEvent
 {
-    float VolumeFlux;
+    float volumeFlux;
     ClipData[] AudioData;
     List<ClipData> RandomBag;
     public AudioSource audioSource;//assign using driver or directly
-    public anOneShotEvent(MonoBehaviour driver, IanAudioMag mag, AudioMixerGroup output) : base(driver, mag, output)
+    public anOneShotEvent(anDriver driver, IanAudioMag mag, AudioMixerGroup output) : base(driver, mag, output)
     {
         anClipMag Mag = (anClipMag)mag;
         AudioData = Mag.Data;
         RandomBag = new List<ClipData>(AudioData);
-        VolumeFlux = Mag.VolumeFluctuation;
-        audioSource.outputAudioMixerGroup = output;
+        volumeFlux = Mag.MinRandomVolume;
     }
     public override void Play(params object[] args)
     {
@@ -44,7 +43,8 @@ public class anOneShotEvent : IanEvent
         float vol = d.Gain;
         if (args.Length > 0)//randomise volume unless indicated in args
             vol *= (float)args[0];
-        vol += UnityEngine.Random.Range(-VolumeFlux, VolumeFlux);
+        else
+            vol += UnityEngine.Random.Range(volumeFlux, 1f);
         audioSource.PlayOneShot(d.Clip,vol);
         RandomBag.RemoveAt(key);
         if (RandomBag.Count <= 0)
@@ -59,8 +59,8 @@ public class anOneShotEvent : IanEvent
         throw new System.NotImplementedException("Use ClipEffect instead, to spawn source for each voice");
     }
 
-    public override void SetParameter(string name, float value, params object[] args)
+    public override void SetParameter(string name, float value)
     {
-
+        //no other parameters available, just use play args[0] to set volume
     }
 }

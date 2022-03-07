@@ -1,0 +1,107 @@
+using System.Collections.Generic;
+using UnityEngine;
+using System;
+using UnityEngine.Audio;
+public static partial class anCore
+{
+    static Dictionary<string, IanAudioMag> _SoundBank = new Dictionary<string, IanAudioMag>();
+    static anCore()
+    {
+        string FilePath = "AudioMags";
+        IanAudioMag[] m = Resources.LoadAll<IanAudioMag>(FilePath);
+        foreach (IanAudioMag b in m)
+            _SoundBank.Add(b.name, b);
+    }
+    public static IanAudioMag FetchMag(string SoundID)
+    {
+        if (_SoundBank.TryGetValue(SoundID, out IanAudioMag mag))
+            return mag;
+        else
+            throw new Exception(SoundID + " not found");
+    }
+    public static ClipData FetchData(string SoundId, int Key)
+    {
+        anClipMag mag = (anClipMag)FetchMag(SoundId);
+        return mag.Data[Key];
+    }
+    public static IanEvent NewEvent(anDriver driver, string SoundID, AudioMixerGroup output)
+    {
+        IanAudioMag mag = FetchMag(SoundID);
+        return mag.LoadMag(driver, output);
+    }
+    public static anSourcerer[] SetLayers(anDriver driver, AudioMixerGroup output, ClipData[] layers)
+    {
+        Transform t = driver.transform;
+        List<anSourcerer> sources = new List<anSourcerer>();
+        foreach(ClipData L in layers)
+        {
+            anSourcerer s = UnityEngine.Object.Instantiate(driver.SourcePrefab, t);
+            AudioSource a = s.audioSource;
+            a.outputAudioMixerGroup = output;
+            a.clip = L.Clip;
+            a.volume = L.Gain;
+            sources.Add(s);
+            a.loop = true;
+        }
+        return sources.ToArray();
+    }
+    public static void SetEffect(this anSourcerer sourcerer, SourceEffect effect, float effectValue)
+    {
+        switch (effect)
+        {
+            case SourceEffect.Volume:
+                sourcerer.audioSource.volume = effectValue;
+                break;            
+            case SourceEffect.Pitch:
+                sourcerer.audioSource.pitch = effectValue;
+                break;            
+            case SourceEffect.Distortion:
+                sourcerer.audioDistortionFilter.distortionLevel = effectValue;
+                break;
+            case SourceEffect.HighPass:
+                sourcerer.audioHighPassFilter.cutoffFrequency = effectValue;
+                break;
+        }
+    }
+}
+public abstract class IanAudioMag : ScriptableObject
+{
+    public abstract IanEvent LoadMag(anDriver driver, AudioMixerGroup output);
+}
+public abstract class IanEvent
+{
+    public IanEvent(anDriver driver, IanAudioMag mag, AudioMixerGroup output){ }
+    public abstract void Play(params object[] args);//TODO remove args
+    public abstract void PlayScheduled(double timecode, params object[] args);//TODO remove as not applicable in FMOD Wwise
+    public abstract void Stop();
+    public abstract void SetParameter(string name, float value);//, bool ignoreSeekSpeed = false
+}
+[Serializable]
+public class AudioAutomationData
+{
+    public string ParameterName;
+    public LerpCurve Smoothing;
+    public SourceEffect Effect;
+    public float MinInputValue, MaxInputValue;
+    public float EvaluateRandom()
+    {
+        float r = UnityEngine.Random.Range(0f, 1f);
+        return Smoothing.Evaluate(r);
+    }
+    public float EvaluateUnnormalised(float unnormalisedValue)
+    {
+        return Mathf.InverseLerp(MinInputValue, MaxInputValue, unnormalisedValue);
+    }
+}
+[Serializable]
+public class LayerAutomationData : AudioAutomationData
+{
+    public int TargetSource;
+}
+public enum SourceEffect
+{
+    Volume,
+    Pitch,
+    Distortion,
+    HighPass,
+}

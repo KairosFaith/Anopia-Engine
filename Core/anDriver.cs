@@ -1,0 +1,55 @@
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.Audio;
+public class anDriver : MonoBehaviour
+{
+    public AudioMixerGroup Output;
+    public anSourcerer SourcePrefab;
+    anSourcerer _OneShotSource;
+    public Dictionary<string, IanEvent> Events = new Dictionary<string, IanEvent>();
+    public void SetDriver(params string[] soundID)
+    {
+        foreach (string id in soundID)
+            LoadEvent(id);
+    }
+    void LoadEvent(string SoundID)
+    {
+        IanEvent e = anCore.NewEvent(this, SoundID, Output);
+        Events[SoundID] = e;
+        if (e is anOneShotEvent eve)
+        {
+            if (_OneShotSource == null)
+            {
+                _OneShotSource = Instantiate(SourcePrefab);
+                _OneShotSource.audioSource.outputAudioMixerGroup = Output;
+            }
+            eve.audioSource = _OneShotSource.audioSource;
+        }
+    }
+    public void Play(string SoundID, params object[] args)
+    {
+        if (Events.TryGetValue(SoundID, out IanEvent value))
+            value.Play(args);
+        else
+            throw new System.Exception(SoundID+"not loaded in driver");
+    }
+    public void SetParameter(string SoundID,string paramName, float value)
+    {
+        if (Events.TryGetValue(SoundID, out IanEvent existing))
+            existing.SetParameter(paramName,value);
+        else
+            throw new System.Exception(SoundID + "not loaded in driver");
+    }
+    public void Stop(string SoundID)
+    {
+        if (Events.TryGetValue(SoundID, out IanEvent value))
+            value.Stop();
+        else
+            throw new System.Exception(SoundID + "not loaded in driver");
+    }
+    public void StopAll()
+    {
+        foreach (KeyValuePair<string,IanEvent> eve in Events)
+            eve.Value.Stop();
+    }
+}

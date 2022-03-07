@@ -6,7 +6,7 @@ public class anStemSong : IanSong
 {
     anStemMusicMag Mag;
     AudioMixerGroup Output;
-    public List<anSourcerer> SourceHandlers = new List<anSourcerer>();//need sourcerer??
+    public List<anSourcerer> SourceHandlers = new List<anSourcerer>();
     public override void FadeOut(float t, Action ondone = null)
     {
         Action<float> ChangeValue = null;
@@ -28,7 +28,7 @@ public class anStemSong : IanSong
         {
             AudioSource a = s.audioSource;
             a.SetScheduledEndTime(stopTime);
-            s.StartCoroutine(anCore.DeleteWhenDone(a, stopTime));
+            s.DeleteAfterTime(a, stopTime);
         }
         transform.DetachChildren();
         Destroy(gameObject);

@@ -48,6 +48,23 @@ public class anConductor : MonoBehaviour
         anSynchro.StartSynchro(this, mag.Tempo, _CurrentSong.Play);
         //return _CurrentSong;
     }
+    public void CueSong(string songID)
+    {
+        if (_CurrentSong != null)
+            _CurrentSong.StopOnCue(anSynchro.NextBar);
+        IanMusicMag mag = (IanMusicMag)anCore.FetchMag(songID);
+        NewSong(mag);
+        anSynchro.PlayOnBeat += ( int beatcount, double timecode) =>
+        {
+            if (beatcount == 1)
+            {
+                //TODO test this
+                anSynchro.StopSynchro();
+                anSynchro.StartSynchro(this, mag.Tempo, _CurrentSong.Play);
+            }
+        };
+        //CueSong(songID, anSynchro.NextBar);
+    }
     public void CueSong(string songID, double timeCode)//TODO user defined cue, assume same tempo
     {
         if (_CurrentSong != null)
@@ -92,7 +109,7 @@ public class anConductor : MonoBehaviour
     {
         _CurrentSong.FadeOut(t, ()=> FadeIn(t, songID));
     }
-    public void FadeOut(float t, Action onDone)
+    public void FadeOut(float t, Action onDone = null)
     {
         _CurrentSong.FadeOut(t, onDone); 
         anSynchro.StopSynchro();
