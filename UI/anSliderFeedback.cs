@@ -1,16 +1,27 @@
 ﻿using UnityEngine.UI;
-public class anSliderFeedback : anPointerInteractFeedback
+using UnityEngine.EventSystems;
+public class anSliderFeedback : anMouseoverFeedback, IPointerDownHandler, IPointerUpHandler
 {
     public Slider slider;
-    ClipData Drag;
+    ClipData Down, Up, Drag;
     public override void Setup(anInteractableMag mag)
     {
         base.Setup(mag);
+        Down = mag.Down;
+        Up = mag.Up;
         Drag = mag.Interact;
         slider.onValueChanged.AddListener((f) => OnValueChange());
     }
     void OnValueChange()
     {
         Source.PlayOneShot(Drag.Clip, Drag.Gain * slider.normalizedValue);
+    }
+    public virtual void OnPointerDown(PointerEventData eventData)
+    {
+        Play(Down);
+    }
+    public virtual void OnPointerUp(PointerEventData eventData)
+    {
+        Play(Up);
     }
 }
