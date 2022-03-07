@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.EventSystems;
 [RequireComponent(typeof(AudioSource))]
-public class anClickInteractable : MonoBehaviour, IPointerEnterHandler,IPointerClickHandler,IPointerExitHandler
+public class anClickFeedback : anNarrateSelectable, IPointerEnterHandler,IPointerClickHandler,IPointerExitHandler
 {
     public string SoundID;
     public AudioSource Source;

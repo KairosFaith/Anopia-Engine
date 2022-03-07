@@ -1,5 +1,5 @@
 ﻿using UnityEngine.UI;
-public class anSliderInteractable : anInteractable
+public class anSliderFeedback : anPointerInteractFeedback
 {
     public Slider slider;
     ClipData Drag;

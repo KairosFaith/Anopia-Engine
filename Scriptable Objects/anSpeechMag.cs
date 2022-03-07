@@ -12,8 +12,9 @@ public class anSpeechMag : IanAudioMag
 }
 public class anSpeechEvent : IanEvent
 {
+    public override bool UsingDriverSource => true;
     Dictionary<string, AudioClip> _SpeechBank = new Dictionary<string, AudioClip>();
-    MonoBehaviour Driver;
+    anDriver Driver;
     AudioMixerGroup Output;
     anSourcerer SourcePrefab;
     public anSpeechEvent(anDriver driver, IanAudioMag mag, AudioMixerGroup output) : base(driver, mag, output)
@@ -27,20 +28,29 @@ public class anSpeechEvent : IanEvent
     }
     public override void Play(params object[] args)
     {
-        double timecode = AudioSettings.dspTime + Time.deltaTime;
-        foreach(object o in args)
-            if(_SpeechBank.TryGetValue((string)o, out AudioClip clip))
+        string msg = (string)args[0];
+        if (_SpeechBank.TryGetValue(msg, out AudioClip clip))
+        {
+            Driver.OneShotSource.audioSource.clip = clip;
+            Driver.OneShotSource.audioSource.Play();
+        }
+        else
+            throw new System.Exception(msg + "clip does not exist in the SpeechMag");
+    }
+    public override void PlayScheduled(double timecode, params object[] args)
+    {
+        foreach (object o in args)
+        {
+            string msg = (string)o;
+            if (_SpeechBank.TryGetValue(msg, out AudioClip clip))
             {
                 anCore.PlayClipScheduled(Driver.transform, clip, 1, timecode, Output, SourcePrefab);
                 timecode += clip.length;
             }
+            else
+                throw new System.Exception(msg + "clip does not exist in the SpeechMag");
+        }
     }
-    public override void PlayScheduled(double timecode, params object[] args)
-    {
-        if (_SpeechBank.TryGetValue((string)args[0], out AudioClip clip))
-            anCore.PlayClipScheduled(Driver.transform, clip, 1, timecode, Output, SourcePrefab);
-    }
-
     public override void SetParameter(string name, float value)
     {
         

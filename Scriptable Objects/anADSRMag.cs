@@ -19,6 +19,7 @@ public class anADSRMag : IanAudioMag
 }
 public class anADSREvent : IanEvent
 {
+    public override bool UsingDriverSource => false;
     public AudioClip Attack;
     public AudioClip Release;
     public anSourcerer Sourcerer;

@@ -34,6 +34,7 @@ public class anClipObjectMag : anClipMag
 }
 public class anClipObjectEvent : IanEvent
 {
+    public override bool UsingDriverSource => false;
     public anSourcerer SourcePrefab;
     public ClipData[] Data;
     List<ClipData> RandomBag = new List<ClipData>();

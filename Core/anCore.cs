@@ -70,6 +70,7 @@ public abstract class IanAudioMag : ScriptableObject
 }
 public abstract class IanEvent
 {
+    public abstract bool UsingDriverSource { get; }
     public IanEvent(anDriver driver, IanAudioMag mag, AudioMixerGroup output){ }
     public abstract void Play(params object[] args);//TODO remove args
     public abstract void PlayScheduled(double timecode, params object[] args);//TODO remove as not applicable in FMOD Wwise

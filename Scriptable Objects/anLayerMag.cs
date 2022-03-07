@@ -14,6 +14,7 @@ public class anLayerMag : IanAudioMag
 }
 public class anLayerEvent : IanEvent
 {
+    public override bool UsingDriverSource => false;
     Dictionary<string, LayerAutomationData> _settingslogic = new Dictionary<string, LayerAutomationData>();
     public anSourcerer[] SourceObjects;
     public anLayerEvent(anDriver driver, IanAudioMag mag, AudioMixerGroup output) : base(driver, mag, output)

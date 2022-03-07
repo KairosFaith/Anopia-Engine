@@ -5,7 +5,8 @@ public class anDriver : MonoBehaviour
 {
     public AudioMixerGroup Output;
     public anSourcerer SourcePrefab;
-    anSourcerer _OneShotSource;
+    [HideInInspector]
+    public anSourcerer OneShotSource;
     public Dictionary<string, IanEvent> Events = new Dictionary<string, IanEvent>();
     public void SetDriver(params string[] soundID)
     {
@@ -16,14 +17,13 @@ public class anDriver : MonoBehaviour
     {
         IanEvent e = anCore.NewEvent(this, SoundID, Output);
         Events[SoundID] = e;
-        if (e is anOneShotEvent eve)
+        if (e.UsingDriverSource)
         {
-            if (_OneShotSource == null)
+            if (OneShotSource == null)
             {
-                _OneShotSource = Instantiate(SourcePrefab);
-                _OneShotSource.audioSource.outputAudioMixerGroup = Output;
+                OneShotSource = Instantiate(SourcePrefab);
+                OneShotSource.audioSource.outputAudioMixerGroup = Output;
             }
-            eve.audioSource = _OneShotSource.audioSource;
         }
     }
     public void Play(string SoundID, params object[] args)

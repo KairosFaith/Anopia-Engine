@@ -24,10 +24,12 @@ public class anOneShotEvent : IanEvent
     float volumeFlux;
     ClipData[] AudioData;
     List<ClipData> RandomBag;
-    public AudioSource audioSource;//assign using driver or directly
+    anDriver Driver;
+    public override bool UsingDriverSource => true;
     public anOneShotEvent(anDriver driver, IanAudioMag mag, AudioMixerGroup output) : base(driver, mag, output)
     {
         anClipMag Mag = (anClipMag)mag;
+        Driver = driver;
         AudioData = Mag.Data;
         RandomBag = new List<ClipData>(AudioData);
         volumeFlux = Mag.MinRandomVolume;
@@ -45,14 +47,14 @@ public class anOneShotEvent : IanEvent
             vol *= (float)args[0];
         else
             vol += UnityEngine.Random.Range(volumeFlux, 1f);
-        audioSource.PlayOneShot(d.Clip,vol);
+        Driver.OneShotSource.audioSource.PlayOneShot(d.Clip,vol);
         RandomBag.RemoveAt(key);
         if (RandomBag.Count <= 0)
             RandomBag = new List<ClipData>(AudioData);
     }
     public override void Stop()
     {
-        audioSource.Stop();
+        Driver.OneShotSource.audioSource.Stop();
     }
     public override void PlayScheduled(double timecode, params object[] args)
     {
