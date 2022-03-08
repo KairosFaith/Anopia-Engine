@@ -8,19 +8,10 @@ public class anConductor : MonoBehaviour
     IanSong _CurrentSong;
     //call this for snapshots and routing
     public AudioMixer MusicMixer;
-    //for debug mode or put public
-    public int BeatCount;
+#if UNITY_EDITOR
+    //for inspector view only, set public or use debug mode
+    int BeatCount;
     double LastBeat,NextBeat, NextBar;
-    protected void Awake()
-    {
-        if (_Instance == null)
-        {
-            _Instance = this;
-            DontDestroyOnLoad(gameObject);
-        }
-        else
-            Destroy(gameObject);
-    }
     private void Start()
     {
         anSynchro.PlayOnBeat += (int beatcount, double timecode) => 
@@ -30,6 +21,17 @@ public class anConductor : MonoBehaviour
             NextBeat = anSynchro.NextBeat;
             NextBar = anSynchro.NextBar;
         };
+    }
+#endif
+    protected void Awake()
+    {
+        if (_Instance == null)
+        {
+            _Instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+        else
+            Destroy(gameObject);
     }
     protected void OnDestroy()
     {
@@ -48,7 +50,7 @@ public class anConductor : MonoBehaviour
         anSynchro.StartSynchro(this, mag.Tempo, _CurrentSong.Play);
         //return _CurrentSong;
     }
-    public void CueSong(string songID)
+    public void CueSong(string songID)//cue song on the next bar, resync to new tempo
     {
         if (_CurrentSong != null)
             _CurrentSong.StopOnCue(anSynchro.NextBar);
@@ -58,20 +60,18 @@ public class anConductor : MonoBehaviour
         {
             if (beatcount == 1)
             {
-                //TODO test this
-                anSynchro.StopSynchro();
-                anSynchro.StartSynchro(this, mag.Tempo, _CurrentSong.Play);
+                anSynchro.ReSync(mag.Tempo);
+                CueSong(songID, timecode);
             }
         };
-        //CueSong(songID, anSynchro.NextBar);
     }
-    public void CueSong(string songID, double timeCode)//TODO user defined cue, assume same tempo
+    public void CueSong(string songID, double timeCode)//user defined cue, assume same tempo... Or not
     {
         if (_CurrentSong != null)
             _CurrentSong.StopOnCue(timeCode);
         IanMusicMag mag = (IanMusicMag)anCore.FetchMag(songID);
         NewSong(mag);
-        //TODO stop and restart synchro
+        //anSynchro.ReSync(mag.Tempo);
         _CurrentSong.Play(timeCode);
     }
     public void CueSection(int key)
@@ -79,10 +79,13 @@ public class anConductor : MonoBehaviour
         if (_CurrentSong is anLinearSong ls)
             ls.CueSection(key);
     }
-    public void CueFinal()
+    public void CueFinal(Action onDone = null)
     {
         if (_CurrentSong is anLinearSong ls)
-            ls.CueFinal();
+        {
+            onDone += () => anSynchro.StopSynchro();
+            ls.CueFinal(onDone);
+        }
     }
     void NewSong(IanMusicMag mag)
     {
@@ -111,8 +114,8 @@ public class anConductor : MonoBehaviour
     }
     public void FadeOut(float t, Action onDone = null)
     {
-        _CurrentSong.FadeOut(t, onDone); 
         anSynchro.StopSynchro();
+        _CurrentSong.FadeOut(t, onDone);
     }
     public void FadeIn(float t, string songID)
     {

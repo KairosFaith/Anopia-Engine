@@ -78,17 +78,13 @@ public class anLinearSong : IanSong
         }
             NextSong(anSynchro.NextBar);
     }
-    public void CueFinal()
+    public void CueFinal(Action onDone = null)
     {
         SongSection toPlay = Mag.Final;
         void NextSong(double timeCode)
         {
             StopCurrentSource(timeCode);
-            void onDone()
-            {
-                anSynchro.StopSynchro();
-                Destroy(gameObject);
-            };
+            onDone += () => Destroy(gameObject);
             anSourcerer a = anCore.PlayClipScheduled(transform, toPlay.Section, 1, timeCode, Output, Mag.OneShotPrefab);
             a.DeleteWhenDone(a.audioSource, onDone);
         };
@@ -113,13 +109,11 @@ public class anLinearSong : IanSong
         StopCurrentSource(stopTime);
         transform.DetachChildren();
         Destroy(gameObject);
-        //anSynchro.StopSynchro();
     }
     public override void StopImmediate()
     {
         CurrentMainSource.audioSource.Stop();
         Destroy(gameObject); 
-        anSynchro.StopSynchro();
     }
     public override void FadeOut(float t, Action ondone = null)
     {

@@ -42,3 +42,19 @@ public class LerpCurve
         return Mathf.LerpUnclamped(LowerLimit, UpperLimit, t);
     }
 }
+public enum BarValue
+{
+    Quarter = 1,
+    Eight,
+    Sixteen = 4,
+}
+[Serializable]
+public class TempoData
+{
+    public int CrotchetBPM;
+    public int BeatsPerBar;
+    public BarValue TimeSignature;
+    public int BPM => CrotchetBPM * (int)TimeSignature;
+    public float BeatLength => 60 / (float)BPM;
+    public float BarLength => BeatLength * BeatsPerBar;
+}

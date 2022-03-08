@@ -59,8 +59,9 @@ public class anStemSong : IanSong
     }
     public override void StopImmediate()
     {
+        foreach (anSourcerer s in SourceHandlers)
+            s.audioSource.Stop();
         Destroy(gameObject);
-        anSynchro.StopSynchro();
     }
     public override void Mute(bool toMute)
     {
