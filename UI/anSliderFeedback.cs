@@ -4,7 +4,7 @@ public class anSliderFeedback : anMouseoverFeedback, IPointerDownHandler, IPoint
 {
     public Slider slider;
     ClipData Down, Up, Drag;
-    public override void Setup(anInteractableMag mag)
+    public override void Setup(anInteractFeedbackMag mag)
     {
         base.Setup(mag);
         Down = mag.Down;

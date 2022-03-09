@@ -1,8 +1,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Audio;
-[CreateAssetMenu(fileName = "SpeechMag", menuName = "AnopiaEngine/Speech", order = 10)]
-public class anSpeechMag : IanAudioMag
+[CreateAssetMenu(fileName = "SpeechMag", menuName = "AnopiaEngine/SpeechMag", order = 5)]
+public class anSpeechMag : IanAudioMag//TODO Inherit from ClipMag?
 {
     public AudioClip[] Clips;
     public override IanEvent LoadMag(anDriver driver, AudioMixerGroup output)

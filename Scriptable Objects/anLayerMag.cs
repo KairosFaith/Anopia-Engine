@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Audio;
-[CreateAssetMenu(fileName = "LayerMag", menuName = "AnopiaEngine/LayeredLoops", order = 4)]
+[CreateAssetMenu(fileName = "LayerMag", menuName = "AnopiaEngine/LayerMag", order = 4)]
 public class anLayerMag : IanAudioMag
 {
     public ClipData[] Layers;

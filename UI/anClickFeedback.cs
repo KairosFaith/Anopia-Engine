@@ -4,7 +4,7 @@ using UnityEngine.EventSystems;
 public class anClickFeedback : anMouseoverFeedback, IPointerClickHandler
 {
     ClipData Interact;
-    public override void Setup(anInteractableMag mag)
+    public override void Setup(anInteractFeedbackMag mag)
     {
         base.Setup(mag);
         Interact = mag.Interact;

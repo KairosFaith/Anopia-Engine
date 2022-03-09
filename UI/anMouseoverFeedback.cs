@@ -11,10 +11,10 @@ public class anMouseoverFeedback : anNarrateSelectable, IPointerEnterHandler, IP
     {
         Source = GetComponent<AudioSource>();
         Source.ignoreListenerPause = IgnoreListenerPause;
-        anInteractableMag mag = (anInteractableMag)anCore.FetchMag(SoundID);
+        anInteractFeedbackMag mag = (anInteractFeedbackMag)anCore.FetchMag(SoundID);
         Setup(mag);
     }
-    public virtual void Setup(anInteractableMag mag)
+    public virtual void Setup(anInteractFeedbackMag mag)
     {
         Enter = mag.Enter;
         Exit = mag.Exit;

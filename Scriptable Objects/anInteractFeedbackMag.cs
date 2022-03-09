@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.Audio;
-[CreateAssetMenu(fileName = "ButtonMag", menuName = "AnopiaEngine/Button", order = 5)]
-public class anInteractableMag : IanAudioMag
+[CreateAssetMenu(fileName = "UIMag", menuName = "AnopiaEngine/UI Feedback", order = 6)]
+public class anInteractFeedbackMag : IanAudioMag
 {
     public ClipData Enter,Down,Interact,Up,Exit;
     public override IanEvent LoadMag(anDriver driver, AudioMixerGroup output)
