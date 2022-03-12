@@ -2,9 +2,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Audio;
 [CreateAssetMenu(fileName = "SpeechMag", menuName = "AnopiaEngine/SpeechMag", order = 5)]
-public class anSpeechMag : IanAudioMag//TODO Inherit from ClipMag?
+public class anSpeechMag : anClipMag
 {
-    public AudioClip[] Clips;
+    public bool SingleVoiceOnly = true;
     public override IanEvent LoadMag(anDriver driver, AudioMixerGroup output)
     {
         return new anSpeechEvent(driver, this, output);
@@ -13,7 +13,8 @@ public class anSpeechMag : IanAudioMag//TODO Inherit from ClipMag?
 public class anSpeechEvent : IanEvent
 {
     public override bool UsingDriverSource => true;
-    Dictionary<string, AudioClip> _SpeechBank = new Dictionary<string, AudioClip>();
+    Dictionary<string, ClipData> _SpeechBank = new Dictionary<string, ClipData>();
+    public bool SingleVoiceOnly;
     anDriver Driver;
     AudioMixerGroup Output;
     anSourcerer SourcePrefab;
@@ -22,18 +23,18 @@ public class anSpeechEvent : IanEvent
         Output = output;
         anSpeechMag Mag = (anSpeechMag)mag;
         Driver = driver;
+        SingleVoiceOnly = Mag.SingleVoiceOnly;
         SourcePrefab = driver.SourcePrefab;
-        foreach (AudioClip c in Mag.Clips)
-            _SpeechBank.Add(c.name, c);
+        foreach (ClipData c in Mag.Data)
+            _SpeechBank.Add(c.Clip.name, c);
     }
     public override void Play(params object[] args)
     {
+        if (SingleVoiceOnly)
+            Driver.OneShotSource.audioSource.Stop();
         string msg = (string)args[0];
-        if (_SpeechBank.TryGetValue(msg, out AudioClip clip))
-        {
-            Driver.OneShotSource.audioSource.clip = clip;
-            Driver.OneShotSource.audioSource.Play();
-        }
+        if (_SpeechBank.TryGetValue(msg, out ClipData clip))
+            Driver.OneShotSource.audioSource.PlayOneShot(clip.Clip,clip.Gain);
         else
             throw new System.Exception(msg + "clip does not exist in the SpeechMag");
     }
@@ -42,10 +43,10 @@ public class anSpeechEvent : IanEvent
         foreach (object o in args)
         {
             string msg = (string)o;
-            if (_SpeechBank.TryGetValue(msg, out AudioClip clip))
+            if (_SpeechBank.TryGetValue(msg, out ClipData clip))
             {
-                anCore.PlayClipScheduled(Driver.transform, clip, 1, timecode, Output, SourcePrefab);
-                timecode += clip.length;
+                anCore.PlayClipScheduled(Driver.transform, clip.Clip, clip.Gain, timecode, Output, SourcePrefab);
+                timecode += clip.Clip.length;
             }
             else
                 throw new System.Exception(msg + "clip does not exist in the SpeechMag");
@@ -55,7 +56,6 @@ public class anSpeechEvent : IanEvent
     {
         
     }
-
     public override void Stop()
     {
 
