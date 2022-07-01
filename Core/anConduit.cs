@@ -18,7 +18,7 @@ public static partial class anCore
         AudioSource a = s.audioSource;
         setup?.Invoke(s);
         a.Play();
-        s.DeleteWhenDone(a, OnDone);
+        s.DeleteWhenDone(OnDone);
         return s;
     }
     public static anSourcerer PlayClipScheduled(Transform parent, AudioClip clip, float volume, double startTime, AudioMixerGroup output, anSourcerer prefab, Action<anSourcerer> setup = null)

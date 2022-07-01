@@ -86,7 +86,7 @@ public class anLinearSong : IanSong
             StopCurrentSource(timeCode);
             onDone += () => Destroy(gameObject);
             anSourcerer a = anCore.PlayClipScheduled(transform, toPlay.Section, 1, timeCode, Output, Mag.OneShotPrefab);
-            a.DeleteWhenDone(a.audioSource, onDone);
+            a.DeleteWhenDone(onDone);
         };
         if (toPlay.Stinger != null)
         {

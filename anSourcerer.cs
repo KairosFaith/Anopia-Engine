@@ -7,27 +7,27 @@ public class anSourcerer : MonoBehaviour
     public AudioSource audioSource;
     public AudioDistortionFilter audioDistortionFilter;
     public AudioHighPassFilter audioHighPassFilter;
-    public void DeleteWhenDone(AudioSource source, Action onDone = null)
+    public void DeleteWhenDone(Action onDone = null)
     {
-        StartCoroutine(_DeleteWhenDone(source, onDone));
+        StartCoroutine(_DeleteWhenDone( onDone));
     }
-    IEnumerator _DeleteWhenDone(AudioSource source, Action onDone)
+    IEnumerator _DeleteWhenDone(Action onDone)
     {
-        yield return new WaitForSeconds(source.clip.length);
-        while (source.isPlaying && !AudioListener.pause)
+        yield return new WaitForSeconds(audioSource.clip.length);
+        while (audioSource.isPlaying && !AudioListener.pause)
             yield return new WaitForEndOfFrame();
         onDone?.Invoke();
-        Destroy(source.gameObject);
+        Destroy(gameObject);
     }
     public void DeleteAfterTime(AudioSource source, double stopTime, Action onDone = null)
     {
-        StartCoroutine(_DeleteAfterTime(source, stopTime, onDone));
+        StartCoroutine(_DeleteAfterTime(stopTime, onDone));
     }
-    IEnumerator _DeleteAfterTime(AudioSource source, double stopTime, Action onDone)
+    IEnumerator _DeleteAfterTime(double stopTime, Action onDone)
     {
-        while ((AudioSettings.dspTime < stopTime) || source.isPlaying)
+        while ((AudioSettings.dspTime < stopTime) || audioSource.isPlaying)
             yield return new WaitForEndOfFrame();
         onDone?.Invoke();
-        UnityEngine.Object.Destroy(source.gameObject);
+        UnityEngine.Object.Destroy(gameObject);
     }
 }
