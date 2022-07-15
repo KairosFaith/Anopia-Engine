@@ -64,19 +64,6 @@ public static partial class anCore
         }
     }
 }
-public abstract class IanAudioMag : ScriptableObject
-{
-    public abstract IanEvent LoadMag(anDriver driver, AudioMixerGroup output);
-}
-public abstract class IanEvent
-{
-    public abstract bool UsingDriverSource { get; }
-    public IanEvent(anDriver driver, IanAudioMag mag, AudioMixerGroup output){ }
-    public abstract void Play(params object[] args);
-    public abstract void PlayScheduled(double timecode, params object[] args);//TODO not applicable in FMOD Wwise
-    public abstract void Stop();
-    public abstract void SetParameter(string name, float value);//, bool ignoreSeekSpeed = false
-}
 [Serializable]
 public class AudioAutomationData
 {
