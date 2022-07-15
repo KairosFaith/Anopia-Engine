@@ -1,7 +1,6 @@
 using UnityEngine;
 using System;
 using System.Collections;
-[RequireComponent(typeof(AudioSource))]
 public class anSourcerer : MonoBehaviour
 {
     public AudioSource audioSource;
@@ -25,9 +24,9 @@ public class anSourcerer : MonoBehaviour
     }
     IEnumerator _DeleteAfterTime(double stopTime, Action onDone)
     {
-        while ((AudioSettings.dspTime < stopTime) || audioSource.isPlaying)
+        while (AudioSettings.dspTime < stopTime)
             yield return new WaitForEndOfFrame();
         onDone?.Invoke();
-        UnityEngine.Object.Destroy(gameObject);
+        Destroy(gameObject);
     }
 }

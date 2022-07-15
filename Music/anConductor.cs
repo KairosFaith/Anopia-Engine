@@ -8,21 +8,6 @@ public class anConductor : MonoBehaviour
     IanSong _CurrentSong;
     //call this for snapshots and routing
     public AudioMixer MusicMixer;
-#if UNITY_EDITOR
-    //for inspector view only, set public or use debug mode
-    int BeatCount;
-    double LastBeat,NextBeat, NextBar;
-    private void Start()
-    {
-        anSynchro.PlayOnBeat += (int beatcount, double timecode) => 
-        { 
-            BeatCount = beatcount;
-            LastBeat = timecode;
-            NextBeat = anSynchro.NextBeat;
-            NextBar = anSynchro.NextBar;
-        };
-    }
-#endif
     protected void Awake()
     {
         if (_Instance == null)
@@ -47,20 +32,22 @@ public class anConductor : MonoBehaviour
         }
         IanMusicMag mag = (IanMusicMag)anCore.FetchMag(songID);
         NewSong(mag);
-        anSynchro.StartSynchro(this, mag.Tempo, _CurrentSong.Play);
+        anSynchro.StartSynchro(AudioSettings.dspTime);
+        _CurrentSong.Play(AudioSettings.dspTime);
         //return _CurrentSong;
     }
     public void CueSong(string songID)//cue song on the next bar, resync to new tempo
     {
+        anSynchro instance = anSynchro.Instance;
         if (_CurrentSong != null)
-            _CurrentSong.StopOnCue(anSynchro.NextBar);
+            _CurrentSong.StopOnCue(instance.CurrentBar + instance.Tempo.BarLength);
         IanMusicMag mag = (IanMusicMag)anCore.FetchMag(songID);
         NewSong(mag);
         anSynchro.PlayOnBeat += ( int beatcount, double timecode) =>
         {
             if (beatcount == 1)
             {
-                anSynchro.ReSync(mag.Tempo);
+                instance.Tempo = mag.Tempo;
                 CueSong(songID, timecode);
             }
         };
@@ -122,7 +109,7 @@ public class anConductor : MonoBehaviour
         IanMusicMag mag = (IanMusicMag)anCore.FetchMag(songID);
         NewSong(mag);
         _CurrentSong.FadeIn(t);
-        anSynchro.StartSynchro(this, mag.Tempo, _CurrentSong.Play);
+        anSynchro.StartSynchro(AudioSettings.dspTime+ Time.deltaTime);
     }
     public void TransitionSnapshot(string snapshot,float time)//TODO static func?
     {

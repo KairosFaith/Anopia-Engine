@@ -106,3 +106,27 @@ public enum SourceEffect
     Distortion,
     HighPass,
 }
+public abstract class IanMusicMag : IanAudioMag
+{
+    public TempoData Tempo;
+    public abstract SongForm Structure { get; }
+    public override IanEvent LoadMag(anDriver driver, AudioMixerGroup output)
+    {
+        throw new System.NotImplementedException();
+    }
+}
+public enum SongForm
+{
+    Linear,
+    Stem
+}
+public abstract class IanSong : MonoBehaviour
+{
+    public abstract void Setup(IanMusicMag mag, AudioMixerGroup output);
+    public abstract void StopOnCue(double stopTime);
+    public abstract void StopImmediate();
+    public abstract void Play(double startTime);
+    public abstract void FadeIn(float t);
+    public abstract void FadeOut(float t, Action ondone = null);
+    public abstract void Mute(bool toMute);
+}

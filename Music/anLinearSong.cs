@@ -47,6 +47,7 @@ public class anLinearSong : IanSong
     }
     void CueSection(SongSection toPlay)
     {
+        anSynchro instance = anSynchro.Instance;
         void NextSong(double timeCode)
         {
             AudioSource toDestroy = CurrentMainSource.audioSource;
@@ -66,7 +67,7 @@ public class anLinearSong : IanSong
                     if (beatcount == toPlay.BeatToStart)
                     {
                         anCore.PlayClipScheduled(transform, toPlay.Stinger, 1, timeCode, Output, Mag.OneShotPrefab);
-                        NextSong(anSynchro.NextBar);
+                        NextSong(instance.CurrentBar + instance.Tempo.BarLength);
                         anSynchro.PlayOnBeat -= PlayStinger;
                     }
                 };
@@ -74,12 +75,13 @@ public class anLinearSong : IanSong
                 return;
             }
             else
-                anCore.PlayClipScheduled(transform, toPlay.Stinger, 1f, anSynchro.NextBar, Output, Mag.OneShotPrefab);
+                anCore.PlayClipScheduled(transform, toPlay.Stinger, 1f, instance.CurrentBar + instance.Tempo.BarLength, Output, Mag.OneShotPrefab);
         }
-            NextSong(anSynchro.NextBar);
+            NextSong(instance.CurrentBar + instance.Tempo.BarLength);
     }
     public void CueFinal(Action onDone = null)
     {
+        anSynchro instance = anSynchro.Instance;
         SongSection toPlay = Mag.Final;
         void NextSong(double timeCode)
         {
@@ -95,14 +97,14 @@ public class anLinearSong : IanSong
                 if (beatcount == toPlay.BeatToStart)
                 {
                     anCore.PlayClipScheduled(transform, toPlay.Stinger,1f, timeCode, Output,Mag.OneShotPrefab);
-                    NextSong(anSynchro.NextBar);
+                    NextSong(instance.CurrentBar + instance.Tempo.BarLength);
                     anSynchro.PlayOnBeat -= PlayStinger;
                 }
             };
             anSynchro.PlayOnBeat += PlayStinger;
         }
         else
-            NextSong(anSynchro.NextBar);
+            NextSong(instance.CurrentBar + instance.Tempo.BarLength);
     }
     public override void StopOnCue(double stopTime)
     {
