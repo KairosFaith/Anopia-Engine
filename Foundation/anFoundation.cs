@@ -24,36 +24,29 @@ public static partial class anCore
     }
 }
 [Serializable]
-public class ClipData
-{
-    public AudioClip Clip;
-    [Range(0, 1)]
-    public float Gain = 1;
-}
-[Serializable]
-public class LerpCurve
+public class anLerpCurve
 {
     public AnimationCurve Curve;
     public float LowerLimit;
     public float UpperLimit;
-    public float Evaluate(float input)
+    public float Evaluate(float t)
     {
-        float t = Curve.Evaluate(input);
-        return Mathf.LerpUnclamped(LowerLimit, UpperLimit, t);
+        float lerpt = Curve.Evaluate(t);
+        return Mathf.LerpUnclamped(LowerLimit, UpperLimit, lerpt);
     }
 }
-public enum BarValue
+public enum anBarValue
 {
     Quarter = 1,
     Eight,
     Sixteen = 4,
 }
 [Serializable]
-public class TempoData
+public class anTempoData
 {
-    public int CrotchetBPM;
-    public int BeatsPerBar;
-    public BarValue TimeSignature;
+    public int CrotchetBPM = 120;
+    public int BeatsPerBar = 4;
+    public anBarValue TimeSignature;
     public int BPM => CrotchetBPM * (int)TimeSignature;
     public float BeatLength => 60 / (float)BPM;
     public float BarLength => BeatLength * BeatsPerBar;

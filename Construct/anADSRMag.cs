@@ -1,5 +1,5 @@
 using UnityEngine;
-[CreateAssetMenu(fileName = "ADSRMag", menuName = "AnopiaEngine/ADSR", order = 3)]
+[CreateAssetMenu(fileName = "ADSRMag", menuName = "AnopiaEngine/ADSR", order = 2)]
 public class anADSRMag : ScriptableObject
 {
     //sustain gain affects attack and release too

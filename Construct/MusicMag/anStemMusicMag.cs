@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 using UnityEngine.Audio;
-[CreateAssetMenu(fileName = "StemMusicMag", menuName = "AnopiaEngine/StemMusic", order = 8)]
+[CreateAssetMenu(fileName = "StemMusicMag", menuName = "AnopiaEngine/StemMusic", order = 5)]
 public class anStemMusicMag : IanMusicMag
 {
     public Stinger Intro;

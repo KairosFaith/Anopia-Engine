@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 public abstract class IanMusicMag : ScriptableObject
 {
-    public TempoData Tempo;
+    public anTempoData Tempo;
     public anSourcerer LoopPrefab, OneShotPrefab;
 }
 public class Stinger
