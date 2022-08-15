@@ -5,7 +5,7 @@ public class anSynchro: MonoBehaviour //this is your new update engine
 {
     public static anSynchro Instance;
     public static BeatFunc PlayOnBeat;// to schedule sounds
-    public TempoData Tempo;
+    public anTempoData Tempo;
     public int CurrentBeatCount = 0;
     public double NextBeat;
     public double CurrentBar;//start time of current bar, past

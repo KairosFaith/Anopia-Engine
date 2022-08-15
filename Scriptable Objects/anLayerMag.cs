@@ -5,7 +5,7 @@ using UnityEngine.Audio;
 [CreateAssetMenu(fileName = "LayerMag", menuName = "AnopiaEngine/LayerMag", order = 4)]
 public class anLayerMag : IanAudioMag
 {
-    public ClipData[] Layers;
+    public anClipData[] Layers;
     public LayerAutomationData[] AutomationData;
     public override IanEvent LoadMag(anDriver driver, AudioMixerGroup output)
     {

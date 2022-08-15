@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.Audio;
 public static partial class anCore
@@ -32,5 +33,15 @@ public static partial class anCore
         a.PlayScheduled(startTime);
         s.DeleteAfterTime(a, startTime + clip.length);
         return s;
+    }
+    public static IEnumerator FadeValue(float fadeTime, float startingValue, float targetValue, Action<float> ChangeValue, Action ondone = null)
+    {
+        for (float lerp = 0; lerp < 1; lerp += Time.unscaledDeltaTime / fadeTime)
+        {
+            float newValue = Mathf.Lerp(startingValue, targetValue, lerp);
+            ChangeValue(newValue);
+            yield return new WaitForEndOfFrame();
+        }
+        ondone?.Invoke();
     }
 }

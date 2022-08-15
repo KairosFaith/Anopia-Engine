@@ -13,7 +13,7 @@ public class anSpeechMag : anClipMag
 public class anSpeechEvent : IanEvent
 {
     public override bool UsingDriverSource => true;
-    Dictionary<string, ClipData> _SpeechBank = new Dictionary<string, ClipData>();
+    Dictionary<string, anClipData> _SpeechBank = new Dictionary<string, anClipData>();
     public bool SingleVoiceOnly;
     anDriver Driver;
     AudioMixerGroup Output;
@@ -25,7 +25,7 @@ public class anSpeechEvent : IanEvent
         Driver = driver;
         SingleVoiceOnly = Mag.SingleVoiceOnly;
         SourcePrefab = driver.SourcePrefab;
-        foreach (ClipData c in Mag.Data)
+        foreach (anClipData c in Mag.Data)
             _SpeechBank.Add(c.Clip.name, c);
     }
     public override void Play(params object[] args)
@@ -33,7 +33,7 @@ public class anSpeechEvent : IanEvent
         if (SingleVoiceOnly)
             Driver.OneShotSource.audioSource.Stop();
         string msg = (string)args[0];
-        if (_SpeechBank.TryGetValue(msg, out ClipData clip))
+        if (_SpeechBank.TryGetValue(msg, out anClipData clip))
             Driver.OneShotSource.audioSource.PlayOneShot(clip.Clip,clip.Gain);
         else
             throw new System.Exception(msg + "clip does not exist in the SpeechMag");
@@ -43,7 +43,7 @@ public class anSpeechEvent : IanEvent
         foreach (object o in args)
         {
             string msg = (string)o;
-            if (_SpeechBank.TryGetValue(msg, out ClipData clip))
+            if (_SpeechBank.TryGetValue(msg, out anClipData clip))
             {
                 anCore.PlayClipScheduled(Driver.transform, clip.Clip, clip.Gain, timecode, Output, SourcePrefab);
                 timecode += clip.Clip.length;

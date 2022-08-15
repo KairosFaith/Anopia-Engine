@@ -3,7 +3,7 @@ using UnityEngine.EventSystems;
 [RequireComponent(typeof(AudioSource))]
 public class anClickFeedback : anMouseoverFeedback, IPointerClickHandler
 {
-    ClipData Interact;
+    anClipData Interact;
     public override void Setup(anInteractFeedbackMag mag)
     {
         base.Setup(mag);

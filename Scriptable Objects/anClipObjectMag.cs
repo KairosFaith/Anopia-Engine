@@ -36,8 +36,8 @@ public class anClipObjectEvent : IanEvent
 {
     public override bool UsingDriverSource => false;
     public anSourcerer SourcePrefab;
-    public ClipData[] Data;
-    List<ClipData> RandomBag = new List<ClipData>();
+    public anClipData[] Data;
+    List<anClipData> RandomBag = new List<anClipData>();
     float volumeFlux;
     AudioMixerGroup Output;
     MonoBehaviour Driver;
@@ -68,9 +68,9 @@ public class anClipObjectEvent : IanEvent
     void SetupPlay(out int key, out Vector3 pos, out AudioClip clip, out float vol, out Action<anSourcerer> setup, params object[] args)
     {
         if (RandomBag.Count <= 0)
-            RandomBag = new List<ClipData>(Data);
+            RandomBag = new List<anClipData>(Data);
         key = UnityEngine.Random.Range(0, RandomBag.Count);
-        ClipData toPlay = Data[key];
+        anClipData toPlay = Data[key];
         clip = toPlay.Clip;
         vol = toPlay.Gain;
         if (args.Length > 1)

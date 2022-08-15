@@ -19,7 +19,7 @@ public static partial class anCore
         else
             throw new Exception(SoundID + " not found");
     }
-    public static ClipData FetchData(string SoundId, int Key)
+    public static anClipData FetchData(string SoundId, int Key)
     {
         anClipMag mag = (anClipMag)FetchMag(SoundId);
         return mag.Data[Key];
@@ -29,11 +29,11 @@ public static partial class anCore
         IanAudioMag mag = FetchMag(SoundID);
         return mag.LoadMag(driver, output);
     }
-    public static anSourcerer[] SetLayers(anDriver driver, AudioMixerGroup output, ClipData[] layers)
+    public static anSourcerer[] SetLayers(anDriver driver, AudioMixerGroup output, anClipData[] layers)
     {
         Transform t = driver.transform;
         List<anSourcerer> sources = new List<anSourcerer>();
-        foreach(ClipData L in layers)
+        foreach(anClipData L in layers)
         {
             anSourcerer s = UnityEngine.Object.Instantiate(driver.SourcePrefab, t);
             AudioSource a = s.audioSource;
@@ -81,7 +81,7 @@ public abstract class IanEvent
 public class AudioAutomationData
 {
     public string ParameterName;
-    public LerpCurve Smoothing;
+    public anLerpCurve Smoothing;
     public SourceEffect Effect;
     public float MinInputValue, MaxInputValue;
     public float EvaluateRandom()
@@ -108,7 +108,7 @@ public enum SourceEffect
 }
 public abstract class IanMusicMag : IanAudioMag
 {
-    public TempoData Tempo;
+    public anTempoData Tempo;
     public abstract SongForm Structure { get; }
     public override IanEvent LoadMag(anDriver driver, AudioMixerGroup output)
     {

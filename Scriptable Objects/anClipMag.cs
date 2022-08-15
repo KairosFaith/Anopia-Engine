@@ -4,13 +4,13 @@ using UnityEngine.Audio;
 [CreateAssetMenu(fileName = "ClipMag", menuName = "AnopiaEngine/ClipMag", order = 1)]
 public class anClipMag : IanAudioMag
 {
-    public ClipData[] Data;
+    public anClipData[] Data;
     [Range(0, 1)]
     public float MinRandomVolume = 1;
     public AudioClip RandomClip(out float gain)
     {
         int key = UnityEngine.Random.Range(0, Data.Length);
-        ClipData d = Data[key];
+        anClipData d = Data[key];
         gain = d.Gain + UnityEngine.Random.Range(-MinRandomVolume, MinRandomVolume);
         return d.Clip;
     }
@@ -22,8 +22,8 @@ public class anClipMag : IanAudioMag
 public class anOneShotEvent : IanEvent
 {
     float volumeFlux;
-    ClipData[] AudioData;
-    List<ClipData> RandomBag;
+    anClipData[] AudioData;
+    List<anClipData> RandomBag;
     anDriver Driver;
     public override bool UsingDriverSource => true;
     public anOneShotEvent(anDriver driver, IanAudioMag mag, AudioMixerGroup output) : base(driver, mag, output)
@@ -31,7 +31,7 @@ public class anOneShotEvent : IanEvent
         anClipMag Mag = (anClipMag)mag;
         Driver = driver;
         AudioData = Mag.Data;
-        RandomBag = new List<ClipData>(AudioData);
+        RandomBag = new List<anClipData>(AudioData);
         volumeFlux = Mag.MinRandomVolume;
     }
     public override void Play(params object[] args)
@@ -41,7 +41,7 @@ public class anOneShotEvent : IanEvent
             key = (int)args[1];
         else
             key = UnityEngine.Random.Range(0, RandomBag.Count);
-        ClipData d = AudioData[key];
+        anClipData d = AudioData[key];
         float vol = d.Gain;
         if (args.Length > 0)//randomise volume unless indicated in args
             vol *= (float)args[0];
@@ -50,7 +50,7 @@ public class anOneShotEvent : IanEvent
         Driver.OneShotSource.audioSource.PlayOneShot(d.Clip,vol);
         RandomBag.RemoveAt(key);
         if (RandomBag.Count <= 0)
-            RandomBag = new List<ClipData>(AudioData);
+            RandomBag = new List<anClipData>(AudioData);
     }
     public override void Stop()
     {

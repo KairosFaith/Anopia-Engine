@@ -6,7 +6,7 @@ public class anMouseoverFeedback : anNarrateSelectable, IPointerEnterHandler, IP
     public bool IgnoreListenerPause;
     public string SoundID;
     public AudioSource Source;
-    ClipData Enter, Exit;
+    anClipData Enter, Exit;
     public void Start()
     {
         Source = GetComponent<AudioSource>();
@@ -27,7 +27,7 @@ public class anMouseoverFeedback : anNarrateSelectable, IPointerEnterHandler, IP
     {
         Play(Exit);
     }
-    protected void Play(ClipData data)//TODO need dedicated function?
+    protected void Play(anClipData data)//TODO need dedicated function?
     {
         AudioClip cliptoPlay = data.Clip;
         if (cliptoPlay != null)

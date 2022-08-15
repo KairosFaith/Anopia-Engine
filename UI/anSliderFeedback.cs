@@ -3,7 +3,7 @@ using UnityEngine.EventSystems;
 public class anSliderFeedback : anMouseoverFeedback, IPointerDownHandler, IPointerUpHandler
 {
     public Slider slider;
-    ClipData Down, Up, Drag;
+    anClipData Down, Up, Drag;
     public override void Setup(anInteractFeedbackMag mag)
     {
         base.Setup(mag);
