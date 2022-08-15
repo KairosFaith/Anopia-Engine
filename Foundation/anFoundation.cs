@@ -40,9 +40,9 @@ public enum anBarValue
 [Serializable]
 public class anTempoData
 {
-    public int CrotchetBPM;
-    public int BeatsPerBar;
-    public anBarValue TimeSignature;
+    public int CrotchetBPM = 60;
+    public int BeatsPerBar = 4;
+    public anBarValue TimeSignature = anBarValue.Quarter;
     public int BPM => CrotchetBPM * (int)TimeSignature;
     public float BeatLength => 60 / (float)BPM;
     public float BarLength => BeatLength * BeatsPerBar;
