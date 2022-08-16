@@ -1,17 +1,5 @@
 using System;
 using UnityEngine;
-using UnityEngine.Audio;
-public static partial class anCore
-{
-    public static void TransitionToSnapshot(this AudioMixer mixer, string SnapshotName, float TimeToReach)
-    {
-        AudioMixerSnapshot snapshot = mixer.FindSnapshot(SnapshotName);
-        AudioMixerSnapshot[] ss = new AudioMixerSnapshot[] { snapshot };
-        float[] w = new float[] { 1 };
-        mixer.TransitionToSnapshots(ss, w, TimeToReach);
-        //the weight is nonsense, dun mess with it
-    }
-}
 [Serializable]
 public class anClipData
 {
@@ -40,7 +28,7 @@ public enum anBarValue
 [Serializable]
 public class anTempoData
 {
-    public int CrotchetBPM = 60;
+    public int CrotchetBPM = 65;
     public int BeatsPerBar = 4;
     public anBarValue TimeSignature = anBarValue.Quarter;
     public int BPM => CrotchetBPM * (int)TimeSignature;

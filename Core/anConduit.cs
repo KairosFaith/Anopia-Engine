@@ -4,6 +4,14 @@ using UnityEngine;
 using UnityEngine.Audio;
 public static partial class anCore
 {
+    public static void TransitionToSnapshot(this AudioMixer mixer, string SnapshotName, float TimeToReach)
+    {
+        AudioMixerSnapshot snapshot = mixer.FindSnapshot(SnapshotName);
+        AudioMixerSnapshot[] ss = new AudioMixerSnapshot[] { snapshot };
+        float[] w = new float[] { 1 };
+        mixer.TransitionToSnapshots(ss, w, TimeToReach);
+        //the weight is nonsense, dun mess with it
+    }
     public static anSourcerer SetupSource(Vector3 position, anSourcerer prefab, AudioMixerGroup output, AudioClip clip, float volume)
     {
         anSourcerer s = UnityEngine.Object.Instantiate(prefab, position, Quaternion.identity);
