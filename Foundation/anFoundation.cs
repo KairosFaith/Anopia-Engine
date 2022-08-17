@@ -1,13 +1,6 @@
 using System;
 using UnityEngine;
 [Serializable]
-public class anClipData
-{
-    public AudioClip Clip;
-    [Range(0, 1)]
-    public float Gain = 1;
-}
-[Serializable]
 public class anLerpCurve
 {
     public AnimationCurve Curve;

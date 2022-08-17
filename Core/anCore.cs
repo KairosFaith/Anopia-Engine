@@ -66,7 +66,7 @@ public static partial class anCore
 }
 public abstract class IanAudioMag : ScriptableObject
 {
-    public abstract IanEvent LoadMag(anDriver driver, AudioMixerGroup output);
+    //public abstract IanEvent LoadMag(anDriver driver, AudioMixerGroup output);
 }
 public abstract class IanEvent
 {
