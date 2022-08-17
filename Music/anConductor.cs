@@ -28,7 +28,7 @@ public class anConductor : MonoBehaviour
         if (_CurrentSong != null)
         {
             _CurrentSong.StopImmediate();
-            anSynchro.StopSynchro();
+            anSynchro.Instance.StopAllCoroutines();
         }
         IanMusicMag mag = (IanMusicMag)anCore.FetchMag(songID);
         NewSong(mag);
@@ -70,7 +70,7 @@ public class anConductor : MonoBehaviour
     {
         if (_CurrentSong is anLinearSong ls)
         {
-            onDone += () => anSynchro.StopSynchro();
+            onDone += () => anSynchro.Instance.StopAllCoroutines();
             ls.CueFinal(onDone);
         }
     }
@@ -93,7 +93,7 @@ public class anConductor : MonoBehaviour
     public void Stop(double stopTime)//user defined cue
     {
         _CurrentSong.StopOnCue(stopTime);
-        anSynchro.StopSynchro();
+        anSynchro.Instance.StopAllCoroutines();
     }
     public void Crossfade(float t, string songID)
     {
@@ -101,7 +101,7 @@ public class anConductor : MonoBehaviour
     }
     public void FadeOut(float t, Action onDone = null)
     {
-        anSynchro.StopSynchro();
+        anSynchro.Instance.StopAllCoroutines();
         _CurrentSong.FadeOut(t, onDone);
     }
     public void FadeIn(float t, string songID)
