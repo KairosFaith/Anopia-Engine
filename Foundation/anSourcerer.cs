@@ -18,7 +18,7 @@ public class anSourcerer : MonoBehaviour
         onDone?.Invoke();
         Destroy(gameObject);
     }
-    public void DeleteAfterTime(AudioSource source, double stopTime, Action onDone = null)
+    public void DeleteAfterTime( double stopTime, Action onDone = null)
     {
         StartCoroutine(_DeleteAfterTime(stopTime, onDone));
     }
