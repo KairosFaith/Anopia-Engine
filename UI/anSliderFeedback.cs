@@ -1,9 +1,10 @@
-﻿using UnityEngine.UI;
+﻿using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.EventSystems;
 public class anSliderFeedback : anMouseoverFeedback, IPointerDownHandler, IPointerUpHandler
 {
     public Slider slider;
-    anClipData Down, Up, Drag;
+    AudioClip Down, Up, Drag;
     public override void Setup(anInteractFeedbackMag mag)
     {
         base.Setup(mag);
@@ -14,7 +15,7 @@ public class anSliderFeedback : anMouseoverFeedback, IPointerDownHandler, IPoint
     }
     void OnValueChange()
     {
-        Source.PlayOneShot(Drag.Clip, Drag.Gain * slider.normalizedValue);
+        Source.PlayOneShot(Drag, slider.normalizedValue);
     }
     public virtual void OnPointerDown(PointerEventData eventData)
     {

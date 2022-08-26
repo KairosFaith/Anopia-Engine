@@ -47,8 +47,8 @@ public class anSynchro: MonoBehaviour //this is your new update engine
             }
             else
                 CurrentBeatCount++;
-            PlayOnBeat?.Invoke(CurrentBeatCount, beatTimeCode);
             NextBeat += Tempo.BeatLength;
+            PlayOnBeat?.Invoke(CurrentBeatCount, beatTimeCode);
         };
         while (SynchroActive)
         {

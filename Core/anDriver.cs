@@ -10,21 +10,8 @@ public class anDriver : MonoBehaviour
     public Dictionary<string, IanEvent> Events = new Dictionary<string, IanEvent>();
     public void SetDriver(params string[] soundID)
     {
-        foreach (string id in soundID)
-            LoadEvent(id);
-    }
-    void LoadEvent(string SoundID)
-    {
-        IanEvent e = anCore.NewEvent(this, SoundID, Output);
-        Events[SoundID] = e;
-        if (e.UsingDriverSource)
-        {
-            if (OneShotSource == null)
-            {
-                OneShotSource = Instantiate(SourcePrefab);
-                OneShotSource.audioSource.outputAudioMixerGroup = Output;
-            }
-        }
+    //    foreach (string id in soundID)
+    //        LoadEvent(id);
     }
     public void Play(string SoundID, params object[] args)
     {

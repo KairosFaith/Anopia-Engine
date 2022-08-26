@@ -18,9 +18,8 @@ public class anLinearSong : IanSong
     }
     void StopCurrentSource(double stopTime)
     {
-        AudioSource toDestroy = CurrentMainSource.audioSource;
-        toDestroy.SetScheduledEndTime(stopTime);
-        CurrentMainSource.DeleteAfterTime(toDestroy, stopTime);
+        CurrentMainSource.audioSource.SetScheduledEndTime(stopTime);
+        CurrentMainSource.DeleteAfterTime(stopTime);
     }
     void PlayScheduleMain(double timecode,AudioClip clip)
     {
@@ -50,9 +49,8 @@ public class anLinearSong : IanSong
         anSynchro instance = anSynchro.Instance;
         void NextSong(double timeCode)
         {
-            AudioSource toDestroy = CurrentMainSource.audioSource;
-            toDestroy.SetScheduledEndTime(timeCode);
-            CurrentMainSource.DeleteAfterTime(toDestroy, timeCode);
+            CurrentMainSource.audioSource.SetScheduledEndTime(timeCode);
+            CurrentMainSource.DeleteAfterTime(timeCode);
             NewCurrentSource();
             AudioSource a = CurrentMainSource.audioSource;
             a.clip = toPlay.Section;

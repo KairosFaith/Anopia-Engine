@@ -20,7 +20,7 @@ public class anStemSong : IanSong
     {
         foreach (anSourcerer s in SourceHandlers)
             s.audioSource.PlayScheduled(startTime);
-        anCore.PlayClipScheduled(transform, Mag.Impact.Clip, Mag.Impact.Gain, startTime, Output, Mag.OneShotPrefab);
+        anCore.PlayClipScheduled(transform, Mag.Impact, 1, startTime, Output, Mag.OneShotPrefab);
     }
     public override void StopOnCue(double stopTime)
     {
@@ -28,7 +28,7 @@ public class anStemSong : IanSong
         {
             AudioSource a = s.audioSource;
             a.SetScheduledEndTime(stopTime);
-            s.DeleteAfterTime(a, stopTime);
+            s.DeleteAfterTime(stopTime);
         }
         transform.DetachChildren();
         Destroy(gameObject);

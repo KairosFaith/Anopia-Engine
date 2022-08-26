@@ -39,7 +39,7 @@ public static partial class anCore
         a.volume = volume;
         setup?.Invoke(s);
         a.PlayScheduled(startTime);
-        s.DeleteAfterTime(a, startTime + clip.length);
+        s.DeleteAfterTime(startTime + clip.length);
         return s;
     }
     public static IEnumerator FadeValue(float fadeTime, float startingValue, float targetValue, Action<float> ChangeValue, Action ondone = null)

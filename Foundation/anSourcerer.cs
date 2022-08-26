@@ -8,12 +8,17 @@ public class anSourcerer : MonoBehaviour
     public AudioHighPassFilter audioHighPassFilter;
     public void DeleteWhenDone(Action onDone = null)
     {
-        StartCoroutine(_DeleteWhenDone( onDone));
+        if(audioSource.isPlaying)
+            StartCoroutine(_DeleteWhenDone( onDone));
+        else
+        {
+            onDone?.Invoke();
+            Destroy(gameObject);
+        }
     }
     IEnumerator _DeleteWhenDone(Action onDone)
     {
-        yield return new WaitForSeconds(audioSource.clip.length);
-        while (audioSource.isPlaying && !AudioListener.pause)
+        while (audioSource.isPlaying)
             yield return new WaitForEndOfFrame();
         onDone?.Invoke();
         Destroy(gameObject);
@@ -24,9 +29,9 @@ public class anSourcerer : MonoBehaviour
     }
     IEnumerator _DeleteAfterTime(double stopTime, Action onDone)
     {
-        while (AudioSettings.dspTime < stopTime)
-            yield return new WaitForEndOfFrame();
-        onDone?.Invoke();
-        Destroy(gameObject);
+        double curTime = AudioSettings.dspTime;
+        while (curTime < stopTime)
+            yield return new WaitForSeconds((float)(stopTime-curTime));
+        StartCoroutine(_DeleteWhenDone(onDone));
     }
 }

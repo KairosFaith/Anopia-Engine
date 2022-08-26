@@ -19,31 +19,10 @@ public static partial class anCore
         else
             throw new Exception(SoundID + " not found");
     }
-    public static anClipData FetchData(string SoundId, int Key)
+    public static AudioClip FetchData(string SoundId, int Key)
     {
         anClipMag mag = (anClipMag)FetchMag(SoundId);
         return mag.Data[Key];
-    }
-    public static IanEvent NewEvent(anDriver driver, string SoundID, AudioMixerGroup output)
-    {
-        IanAudioMag mag = FetchMag(SoundID);
-        return mag.LoadMag(driver, output);
-    }
-    public static anSourcerer[] SetLayers(anDriver driver, AudioMixerGroup output, anClipData[] layers)
-    {
-        Transform t = driver.transform;
-        List<anSourcerer> sources = new List<anSourcerer>();
-        foreach(anClipData L in layers)
-        {
-            anSourcerer s = UnityEngine.Object.Instantiate(driver.SourcePrefab, t);
-            AudioSource a = s.audioSource;
-            a.outputAudioMixerGroup = output;
-            a.clip = L.Clip;
-            a.volume = L.Gain;
-            sources.Add(s);
-            a.loop = true;
-        }
-        return sources.ToArray();
     }
     public static void SetEffect(this anSourcerer sourcerer, SourceEffect effect, float effectValue)
     {
@@ -110,10 +89,6 @@ public abstract class IanMusicMag : IanAudioMag
 {
     public anTempoData Tempo;
     public abstract SongForm Structure { get; }
-    public override IanEvent LoadMag(anDriver driver, AudioMixerGroup output)
-    {
-        throw new System.NotImplementedException();
-    }
 }
 public enum SongForm
 {

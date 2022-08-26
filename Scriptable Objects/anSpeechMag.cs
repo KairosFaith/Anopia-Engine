@@ -5,15 +5,11 @@ using UnityEngine.Audio;
 public class anSpeechMag : anClipMag
 {
     public bool SingleVoiceOnly = true;
-    public override IanEvent LoadMag(anDriver driver, AudioMixerGroup output)
-    {
-        return new anSpeechEvent(driver, this, output);
-    }
 }
 public class anSpeechEvent : IanEvent
 {
     public override bool UsingDriverSource => true;
-    Dictionary<string, anClipData> _SpeechBank = new Dictionary<string, anClipData>();
+    Dictionary<string, AudioClip> _SpeechBank = new Dictionary<string, AudioClip>();
     public bool SingleVoiceOnly;
     anDriver Driver;
     AudioMixerGroup Output;
@@ -25,16 +21,16 @@ public class anSpeechEvent : IanEvent
         Driver = driver;
         SingleVoiceOnly = Mag.SingleVoiceOnly;
         SourcePrefab = driver.SourcePrefab;
-        foreach (anClipData c in Mag.Data)
-            _SpeechBank.Add(c.Clip.name, c);
+        foreach (AudioClip c in Mag.Data)
+            _SpeechBank.Add(c.name, c);
     }
     public override void Play(params object[] args)
     {
         if (SingleVoiceOnly)
             Driver.OneShotSource.audioSource.Stop();
         string msg = (string)args[0];
-        if (_SpeechBank.TryGetValue(msg, out anClipData clip))
-            Driver.OneShotSource.audioSource.PlayOneShot(clip.Clip,clip.Gain);
+        if (_SpeechBank.TryGetValue(msg, out AudioClip clip))
+            Driver.OneShotSource.audioSource.PlayOneShot(clip);
         else
             throw new System.Exception(msg + "clip does not exist in the SpeechMag");
     }
@@ -43,10 +39,10 @@ public class anSpeechEvent : IanEvent
         foreach (object o in args)
         {
             string msg = (string)o;
-            if (_SpeechBank.TryGetValue(msg, out anClipData clip))
+            if (_SpeechBank.TryGetValue(msg, out AudioClip clip))
             {
-                anCore.PlayClipScheduled(Driver.transform, clip.Clip, clip.Gain, timecode, Output, SourcePrefab);
-                timecode += clip.Clip.length;
+                anCore.PlayClipScheduled(Driver.transform, clip, 1, timecode, Output, SourcePrefab);
+                timecode += clip.length;
             }
             else
                 throw new System.Exception(msg + "clip does not exist in the SpeechMag");

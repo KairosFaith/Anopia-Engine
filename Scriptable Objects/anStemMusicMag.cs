@@ -9,7 +9,7 @@ public class anStemMusicMag : IanMusicMag
     public StemData[] Stems;
     public anSourcerer LoopPrefab;
     //Add Impact crash on start
-    public anClipData Impact;
+    public AudioClip Impact;
     public anSourcerer OneShotPrefab;
 
 }
