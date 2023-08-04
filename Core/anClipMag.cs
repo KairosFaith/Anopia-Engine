@@ -11,7 +11,7 @@ public class anClipMag : IanAudioMag
     {
         int key = UnityEngine.Random.Range(0, Data.Length);
         AudioClip c = Data[key];
-        gain = UnityEngine.Random.Range(-MinRandomVolume, 1);
+        gain = UnityEngine.Random.Range(MinRandomVolume, 1);
         return c;
     }
 }
