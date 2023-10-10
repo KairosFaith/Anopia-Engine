@@ -9,7 +9,7 @@ public class anSynchro: MonoBehaviour //this is your new update engine
     public anTempoData Tempo;
     [Header("Read Only")]
 	public int CurrentBeatCount = 0;
-	public double NextBeat, CurrentBar;//start time of current bar, past
+	public double NextBeat, CurrentBar;//current bar is past
 	public bool SynchroActive;
 	public double BeatLength => Tempo.BeatLength;
 	public double BarLength => Tempo.BarLength;
@@ -62,13 +62,20 @@ public class anSynchro: MonoBehaviour //this is your new update engine
         }
         SynchroActive = false;
     }
-    public bool CheckRhythm(float marginOfError = 0.5f)
+    public bool CheckRhythmAcurracy(float marginOfError = 0.4f)
     {
+        double pressedTimecode = AudioSettings.dspTime;
         if(!SynchroActive)
             return false;
-        double timecodeToCheck = CurrentBar + (Tempo.BeatLength * (CurrentBeatCount-1));
-        double diff = AudioSettings.dspTime - timecodeToCheck;
-        float delta = (float)(diff/Tempo.BeatLength);
+        if(CheckRhythmDelta(pressedTimecode, NextBeat, marginOfError))
+            return true;
+        double prevBeat = NextBeat - Tempo.BeatLength;
+        return CheckRhythmDelta(pressedTimecode, prevBeat, marginOfError);
+    }
+    bool CheckRhythmDelta(double pressedTimeCode, double timeCodeToCheck, float marginOfError)
+    {
+        double diff = pressedTimeCode - timeCodeToCheck;
+        float delta = (float)(diff / Tempo.BeatLength);
         return MathF.Abs(delta) < marginOfError;
     }
 }
