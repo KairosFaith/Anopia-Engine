@@ -62,6 +62,15 @@ public class anSynchro: MonoBehaviour //this is your new update engine
         }
         SynchroActive = false;
     }
+    public bool CheckRhythm(float marginOfError = 0.5f)
+    {
+        if(!SynchroActive)
+            return false;
+        double timecodeToCheck = CurrentBar + (Tempo.BeatLength * (CurrentBeatCount-1));
+        double diff = AudioSettings.dspTime - timecodeToCheck;
+        float delta = (float)(diff/Tempo.BeatLength);
+        return MathF.Abs(delta) < marginOfError;
+    }
 }
 public enum anBarValue
 {
