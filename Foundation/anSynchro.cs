@@ -69,8 +69,7 @@ public class anSynchro: MonoBehaviour //this is your new update engine
             return false;
         if(CheckRhythmDelta(pressedTimecode, NextBeat, marginOfError))
             return true;
-        double prevBeat = NextBeat - Tempo.BeatLength;
-        return CheckRhythmDelta(pressedTimecode, prevBeat, marginOfError);
+        return CheckRhythmDelta(pressedTimecode, NextBeat - Tempo.BeatLength, marginOfError);
     }
     bool CheckRhythmDelta(double pressedTimeCode, double timeCodeToCheck, float marginOfError)
     {
