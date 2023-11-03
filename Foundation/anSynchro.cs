@@ -82,7 +82,8 @@ public enum anBarValue
 {
     Quarter = 1,
     Eight,
-    Sixteen = 4,
+    Triplet,
+    Sixteen,
 }
 [Serializable]
 public class anTempoData
