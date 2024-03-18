@@ -4,6 +4,14 @@ using System;
 using UnityEngine.Audio;
 public static partial class anCore
 {
+    public static T GetOrAddComponent <T>(this MonoBehaviour mb) where T : Component//TODO make this a utillity function
+    {
+        GameObject go = mb.gameObject;
+        T comp = go.GetComponent<T>();
+        if (comp == null)
+            comp = go.AddComponent<T>();
+        return comp;
+    }
     static Dictionary<string, IanAudioMag> _SoundBank = new Dictionary<string, IanAudioMag>();
     static anCore()
     {
@@ -45,7 +53,7 @@ public static partial class anCore
 }
 public abstract class IanAudioMag : ScriptableObject
 {
-
+    //TODO what here????
 }
 [Serializable]
 public class AudioAutomationData

@@ -7,7 +7,6 @@ public class anStemMusicMag : IanMusicMag
 {
     public override SongForm Structure => SongForm.Stem;
     public StemData[] Stems;
-    public anSourcerer LoopPrefab;
     //Add Impact crash on start
     public AudioClip Impact;
     public anSourcerer OneShotPrefab;

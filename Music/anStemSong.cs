@@ -47,12 +47,8 @@ public class anStemSong : IanSong
         StemData[] Stems = Mag.Stems;
         foreach(StemData data in Stems)
         {
-            anSourcerer s = Instantiate(Mag.LoopPrefab, transform);
-            AudioSource a = s.audioSource;
-            a.clip = data.Clip;
-            a.panStereo = data.Pan;
-            a.volume = 1;
-            a.outputAudioMixerGroup = data.Channel;
+            anSourcerer s = anCore.Setup2DLoopSource(data.Clip, data.Channel);
+            s.audioSource.panStereo = data.Pan;
             SourceHandlers.Add(s);
         }
         Output = output;

@@ -11,21 +11,15 @@ public class anLinearSong : IanSong
         Output = output;
         Mag = (anLinearMusicMag)mag;
     }
-    void NewCurrentSource()
+    void NewCurrentSource(AudioClip clip)
     {
-        CurrentMainSource = Instantiate(Mag.LoopPrefab, transform);
+        CurrentMainSource = anCore.Setup2DLoopSource(clip, Output);
         CurrentMainSource.audioSource.outputAudioMixerGroup = Output;
     }
     void StopCurrentSource(double stopTime)
     {
         CurrentMainSource.audioSource.SetScheduledEndTime(stopTime);
         CurrentMainSource.DeleteAfterTime(stopTime);
-    }
-    void PlayScheduleMain(double timecode,AudioClip clip)
-    {
-        AudioSource a = CurrentMainSource.audioSource;
-        a.clip = clip;
-        a.PlayScheduled(timecode);
     }
     public override void Play(double startTime)
     {
@@ -36,8 +30,8 @@ public class anLinearSong : IanSong
             introLength = introClip.length;
             anCore.PlayClipScheduled(introClip, startTime, Output);
         }
-        NewCurrentSource();
-        PlayScheduleMain(startTime + introLength, Mag.MainSection);
+        NewCurrentSource(Mag.MainSection);
+        CurrentMainSource.audioSource.PlayScheduled(startTime + introLength);
     }
     public void CueSection(int key)
     {
@@ -51,10 +45,8 @@ public class anLinearSong : IanSong
         {
             CurrentMainSource.audioSource.SetScheduledEndTime(timeCode);
             CurrentMainSource.DeleteAfterTime(timeCode);
-            NewCurrentSource();
-            AudioSource a = CurrentMainSource.audioSource;
-            a.clip = toPlay.Section;
-            a.PlayScheduled(timeCode);
+            NewCurrentSource(toPlay.Section);
+            CurrentMainSource.audioSource.PlayScheduled(timeCode);
         };
         if (toPlay.Stinger != null)
         {

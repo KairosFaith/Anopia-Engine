@@ -2,7 +2,6 @@ using UnityEngine;
 using System;
 using System.Collections;
 using UnityEngine.Audio;
-
 [RequireComponent(typeof(AudioSource))]
 public class anSourcerer : MonoBehaviour
 {
@@ -10,8 +9,8 @@ public class anSourcerer : MonoBehaviour
     {
         get 
         { 
-            if (_audioSource == null) 
-                _audioSource = GetComponent<AudioSource>();
+            if (_audioSource == null)
+                _audioSource = this.GetOrAddComponent<AudioSource>();
             return _audioSource; 
         } 
     }
@@ -20,7 +19,7 @@ public class anSourcerer : MonoBehaviour
         get
         {
             if (_audioDistortionFilter == null)
-                _audioDistortionFilter = GetComponent<AudioDistortionFilter>();
+                _audioDistortionFilter = this.GetOrAddComponent<AudioDistortionFilter>();
             return _audioDistortionFilter;
         }
     }
@@ -29,7 +28,7 @@ public class anSourcerer : MonoBehaviour
         get
         {
             if (_audioHighPassFilter == null)
-                _audioHighPassFilter = GetComponent<AudioHighPassFilter>();
+                _audioHighPassFilter = this.GetOrAddComponent<AudioHighPassFilter>();
             return _audioHighPassFilter;
         }
     }
