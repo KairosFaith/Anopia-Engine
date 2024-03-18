@@ -111,10 +111,6 @@ public class anConductor : MonoBehaviour
         _CurrentSong.FadeIn(t);
         anSynchro.StartSynchro(AudioSettings.dspTime+ Time.deltaTime);
     }
-    public void TransitionSnapshot(string snapshot,float time)//TODO static func?
-    {
-        MusicMixer.TransitionToSnapshot(snapshot, time);
-    }
     public void Mute(bool toMute)
     {
         _CurrentSong.Mute(toMute);

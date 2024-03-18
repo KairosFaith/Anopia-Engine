@@ -5,7 +5,8 @@ public class anMenuNarrator : MonoBehaviour
     public static anMenuNarrator Instance;
     public Selectable SelectOnStart;
     public string SoundID;
-    public anDriver Driver;
+    public anSpeechMag SpeechMag;
+    public AudioSource Source;
     private void Awake()
     {
         Instance = this;
@@ -13,10 +14,9 @@ public class anMenuNarrator : MonoBehaviour
     void Start()
     {
         SelectOnStart.Select();
-        Driver.SetDriver(SoundID);
     }
     public void NarrateMessage(string msg)
     {
-        Driver.Play(SoundID, msg);
+        SpeechMag.PlaySpeech(Source, msg);
     }
 }

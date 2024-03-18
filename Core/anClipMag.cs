@@ -14,4 +14,10 @@ public class anClipMag : IanAudioMag
         gain = UnityEngine.Random.Range(MinRandomVolume, 1);
         return c;
     }
+    public AudioClip PlayOneShot(AudioSource source)
+    {
+        AudioClip c = source.clip = Randomise(out float gain);
+        source.PlayOneShot(c, gain);
+        return c;
+    }
 }

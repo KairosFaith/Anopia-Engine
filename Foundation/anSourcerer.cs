@@ -1,11 +1,41 @@
 using UnityEngine;
 using System;
 using System.Collections;
+using UnityEngine.Audio;
+
+[RequireComponent(typeof(AudioSource))]
 public class anSourcerer : MonoBehaviour
 {
-    public AudioSource audioSource;
-    public AudioDistortionFilter audioDistortionFilter;
-    public AudioHighPassFilter audioHighPassFilter;
+    public AudioSource audioSource
+    {
+        get 
+        { 
+            if (_audioSource == null) 
+                _audioSource = GetComponent<AudioSource>();
+            return _audioSource; 
+        } 
+    }
+    public AudioDistortionFilter audioDistortionFilter
+    {
+        get
+        {
+            if (_audioDistortionFilter == null)
+                _audioDistortionFilter = GetComponent<AudioDistortionFilter>();
+            return _audioDistortionFilter;
+        }
+    }
+    public AudioHighPassFilter audioHighPassFilter
+    {
+        get
+        {
+            if (_audioHighPassFilter == null)
+                _audioHighPassFilter = GetComponent<AudioHighPassFilter>();
+            return _audioHighPassFilter;
+        }
+    }
+    AudioSource _audioSource;
+    AudioDistortionFilter _audioDistortionFilter;
+    AudioHighPassFilter _audioHighPassFilter;
     public void DeleteWhenDone(Action onDone = null)
     {
         if(audioSource.isPlaying)
@@ -33,5 +63,18 @@ public class anSourcerer : MonoBehaviour
         while (curTime < stopTime)
             yield return new WaitForSeconds((float)(stopTime-curTime));
         StartCoroutine(_DeleteWhenDone(onDone));
+    }
+    public void SetChannel(AudioMixerGroup channel)
+    {
+        audioSource.outputAudioMixerGroup = channel;
+    }
+    public void SetRandomPitch(float minPitch = 1, float maxPitch = 1)
+    {
+        audioSource.pitch = UnityEngine.Random.Range(minPitch, maxPitch);
+    }
+    public void PlayScheduled(double timecode, float gain)
+    {
+        audioSource.volume = gain;
+        audioSource.PlayScheduled(timecode);
     }
 }

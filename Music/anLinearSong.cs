@@ -34,7 +34,7 @@ public class anLinearSong : IanSong
         if(introClip != null)
         {
             introLength = introClip.length;
-            anCore.PlayClipScheduled(transform, introClip, 1, startTime, Output, Mag.OneShotPrefab);
+            anCore.PlayClipScheduled(introClip, startTime, Output);
         }
         NewCurrentSource();
         PlayScheduleMain(startTime + introLength, Mag.MainSection);
@@ -64,7 +64,7 @@ public class anLinearSong : IanSong
                 {
                     if (beatcount == toPlay.BeatToStart)
                     {
-                        anCore.PlayClipScheduled(transform, toPlay.Stinger, 1, timeCode, Output, Mag.OneShotPrefab);
+                        anCore.PlayClipScheduled(toPlay.Stinger, timeCode, Output);
                         NextSong(instance.CurrentBar + instance.Tempo.BarLength);
                         anSynchro.PlayOnBeat -= PlayStinger;
                     }
@@ -73,7 +73,7 @@ public class anLinearSong : IanSong
                 return;
             }
             else
-                anCore.PlayClipScheduled(transform, toPlay.Stinger, 1f, instance.CurrentBar + instance.Tempo.BarLength, Output, Mag.OneShotPrefab);
+                anCore.PlayClipScheduled(toPlay.Stinger, instance.CurrentBar + instance.Tempo.BarLength, Output);
         }
             NextSong(instance.CurrentBar + instance.Tempo.BarLength);
     }
@@ -85,7 +85,7 @@ public class anLinearSong : IanSong
         {
             StopCurrentSource(timeCode);
             onDone += () => Destroy(gameObject);
-            anSourcerer a = anCore.PlayClipScheduled(transform, toPlay.Section, 1, timeCode, Output, Mag.OneShotPrefab);
+            anSourcerer a = anCore.PlayClipScheduled(toPlay.Section, timeCode, Output);
             a.DeleteWhenDone(onDone);
         };
         if (toPlay.Stinger != null)
@@ -94,7 +94,7 @@ public class anLinearSong : IanSong
             {
                 if (beatcount == toPlay.BeatToStart)
                 {
-                    anCore.PlayClipScheduled(transform, toPlay.Stinger,1f, timeCode, Output,Mag.OneShotPrefab);
+                    anCore.PlayClipScheduled(toPlay.Stinger, timeCode, Output);
                     NextSong(instance.CurrentBar + instance.Tempo.BarLength);
                     anSynchro.PlayOnBeat -= PlayStinger;
                 }

@@ -20,7 +20,7 @@ public class anStemSong : IanSong
     {
         foreach (anSourcerer s in SourceHandlers)
             s.audioSource.PlayScheduled(startTime);
-        anCore.PlayClipScheduled(transform, Mag.Impact, 1, startTime, Output, Mag.OneShotPrefab);
+        anCore.PlayClipScheduled(Mag.Impact, startTime, Output);
     }
     public override void StopOnCue(double stopTime)
     {
