@@ -6,7 +6,7 @@ public class anStemSong : IanSong
 {
     anStemMusicMag Mag;
     AudioMixerGroup Output;
-    public List<anSourcerer> SourceHandlers = new List<anSourcerer>();
+    public anSourcerer[] SourceHandlers;
     public override void FadeOut(float t, Action ondone = null)
     {
         Action<float> ChangeValue = null;
@@ -18,9 +18,7 @@ public class anStemSong : IanSong
     }
     public override void Play(double startTime)
     {
-        foreach (anSourcerer s in SourceHandlers)
-            s.audioSource.PlayScheduled(startTime);
-        anCore.PlayClipScheduled(Mag.Impact, startTime, Output);
+        SourceHandlers = Mag.Play(startTime, Output);
     }
     public override void StopOnCue(double stopTime)
     {
@@ -44,13 +42,7 @@ public class anStemSong : IanSong
     public override void Setup(IanMusicMag mag, AudioMixerGroup output)
     {
         Mag = (anStemMusicMag)mag;
-        StemData[] Stems = Mag.Stems;
-        foreach(StemData data in Stems)
-        {
-            anSourcerer s = anCore.Setup2DLoopSource(data.Clip, data.Channel);
-            s.audioSource.panStereo = data.Pan;
-            SourceHandlers.Add(s);
-        }
+        SourceHandlers = Mag.Setup();
         Output = output;
     }
     public override void StopImmediate()

@@ -1,5 +1,5 @@
 using UnityEngine;
-[CreateAssetMenu(fileName = "ADSRMag", menuName = "AnopiaEngine/ADSR", order = 3)]
+[CreateAssetMenu(fileName = "ADSRMag", menuName = "AnopiaEngine/ADSR")]
 public class anADSRMag : IanAudioMag
 {
     public AudioClip Attack;

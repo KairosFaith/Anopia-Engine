@@ -8,7 +8,7 @@ public static partial class anCore
     {
         GameObject g = new GameObject(clip.name);
         anSourcerer a = g.AddComponent<anSourcerer>();
-        a.SetChannel(channel);
+        a.Channel = channel;
         a.audioSource.clip = clip;
         return a;
     }

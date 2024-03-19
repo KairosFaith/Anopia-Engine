@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Audio;
@@ -41,11 +40,5 @@ public class anSpeechMag : anClipMag
         foreach (anSourcerer a in sources)
             a.DeleteAfterTime(timeCode);
         return sources.ToArray();
-    }
-    [Serializable]
-    public class VoiceLineData
-    {
-        public string Line;
-        public AudioClip Clip;
     }
 }

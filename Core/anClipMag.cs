@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Audio;
-[CreateAssetMenu(fileName = "ClipMag", menuName = "AnopiaEngine/ClipMag", order = 1)]
+[CreateAssetMenu(fileName = "ClipMag", menuName = "AnopiaEngine/ClipMag")]
 public class anClipMag : IanAudioMag
 {
     public AudioClip[] Data;

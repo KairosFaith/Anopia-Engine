@@ -32,50 +32,10 @@ public static partial class anCore
         anClipMag mag = (anClipMag)FetchMag(SoundId);
         return mag.Data[Key];
     }
-    public static void SetEffect(this anSourcerer sourcerer, SourceEffect effect, float effectValue)
-    {
-        switch (effect)
-        {
-            case SourceEffect.Volume:
-                sourcerer.audioSource.volume = effectValue;
-                break;            
-            case SourceEffect.Pitch:
-                sourcerer.audioSource.pitch = effectValue;
-                break;            
-            case SourceEffect.Distortion:
-                sourcerer.audioDistortionFilter.distortionLevel = effectValue;
-                break;
-            case SourceEffect.HighPass:
-                sourcerer.audioHighPassFilter.cutoffFrequency = effectValue;
-                break;
-        }
-    }
 }
 public abstract class IanAudioMag : ScriptableObject
 {
     //TODO what here????
-}
-[Serializable]
-public class AudioAutomationData
-{
-    public string ParameterName;
-    public anLerpCurve Smoothing;
-    public SourceEffect Effect;
-    public float MinInputValue, MaxInputValue;
-    public float EvaluateRandom()
-    {
-        float r = UnityEngine.Random.Range(0f, 1f);
-        return Smoothing.Evaluate(r);
-    }
-    public float EvaluateUnnormalised(float unnormalisedValue)
-    {
-        return Mathf.InverseLerp(MinInputValue, MaxInputValue, unnormalisedValue);
-    }
-}
-[Serializable]
-public class LayerAutomationData : AudioAutomationData
-{
-    public int TargetSource;
 }
 public enum SourceEffect
 {

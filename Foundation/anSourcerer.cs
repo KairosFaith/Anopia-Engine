@@ -5,6 +5,31 @@ using UnityEngine.Audio;
 [RequireComponent(typeof(AudioSource))]
 public class anSourcerer : MonoBehaviour
 {
+    public AudioMixerGroup Channel
+    {
+        get { return audioSource.outputAudioMixerGroup; }
+        set { audioSource.outputAudioMixerGroup = value; }
+    }
+    public float Volume
+    {
+        get { return audioSource.volume; }
+        set { audioSource.volume = value; }
+    }
+    public float Pitch
+    {
+        get { return audioSource.pitch; }
+        set { audioSource.pitch = value; }
+    }
+    public float Distortion
+    {
+        get { return audioDistortionFilter.distortionLevel; }
+        set { audioDistortionFilter.distortionLevel = value; }
+    }
+    public float HighPass
+    {
+        get { return audioHighPassFilter.cutoffFrequency; }
+        set { audioHighPassFilter.cutoffFrequency = value; }
+    }
     public AudioSource audioSource
     {
         get 
@@ -35,6 +60,15 @@ public class anSourcerer : MonoBehaviour
     AudioSource _audioSource;
     AudioDistortionFilter _audioDistortionFilter;
     AudioHighPassFilter _audioHighPassFilter;
+    public void SetRandomPitch(float minPitch = 1, float maxPitch = 1)
+    {
+        Pitch = UnityEngine.Random.Range(minPitch, maxPitch);
+    }
+    public void PlayScheduled(double timecode, float gain)
+    {
+        audioSource.volume = gain;
+        audioSource.PlayScheduled(timecode);
+    }
     public void DeleteWhenDone(Action onDone = null)
     {
         if(audioSource.isPlaying)
@@ -62,18 +96,5 @@ public class anSourcerer : MonoBehaviour
         while (curTime < stopTime)
             yield return new WaitForSeconds((float)(stopTime-curTime));
         StartCoroutine(_DeleteWhenDone(onDone));
-    }
-    public void SetChannel(AudioMixerGroup channel)
-    {
-        audioSource.outputAudioMixerGroup = channel;
-    }
-    public void SetRandomPitch(float minPitch = 1, float maxPitch = 1)
-    {
-        audioSource.pitch = UnityEngine.Random.Range(minPitch, maxPitch);
-    }
-    public void PlayScheduled(double timecode, float gain)
-    {
-        audioSource.volume = gain;
-        audioSource.PlayScheduled(timecode);
     }
 }
