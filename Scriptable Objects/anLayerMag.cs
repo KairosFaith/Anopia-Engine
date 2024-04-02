@@ -1,8 +1,6 @@
-using JetBrains.Annotations;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Audio;
 [CreateAssetMenu(fileName = "LayerMag", menuName = "AnopiaEngine/LayerMag")]
 public class anLayerMag : IanAudioMag
 {
@@ -59,6 +57,7 @@ public class AudioAutomationData
 {
     public string ParameterName;
     public float MinInputValue, MaxInputValue;
+    //[HideInInspector]//TODO put enum in inspector only, ideally store string instead
     public SourceEffect Effect;
     public anLerpCurve Smoothing;
     protected System.Reflection.PropertyInfo pInfo;
@@ -74,6 +73,13 @@ public class AudioAutomationData
     public void SetSourcererValue(anSourcerer handler, float value)
     {
         pInfo.SetValue(handler, value);
+    }
+    public enum SourceEffect//TODO put this in editor only somehow
+    {
+        Volume,
+        Pitch,
+        Distortion,
+        HighPass,
     }
 }
 [Serializable]

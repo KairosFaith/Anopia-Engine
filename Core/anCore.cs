@@ -37,13 +37,6 @@ public abstract class IanAudioMag : ScriptableObject
 {
     //TODO what here????
 }
-public enum SourceEffect
-{
-    Volume,
-    Pitch,
-    Distortion,
-    HighPass,
-}
 public abstract class IanMusicMag : IanAudioMag
 {
     public anTempoData Tempo;

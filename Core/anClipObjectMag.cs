@@ -4,8 +4,13 @@ using UnityEngine.Audio;
 public class anClipObjectMag : anClipMag
 {
     public anSourcerer SourcererPrefab;
-    public float MinPitch = 1, MaxPitch =1;//TODO use MinMax Slider
+    [Range(.1f, 1f)]
+    public float MinPitch = 1;
+    [Range(1f, 2f)]
+    public float MaxPitch = 1;
+    [HideInInspector]
     public bool UseDistortion, UseHighPass;
+    [HideInInspector]
     public float MaxDistortion, MaxHighPass = 10;
     anSourcerer InstantiateSourcerer(Vector3 position, AudioMixerGroup channel)
     {
