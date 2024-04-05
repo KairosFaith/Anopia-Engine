@@ -64,10 +64,15 @@ public class anSourcerer : MonoBehaviour
     {
         Pitch = UnityEngine.Random.Range(minPitch, maxPitch);
     }
-    public void PlayScheduled(double timecode, float gain)
+    public void PlayScheduled(double timecode, float gain = 1)
     {
         audioSource.volume = gain;
         audioSource.PlayScheduled(timecode);
+    }
+    public void StopScheduled(double timecode)
+    {
+        audioSource.SetScheduledEndTime(timecode);
+        DeleteAfterTime(timecode);
     }
     public void DeleteWhenDone(Action onDone = null)
     {
@@ -86,6 +91,11 @@ public class anSourcerer : MonoBehaviour
         onDone?.Invoke();
         Destroy(gameObject);
     }
+    /// <summary>
+    /// waits for a certain time, then deletes the gameobject after it has finished playing
+    /// </summary>
+    /// <param name="stopTime"></param>
+    /// <param name="onDone"></param>
     public void DeleteAfterTime( double stopTime, Action onDone = null)
     {
         StartCoroutine(_DeleteAfterTime(stopTime, onDone));
@@ -95,6 +105,6 @@ public class anSourcerer : MonoBehaviour
         double curTime = AudioSettings.dspTime;
         while (curTime < stopTime)
             yield return new WaitForSeconds((float)(stopTime-curTime));
-        StartCoroutine(_DeleteWhenDone(onDone));
+        DeleteWhenDone(onDone);
     }
 }

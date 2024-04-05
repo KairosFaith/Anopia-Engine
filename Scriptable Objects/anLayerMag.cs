@@ -4,8 +4,8 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "LayerMag", menuName = "AnopiaEngine/LayerMag")]
 public class anLayerMag : IanAudioMag
 {
-    public AudioLayerData[] LayerData;
-    public LayerAutomationData[] AutomationData;
+    public AudioLayerData[] Layer;
+    public LayerAutomationData[] Automation;
     Dictionary<string, Action<float, anSourcerer[]>> Setters
     {
         get
@@ -19,7 +19,7 @@ public class anLayerMag : IanAudioMag
     public void InitActionBank()
     {
         _Setters = new Dictionary<string, Action<float, anSourcerer[]>>();
-        foreach (LayerAutomationData layerData in AutomationData)
+        foreach (LayerAutomationData layerData in Automation)
             _Setters.Add(layerData.ParameterName, layerData.AutomationAction);
     }
     public void SetParam(string paramName, float value, anSourcerer[] sourceHandlers)
@@ -30,7 +30,7 @@ public class anLayerMag : IanAudioMag
     public anSourcerer[] Setup(Transform parent)
     {
         List<anSourcerer> SourceHandlers = new List<anSourcerer>();
-        foreach (AudioLayerData l in LayerData)
+        foreach (AudioLayerData l in Layer)
         {
             anSourcerer a = Instantiate(l.SourcePrefab, parent);
             a.audioSource.clip = l.Clip;

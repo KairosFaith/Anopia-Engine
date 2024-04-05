@@ -4,25 +4,21 @@ using UnityEngine.EventSystems;
 public class anSliderFeedback : anMouseoverFeedback, IPointerDownHandler, IPointerUpHandler
 {
     public Slider slider;
-    AudioClip Down, Up, Drag;
-    public override void Setup(anInteractFeedbackMag mag)
+    public override void Start()
     {
-        base.Setup(mag);
-        Down = mag.Down;
-        Up = mag.Up;
-        Drag = mag.Interact;
+        base.Start();
         slider.onValueChanged.AddListener((f) => OnValueChange());
     }
     void OnValueChange()
     {
-        Source.PlayOneShot(Drag, slider.normalizedValue);
+        Source.PlayOneShot(AudioMag.Interact, slider.normalizedValue);
     }
     public virtual void OnPointerDown(PointerEventData eventData)
     {
-        Play(Down);
+        Source.PlayOneShot(AudioMag.Down);
     }
     public virtual void OnPointerUp(PointerEventData eventData)
     {
-        Play(Up);
+        Source.PlayOneShot(AudioMag.Up);
     }
 }

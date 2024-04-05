@@ -4,35 +4,30 @@ using UnityEngine;
 using UnityEngine.Audio;
 public static partial class anCore
 {
-    public static anSourcerer Setup2DSource(AudioClip clip, AudioMixerGroup channel)
+    public static anSourcerer Setup2DSource(AudioClip clip, AudioMixerGroup channel, float pan)
     {
         GameObject g = new GameObject(clip.name);
         anSourcerer a = g.AddComponent<anSourcerer>();
         a.Channel = channel;
         a.audioSource.clip = clip;
+        a.audioSource.panStereo = pan;
         return a;
     }
-    public static anSourcerer Setup2DLoopSource(AudioClip clip, AudioMixerGroup channel)//TODO how about just merge the functions???
+    public static anSourcerer SetupTrackSource(TrackData track)
     {
-        anSourcerer a = Setup2DSource(clip, channel);
-        a.audioSource.loop = true;
-        return a;
+        return Setup2DSource(track.Clip, track.Channel, track.Pan);
     }
-    public static anSourcerer PlayClipScheduled(AudioClip clip, double startTime, AudioMixerGroup output)
+    /// <summary>
+    /// plays a track at the given time, and deletes the source after the clip has finished playing
+    /// </summary>
+    /// <param name="track"></param>
+    /// <param name="startTime"></param>
+    /// <returns></returns>
+    public static anSourcerer PlayTrackScheduled(TrackData track, double startTime)
     {
-        anSourcerer s = Setup2DSource(clip, output);
-        s.audioSource.PlayScheduled(startTime);
-        s.DeleteAfterTime(startTime + clip.length);
+        anSourcerer s = SetupTrackSource(track);
+        s.PlayScheduled(startTime);
+        s.DeleteAfterTime(startTime + track.Clip.length);
         return s;
-    }
-    public static IEnumerator FadeValue(float fadeTime, float startingValue, float targetValue, Action<float> ChangeValue, Action ondone = null)
-    {
-        for (float lerp = 0; lerp < 1; lerp += Time.unscaledDeltaTime / fadeTime)
-        {
-            float newValue = Mathf.Lerp(startingValue, targetValue, lerp);
-            ChangeValue(newValue);
-            yield return new WaitForEndOfFrame();
-        }
-        ondone?.Invoke();
     }
 }

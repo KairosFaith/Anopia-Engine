@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Audio;
@@ -14,31 +15,33 @@ public class anSpeechMag : anClipMag
         }
     }
     Dictionary<string, AudioClip> _SpeechBank;
-    protected virtual void InitSpeechBank()
+    public virtual void InitSpeechBank()
     {
         _SpeechBank = new Dictionary<string, AudioClip>();
-        foreach (AudioClip c in Data)
+        foreach (AudioClip c in Clips)
             _SpeechBank.Add(c.name, c);
     }
-    public void PlaySpeech(AudioSource source, string msg)
+    public void PlaySpeech(anSourcerer sourcerer, string msg)
+    {
+        PlaySpeech(sourcerer.audioSource, msg);
+    }
+    public AudioClip PlaySpeech(AudioSource source, string msg)
     {
         source.Stop();
         if (SpeechBank.TryGetValue(msg, out AudioClip clip))
             source.PlayOneShot(clip);
+        return clip;
     }
-    public anSourcerer[] PlaySpeechSequence(AudioMixerGroup channel, double timeCode, string[] msgs)
+    public void PlaySpeechSequence(anSourcerer sourcerer, params string[] msgs)
     {
-        List<anSourcerer> sources = new List<anSourcerer>();
+        sourcerer.StartCoroutine(SequenceSpeech(sourcerer.audioSource, msgs));
+    }
+    IEnumerator SequenceSpeech(AudioSource source, params string[] msgs)
+    {
         foreach (string msg in msgs)
-            if (SpeechBank.TryGetValue(msg, out AudioClip clip))
-            {
-                anSourcerer a = anCore.Setup2DSource(clip, channel);
-                a.audioSource.PlayScheduled(timeCode);
-                sources.Add(a);
-                timeCode += clip.length;
-            }
-        foreach (anSourcerer a in sources)
-            a.DeleteAfterTime(timeCode);
-        return sources.ToArray();
+        {
+            PlaySpeech(source, msg);
+            yield return new WaitUntil(() => !source.isPlaying);
+        }
     }
 }

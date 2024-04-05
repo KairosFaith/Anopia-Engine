@@ -4,7 +4,7 @@ using UnityEngine;
 public class anVoiceLineMag : anSpeechMag
 {
     public VoiceLineData[] SpeechLines;
-    protected override void InitSpeechBank()
+    public override void InitSpeechBank()
     {
         base.InitSpeechBank();
         foreach (VoiceLineData v in SpeechLines)

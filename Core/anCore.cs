@@ -30,7 +30,7 @@ public static partial class anCore
     public static AudioClip FetchData(string SoundId, int Key)
     {
         anClipMag mag = (anClipMag)FetchMag(SoundId);
-        return mag.Data[Key];
+        return mag.Clips[Key];
     }
 }
 public abstract class IanAudioMag : ScriptableObject
@@ -40,20 +40,17 @@ public abstract class IanAudioMag : ScriptableObject
 public abstract class IanMusicMag : IanAudioMag
 {
     public anTempoData Tempo;
-    public abstract SongForm Structure { get; }
 }
-public enum SongForm
+[Serializable]
+public class TrackData
 {
-    Linear,
-    Stem
+    public AudioMixerGroup Channel;
+    public AudioClip Clip;
+    [Range(-1, 1)]
+    public float Pan;
 }
-public abstract class IanSong : MonoBehaviour
+[Serializable]
+public class StingerData : TrackData
 {
-    public abstract void Setup(IanMusicMag mag, AudioMixerGroup output);
-    public abstract void StopOnCue(double stopTime);
-    public abstract void StopImmediate();
-    public abstract void Play(double startTime);
-    public abstract void FadeIn(float t);
-    public abstract void FadeOut(float t, Action ondone = null);
-    public abstract void Mute(bool toMute);
+    public int BeatToStart;
 }

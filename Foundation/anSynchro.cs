@@ -11,9 +11,9 @@ public class anSynchro: MonoBehaviour //this is your new update engine
 	public int CurrentBeatCount = 0;
 	public double NextBeat, CurrentBar;//current bar is past
 	public bool SynchroActive;
-	public double BeatLength => Tempo.BeatLength;
-	public double BarLength => Tempo.BarLength;
-	public double NextBar => Tempo.BarLength + CurrentBar;
+	public static double BeatLength => Instance.Tempo.BeatLength;
+	public static double BarLength => Instance.Tempo.BarLength;
+	public static double NextBar => Instance.CurrentBar + BarLength;
     private void Awake()
     {
         if (Instance == null)
