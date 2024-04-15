@@ -11,6 +11,7 @@ public class anSynchro: MonoBehaviour //this is your new update engine
 	public int CurrentBeatCount = 0;
 	public double NextBeat, CurrentBar;//current bar is past
 	public bool SynchroActive;
+    static Coroutine _SynchroRoutine;
 	public static double BeatLength => Instance.Tempo.BeatLength;
 	public static double BarLength => Instance.Tempo.BarLength;
 	public static double NextBar => Instance.CurrentBar + BarLength;
@@ -34,7 +35,13 @@ public class anSynchro: MonoBehaviour //this is your new update engine
     }
     public static void StartSynchro(double startTime)
     {
-        Instance.StartCoroutine(Instance.Synchro(startTime));
+        StopSynchro();
+        _SynchroRoutine = Instance.StartCoroutine(Instance.Synchro(startTime));
+    }
+    public static void StopSynchro()
+    {
+        Instance.StopCoroutine(_SynchroRoutine);
+        Instance.SynchroActive = false;
     }
     IEnumerator Synchro(double startTime)
     {
@@ -77,21 +84,21 @@ public class anSynchro: MonoBehaviour //this is your new update engine
         float delta = (float)(diff / Tempo.BeatLength);
         return MathF.Abs(delta) < marginOfError;
     }
-}
-public enum anBarValue
-{
-    Quarter = 1,
-    Eight,
-    Triplet,
-    Sixteen,
-}
-[Serializable]
-public class anTempoData
-{
-    public int CrotchetBPM = 65;
-    public int BeatsPerBar = 4;
-    public anBarValue TimeSignature = anBarValue.Quarter;
-    public int BPM => CrotchetBPM * (int)TimeSignature;
-    public float BeatLength => 60 / (float)BPM;
-    public float BarLength => BeatLength * BeatsPerBar;
+    [Serializable]
+    public class anTempoData
+    {
+        public enum anBarValue
+        {
+            Quarter = 1,
+            Eight,
+            Triplet,
+            Sixteen,
+        }
+        public int CrotchetBPM = 65;
+        public int BeatsPerBar = 4;
+        public anBarValue TimeSignature = anBarValue.Quarter;
+        public int BPM => CrotchetBPM * (int)TimeSignature;
+        public float BeatLength => 60 / (float)BPM;
+        public float BarLength => BeatLength * BeatsPerBar;
+    }
 }

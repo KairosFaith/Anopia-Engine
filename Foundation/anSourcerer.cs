@@ -35,7 +35,7 @@ public class anSourcerer : MonoBehaviour
         get 
         { 
             if (_audioSource == null)
-                _audioSource = this.GetOrAddComponent<AudioSource>();
+                _audioSource = GetComponent<AudioSource>();
             return _audioSource; 
         } 
     }
@@ -44,7 +44,11 @@ public class anSourcerer : MonoBehaviour
         get
         {
             if (_audioDistortionFilter == null)
-                _audioDistortionFilter = this.GetOrAddComponent<AudioDistortionFilter>();
+            {
+                _audioDistortionFilter = GetComponent<AudioDistortionFilter>();
+                if (_audioDistortionFilter == null)
+                    _audioDistortionFilter = gameObject.AddComponent<AudioDistortionFilter>();
+            }
             return _audioDistortionFilter;
         }
     }
@@ -53,13 +57,24 @@ public class anSourcerer : MonoBehaviour
         get
         {
             if (_audioHighPassFilter == null)
-                _audioHighPassFilter = this.GetOrAddComponent<AudioHighPassFilter>();
+                _audioHighPassFilter = GetComponent<AudioHighPassFilter>();
             return _audioHighPassFilter;
         }
     }
     AudioSource _audioSource;
     AudioDistortionFilter _audioDistortionFilter;
     AudioHighPassFilter _audioHighPassFilter;
+    public void SetUp(anTrackData track, bool loop)
+    {
+        SetUp(track.Clip, track.Channel, loop);
+        audioSource.panStereo = track.Pan;
+    }
+    public void SetUp(AudioClip clip, AudioMixerGroup channel, bool loop)
+    {
+        Channel = channel;
+        audioSource.clip = clip;
+        audioSource.loop = loop;
+    }
     public void SetRandomPitch(float minPitch = 1, float maxPitch = 1)
     {
         Pitch = UnityEngine.Random.Range(minPitch, maxPitch);

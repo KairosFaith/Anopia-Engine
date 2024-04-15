@@ -4,6 +4,7 @@ using UnityEngine.EventSystems;
 public class anSliderFeedback : anMouseoverFeedback, IPointerDownHandler, IPointerUpHandler
 {
     public Slider slider;
+    bool _InSlider, _IsDown;
     public override void Start()
     {
         base.Start();
@@ -13,12 +14,27 @@ public class anSliderFeedback : anMouseoverFeedback, IPointerDownHandler, IPoint
     {
         Source.PlayOneShot(AudioMag.Interact, slider.normalizedValue);
     }
+    public override void OnPointerEnter(PointerEventData eventData)
+    {
+        base.OnPointerEnter(eventData);
+        _InSlider = true;
+    }
     public virtual void OnPointerDown(PointerEventData eventData)
     {
-        Source.PlayOneShot(AudioMag.Down);
+        _IsDown = true;
+        if (!_IsDown)
+            Source.PlayOneShot(AudioMag.Down);
     }
     public virtual void OnPointerUp(PointerEventData eventData)
     {
-        Source.PlayOneShot(AudioMag.Up);
+        _IsDown = false;
+        if (_InSlider)
+            Source.PlayOneShot(AudioMag.Up);
+    }
+    override public void OnPointerExit(PointerEventData eventData)
+    {
+        _InSlider = false;
+        if (!_IsDown)
+            base.OnPointerExit(eventData);
     }
 }

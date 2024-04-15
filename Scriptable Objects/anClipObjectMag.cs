@@ -3,7 +3,7 @@ using UnityEngine.Audio;
 [CreateAssetMenu(fileName = "ClipObjectMag", menuName = "AnopiaEngine/ClipObjectMag")]
 public class anClipObjectMag : anClipMag
 {
-    public anSourcerer SourcererPrefab;
+    public anSourcerer SourcePrefab3D;
     [Range(.1f, 1f)]
     public float MinPitch = 1;
     [Range(1f, 2f)]
@@ -14,7 +14,7 @@ public class anClipObjectMag : anClipMag
     public float MaxDistortion, MaxHighPass = 10;
     anSourcerer InstantiateSourcerer(Vector3 position, AudioMixerGroup channel)
     {
-        anSourcerer a = Instantiate(SourcererPrefab, position, Quaternion.identity);
+        anSourcerer a = Instantiate(SourcePrefab3D, position, Quaternion.identity);
         a.Channel = channel;
         a.SetRandomPitch(MinPitch, MaxPitch);
         if (UseDistortion)
@@ -34,6 +34,7 @@ public class anClipObjectMag : anClipMag
     {
         anSourcerer a = InstantiateSourcerer(position, channel);
         AudioClip clip = Randomise(out float gain);
+        a.audioSource.clip = clip;
         a.PlayScheduled(timecode, gain);
         a.DeleteAfterTime(timecode + clip.length);
         return a;

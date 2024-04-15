@@ -2,9 +2,7 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "ADSRMag", menuName = "AnopiaEngine/ADSR")]
 public class anADSRMag : IanAudioMag
 {
-    public AudioClip Attack;
-    public AudioClip Sustain;
-    public AudioClip Release;
+    public AudioClip Attack, Sustain, Release;
     public void Play(AudioSource source)
     {
         source.clip = Sustain;

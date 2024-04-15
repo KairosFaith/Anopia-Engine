@@ -4,14 +4,6 @@ using System;
 using UnityEngine.Audio;
 public static partial class anCore
 {
-    public static T GetOrAddComponent <T>(this MonoBehaviour mb) where T : Component//TODO make this a utillity function
-    {
-        GameObject go = mb.gameObject;
-        T comp = go.GetComponent<T>();
-        if (comp == null)
-            comp = go.AddComponent<T>();
-        return comp;
-    }
     static Dictionary<string, IanAudioMag> _SoundBank = new Dictionary<string, IanAudioMag>();
     static anCore()
     {
@@ -35,22 +27,74 @@ public static partial class anCore
 }
 public abstract class IanAudioMag : ScriptableObject
 {
-    //TODO what here????
+    //TODO put what here???
 }
 public abstract class IanMusicMag : IanAudioMag
 {
-    public anTempoData Tempo;
+    public anSourcerer SourcePrefab2D;
+    public anSynchro.anTempoData Tempo;
 }
 [Serializable]
-public class TrackData
+public class AudioLayerData
 {
-    public AudioMixerGroup Channel;
     public AudioClip Clip;
-    [Range(-1, 1)]
-    public float Pan;
+    public anSourcerer SourcePrefab;
 }
 [Serializable]
-public class StingerData : TrackData
+public class AudioAutomationData
+{
+    //[HideInInspector]//TODO put enum in inspector only, ideally store string instead
+    public SourceEffect Effect;
+    public anLerpCurve Smoothing;
+    protected System.Reflection.PropertyInfo pInfo;
+    public float Evaluate(float unnormalisedValue)
+    {
+        return Smoothing.Evaluate(unnormalisedValue);
+    }
+    public void SetSourcererValue(anSourcerer handler, float value)
+    {
+        if (pInfo == null)
+            pInfo = typeof(anSourcerer).GetProperty(Effect.ToString());
+        pInfo.SetValue(handler, value);
+    }
+    public enum SourceEffect//TODO put this in editor only somehow
+    {
+        Volume,
+        Pitch,
+        Distortion,
+        HighPass,
+    }
+}
+[Serializable]
+public class LayerAutomationData : AudioAutomationData
+{
+    public string ParameterName;
+    public int TargetSourceIndex;
+    public void AutomationAction(float value, anSourcerer[] handlers)
+    {
+        float e = Evaluate(value);
+        SetSourcererValue(handlers[TargetSourceIndex], e);
+    }
+}
+[Serializable]
+public class StingerData : anTrackData
 {
     public int BeatToStart;
+    /// <summary>
+    /// plays a stinger at the given time, and deletes the source after the clip has finished playing
+    /// </summary>
+    public anSourcerer PlayStinger(double startTime, anSourcerer sourcePrefab, Transform parent)
+    {
+        anSourcerer s = GameObject.Instantiate(sourcePrefab, parent);
+        s.SetUp(this, false);
+        s.PlayScheduled(startTime);
+        s.DeleteAfterTime(startTime);
+        return s;
+    }
+}
+[Serializable]
+public class VoiceLineData
+{
+    public string Line;
+    public AudioClip Clip;
 }
