@@ -4,7 +4,7 @@ using UnityEngine;
 public delegate void BeatFunc(int beatCount, double timeCode);
 public class anSynchro: MonoBehaviour //this is your new update engine
 {
-    public static anSynchro Instance;
+    public static anSynchro Instance { get; private set; }
     public static BeatFunc PlayOnBeat;// to schedule sounds
     public anTempoData Tempo;
     [Header("Read Only")]
