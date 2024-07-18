@@ -40,8 +40,9 @@ public class anSynchro: MonoBehaviour //this is your new update engine
     }
     public static void StopSynchro()
     {
-        Instance.StopCoroutine(_SynchroRoutine);
         Instance.SynchroActive = false;
+        if(_SynchroRoutine!=null)
+            Instance.StopCoroutine(_SynchroRoutine);
     }
     IEnumerator Synchro(double startTime)
     {
