@@ -15,6 +15,7 @@ public class anSynchro: MonoBehaviour //this is your new update engine
 	public static double BeatLength => Instance.Tempo.BeatLength;
 	public static double BarLength => Instance.Tempo.BarLength;
 	public static double NextBar => Instance.CurrentBar + BarLength;
+    static double DeltaMargin => Time.deltaTime;//TODO still experimenting
     private void Awake()
     {
         if (Instance == null)
@@ -64,7 +65,7 @@ public class anSynchro: MonoBehaviour //this is your new update engine
         while (SynchroActive)
         {
             //check 1 frame ahead, actual dsp time must be LOWER than NextBeat Time code
-            if (AudioSettings.dspTime +Time.deltaTime >= NextBeat)
+            if (AudioSettings.dspTime + DeltaMargin >= NextBeat)
                 Beat(NextBeat);
             yield return new WaitForEndOfFrame();
         }
@@ -83,7 +84,7 @@ public class anSynchro: MonoBehaviour //this is your new update engine
     {
         double diff = pressedTimeCode - timeCodeToCheck;
         float delta = (float)(diff / Tempo.BeatLength);
-        return MathF.Abs(delta) < marginOfError;
+        return Mathf.Abs(delta) < marginOfError;
     }
     [Serializable]
     public class anTempoData
