@@ -32,7 +32,7 @@ public abstract class IanAudioMag : ScriptableObject
 public abstract class IanMusicMag : IanAudioMag
 {
     public anSourcerer SourcePrefab2D;
-    public anSynchro.anTempoData Tempo;
+    public anTempoData Tempo;
 }
 [Serializable]
 public class AudioLayerData
