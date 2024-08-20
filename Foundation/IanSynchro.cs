@@ -27,7 +27,7 @@ public abstract class IanSynchro : MonoBehaviour
         float delta = (float)(diff / Tempo.BeatLength);
         return Mathf.Abs(delta) < marginOfError;
     }
-    private void Awake()
+    void Awake()
     {
         if (Instance == null)
         {
@@ -40,7 +40,7 @@ public abstract class IanSynchro : MonoBehaviour
             Destroy(this);
         }
     }
-    private void OnDestroy()
+    void OnDestroy()
     {
         if (Instance == this)
             Instance = null;

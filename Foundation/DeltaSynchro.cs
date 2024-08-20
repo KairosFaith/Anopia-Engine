@@ -4,7 +4,7 @@ public class DeltaSynchro : IanSynchro //this is your new update engine
 {
 	public bool SynchroActive;
     static Coroutine _SynchroRoutine;
-    static double DeltaMargin => Time.deltaTime;//TODO still experimenting
+    static double DeltaMargin => Time.maximumDeltaTime;//TODO still experimenting
     public override void StartSynchro(double startTime)
     {
         StopSynchro();
@@ -36,8 +36,13 @@ public class DeltaSynchro : IanSynchro //this is your new update engine
         while (SynchroActive)
         {
             //check 1 frame ahead, actual dsp time must be LOWER than NextBeat Time code
+            //double timeGap = NextBeat - AudioSettings.dspTime;
+            //if (timeGap <= DeltaMargin)
             if ((NextBeat - AudioSettings.dspTime) <= DeltaMargin)
+            {
                 Beat(NextBeat);
+                //print(timeGap);
+            }
             yield return new WaitForEndOfFrame();
         }
         SynchroActive = false;
