@@ -60,6 +60,6 @@ public class anTempoData
     public int BeatsPerBar = 4;
     public anBarValue TimeSignature = anBarValue.Quarter;
     public int BPM => CrotchetBPM * (int)TimeSignature;
-    public float BeatLength => 60 / (float)BPM;
-    public float BarLength => BeatLength * BeatsPerBar;
+    public double BeatLength => (double)60 / BPM;
+    public double BarLength => BeatLength * BeatsPerBar;
 }
