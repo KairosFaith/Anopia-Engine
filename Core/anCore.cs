@@ -45,7 +45,7 @@ public class AudioAutomationData
 {
     //[HideInInspector]//TODO put enum in inspector only, ideally store string instead
     public SourceEffect Effect;
-    public anLerpCurve Smoothing;
+    public CLerpData Smoothing;
     protected System.Reflection.PropertyInfo pInfo;
     public float Evaluate(float unnormalisedValue)
     {

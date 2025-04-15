@@ -6,6 +6,7 @@ public class YgniumSynchro : IanSynchro
     public double CurrentBeat;//current is past
     public AudioSource Source;
     Action _Ygnite, _Shadow;
+    public int CurrentBarCount;
     public override void StartSynchro(double startTime)
     {
         StopSynchro();

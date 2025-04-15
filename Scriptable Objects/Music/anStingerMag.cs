@@ -15,11 +15,11 @@ public class anStingerMag : IanMusicMag
             if (beatCount == stinger.BeatToStart)
             {
                 stinger.PlayStinger(timeCode, SourcePrefab2D, parent);
-                IanSynchro.PlayOnBeat -= PlayOnBeat;
+                IanSynchro.Instance.PlayOnBeat -= PlayOnBeat;
                 activateOnBeat?.Invoke(beatCount,timeCode);
             }
         };
-        IanSynchro.PlayOnBeat += PlayOnBeat;
+        IanSynchro.Instance.PlayOnBeat += PlayOnBeat;
         //return PlayOnBeat;
         //TODO return BeatFunc ???
     }

@@ -4,16 +4,17 @@ public delegate void BeatFunc(int beatCount, double timeCode);
 public abstract class IanSynchro : MonoBehaviour
 {
     public static IanSynchro Instance { get; protected set; }
-    public static BeatFunc PlayOnBeat;// to schedule sounds
+    public BeatFunc PlayOnBeat;// to schedule sounds
     public anTempoData Tempo;
-    public static double BeatLength => Instance.Tempo.BeatLength;
-    public static double BarLength => Instance.Tempo.BarLength;
-    public static double NextBar => Instance.CurrentBar + BarLength;
     [Header("Read Only")]
-    public int CurrentBeatCount, CurrentBarCount;
+    public int CurrentBeatCount;
     public double NextBeat, CurrentBar;//current bar is past
     public abstract void StartSynchro(double startTime);
     public abstract void StopSynchro();
+    public double GetNextBar(int barsAhead = 1)
+    {
+        return CurrentBar + Tempo.BarLength * barsAhead;
+    }
     public bool CheckRhythmAcurracy(float marginOfError = 0.4f)
     {
         double pressedTimecode = AudioSettings.dspTime;
@@ -35,10 +36,7 @@ public abstract class IanSynchro : MonoBehaviour
             DontDestroyOnLoad(gameObject);
         }
         else
-        {
-            Debug.LogWarning(Instance.gameObject.name + "Synchro Already exists");
-            Destroy(this);
-        }
+            Destroy(gameObject);
     }
     void OnDestroy()
     {

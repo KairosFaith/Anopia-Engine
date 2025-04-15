@@ -45,8 +45,9 @@ public class anSourcerer : MonoBehaviour
         {
             if (_audioDistortionFilter == null)
             {
-                _audioDistortionFilter = GetComponent<AudioDistortionFilter>();
-                if (_audioDistortionFilter == null)
+                if(TryGetComponent(out _audioDistortionFilter))
+                    return _audioDistortionFilter;
+                else
                     _audioDistortionFilter = gameObject.AddComponent<AudioDistortionFilter>();
             }
             return _audioDistortionFilter;
@@ -57,7 +58,13 @@ public class anSourcerer : MonoBehaviour
         get
         {
             if (_audioHighPassFilter == null)
-                _audioHighPassFilter = GetComponent<AudioHighPassFilter>();
+            {
+                if (TryGetComponent(out _audioHighPassFilter))
+                    return _audioHighPassFilter;
+                else
+                    _audioHighPassFilter = gameObject.AddComponent<AudioHighPassFilter>();
+                    //TODO throw error instead?
+            }
             return _audioHighPassFilter;
         }
     }
@@ -117,4 +124,12 @@ public class anSourcerer : MonoBehaviour
         onDone?.Invoke();
         Destroy(gameObject);
     }
+}
+[Serializable]
+public class anTrackData
+{
+    public AudioMixerGroup Channel;
+    public AudioClip Clip;
+    [Range(-1, 1)]
+    public float Pan;
 }

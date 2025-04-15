@@ -3,8 +3,8 @@ using UnityEngine;
 public class DeltaSynchro : IanSynchro //this is your new update engine
 {
 	public bool SynchroActive;
-    static Coroutine _SynchroRoutine;
-    static double DeltaMargin => Time.maximumDeltaTime;//TODO still experimenting
+    Coroutine _SynchroRoutine;
+    double _DeltaMargin => Time.deltaTime;//TODO still experimenting
     public override void StartSynchro(double startTime)
     {
         StopSynchro();
@@ -38,7 +38,7 @@ public class DeltaSynchro : IanSynchro //this is your new update engine
             //check 1 frame ahead, actual dsp time must be LOWER than NextBeat Time code
             //double timeGap = NextBeat - AudioSettings.dspTime;
             //if (timeGap <= DeltaMargin)
-            if ((NextBeat - AudioSettings.dspTime) <= DeltaMargin)
+            if ((NextBeat - AudioSettings.dspTime) <= _DeltaMargin)
             {
                 Beat(NextBeat);
                 //print(timeGap);
