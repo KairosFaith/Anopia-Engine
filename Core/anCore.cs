@@ -88,7 +88,7 @@ public class StingerData : anTrackData
         anSourcerer s = GameObject.Instantiate(sourcePrefab, parent);
         s.SetUp(this, false);
         s.PlayScheduled(startTime);
-        s.DeleteAfterTime(startTime);
+        s.DeleteAfterTime(startTime + s.Clip.length);
         return s;
     }
 }

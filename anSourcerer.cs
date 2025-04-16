@@ -5,6 +5,11 @@ using UnityEngine.Audio;
 [RequireComponent(typeof(AudioSource))]
 public class anSourcerer : MonoBehaviour
 {
+    public AudioClip Clip
+    {
+        get { return audioSource.clip; }
+        set { audioSource.clip = value; }
+    }
     public AudioMixerGroup Channel
     {
         get { return audioSource.outputAudioMixerGroup; }
@@ -81,6 +86,7 @@ public class anSourcerer : MonoBehaviour
         Channel = channel;
         audioSource.clip = clip;
         audioSource.loop = loop;
+        gameObject.name += clip.name;
     }
     public void SetRandomPitch(float minPitch = 1, float maxPitch = 1)
     {
@@ -99,7 +105,7 @@ public class anSourcerer : MonoBehaviour
     public void DeleteWhenDone(Action onDone = null)
     {
         if(audioSource.isPlaying)
-            StartCoroutine(_DeleteWhenDone( onDone));
+            StartCoroutine(_DeleteWhenDone(onDone));
         else
         {
             onDone?.Invoke();
@@ -113,14 +119,14 @@ public class anSourcerer : MonoBehaviour
         onDone?.Invoke();
         Destroy(gameObject);
     }
-    public void DeleteAfterTime( double stopTime, Action onDone = null)
+    public void DeleteAfterTime(double stopTime, Action onDone = null)
     {
         StartCoroutine(_DeleteAfterTime(stopTime, onDone));
     }
     IEnumerator _DeleteAfterTime(double stopTime, Action onDone)
     {
         while (AudioSettings.dspTime < stopTime)
-            yield return new WaitForSeconds((float)(stopTime-AudioSettings.dspTime));
+            yield return new WaitForSeconds((float)(stopTime - AudioSettings.dspTime));
         onDone?.Invoke();
         Destroy(gameObject);
     }
