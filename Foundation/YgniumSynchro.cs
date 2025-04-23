@@ -1,9 +1,7 @@
 using System;
 using UnityEngine;
-//public delegate void OnBeatFunc(int barCount, int beatCount);
 public class YgniumSynchro : IanSynchro
 {
-    public double CurrentBeat;//current is past
     public AudioSource Source;
     Action _Ygnite, _Shadow;
     public int CurrentBarCount;
