@@ -66,7 +66,7 @@ public class anTempoData
         Triplet,
         Sixteen,
     }
-    public int CrotchetBPM = 65;
+    public int CrotchetBPM = 120;
     public int BeatsPerBar = 4;
     public anBarValue TimeSignature = anBarValue.Quarter;
     public int BPM => CrotchetBPM * (int)TimeSignature;
