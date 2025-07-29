@@ -14,8 +14,11 @@ public class ThreadSynchro : IanSynchro
     public override void StopSynchro()
     {
         SynchroActive = false;
+        if (_Cts == null)
+            return;
         _Cts.Cancel();
         _Cts.Dispose();
+        _Cts = null;
     }
     void OnApplicationQuit()
     {
